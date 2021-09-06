@@ -64,8 +64,8 @@ export default {
             if (res.data == "") {
               this.$message.error('账号错误');
             } else {
-              if (this.user.userPassword == res.data) {
-                this.$router.push('/')
+              if (this.user.userPassword == res.data.teacherPassword) {
+                this.$router.push('/teacherAside')
                 this.$message.success('教师登录成功');
               } else {
                 this.$message.error('密码错误');
@@ -95,8 +95,6 @@ export default {
               if (this.user.userPassword == res.data) {
                 this.$router.push('/AdminBackground')
                 this.$message.success('管理登录成功');
-                console.log(this.user.userPassword);
-                console.log(res.data);
               } else {
                 this.$message.error('密码错误');
               }

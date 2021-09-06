@@ -5,11 +5,13 @@ import store from './store'
 import axios from 'axios';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import * as echarts from 'echarts'
 axios.defaults.baseURL = 'http://localhost:8888'
 Vue.config.productionTip = false
-
+axios.defaults.withCredentials = true
 Vue.prototype.$axios = axios;
 Vue.use(ElementUI);
+Vue.prototype.$echarts = echarts
 
 new Vue({
   router,
