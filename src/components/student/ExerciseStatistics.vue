@@ -14,7 +14,7 @@
         </el-table-column>
         
      </el-table>
-     <div id="myChart" :style="{width: '300px', height: '300px'}"></div>
+     <div id="myChart" :style="{width: '500px', height: '300px'}"></div>
   </div>
 </template>
 
@@ -34,71 +34,87 @@ export default {
                     },
                 },
             ],
-            
-
-            charts: '',
-                opinion:['男','女'],
-                opinionData:[
-                  {value:335, name:'男'},
-                  {value:310, name:'女'},
+            exerciseResultInfo:[
                 
-                ]
+
+            ],
+        
 
         }
     },
     mounted: function () {
       this.exercise.exerciseId = this.$route.query.exerciseId;
       this.getExerciseStatisticsInfo();
-      this.drawLine();
+      this.getResultInfo();
     },
     methods:{
         drawLine(){
         // 基于准备好的dom，初始化echarts实例
         let myChart = this.$echarts.init(document.getElementById('myChart'))
-       myChart.setOption({
-                series: [
+            var resultInfo=[];
+            for(var i=0;i<this.exerciseResultInfo.length;i++){
+           		var obj = new Object();
+                obj.name=this.exerciseResultInfo[i].exerciseResult;
+                obj.value=this.exerciseResultInfo[i].number;
+                var itemStyle=new Object();
+                switch(obj.name){
+                    case "accept":
+                        itemStyle.color='#00ff00';
+                        obj.itemStyle=itemStyle;
+                    break;
+                };
+                resultInfo[i]=obj;
+            }
+            var option={
+
+                  series: [
                 {
                     type: 'pie',
-                    data: [
-                    {
-                        value: 335,
-                        name: '直接访问'
-                    },
-                    {
-                        value: 234,
-                        name: '联盟广告'
-                    },
-                    {
-                        value: 1548,
-                        name: '搜索引擎'
-                    }
-                    ]
+                    data: resultInfo,
                 }
                 ]
-               })
+            }
+            myChart.setOption(option);
 
 
     },
-    
-        getExerciseStatisticsInfo(){
-            let params=new URLSearchParams();
-            params.append('exerciseId',this.exercise.exerciseId);
-            this.$axios({
-                method: 'post',
-                headers: {
-                            "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                url: '/exerciseHistory/queryExerciseStatisticsInfo',
-                data: params
-            })
-            .then((res)=> {
-                  this.exerciseStatisticsInfo=res.data;
-                  console.log(this.exerciseStatisticsInfo);
-            })
-            .catch((err)=> {
-                this.$message.error('系统错误请稍后再尝试');
-            })
-        }
+    getExerciseStatisticsInfo(){
+        let params=new URLSearchParams();
+        params.append('exerciseId',this.exercise.exerciseId);
+        this.$axios({
+            method: 'post',
+            headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                        },
+            url: '/exerciseHistory/queryExerciseStatisticsInfo',
+            data: params
+        })
+        .then((res)=> {
+                this.exerciseStatisticsInfo=res.data;
+        })
+        .catch((err)=> {
+            this.$message.error('查询习题统计排行榜失败');
+        })
+    },
+    getResultInfo(){
+        let params=new URLSearchParams();
+        params.append('exerciseId',this.exercise.exerciseId);
+        this.$axios({
+            method: 'post',
+            headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                        },
+            url: '/exerciseHistory/queryExerciseResultInfo',
+            data: params
+        })
+        .then((res)=> {
+                this.exerciseResultInfo=res.data;
+                this.drawLine();
+        })
+        .catch((err)=> {
+            this.$message.error('查询习题结果信息');
+        })
+    }
     }
 }
 </script>
