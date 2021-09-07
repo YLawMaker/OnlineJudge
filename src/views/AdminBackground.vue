@@ -10,24 +10,13 @@
         text-color="#000000"
         :collapse-transition="iscollapse"
       >
-        <el-submenu index="1">
-          <template slot="title">教师</template>
-          <el-menu-item index="../components/TeacherManage"
-            >教师管理</el-menu-item
-          >
-        </el-submenu>
-        <el-submenu index="2">
-          <template slot="title">班级</template>
-          <el-menu-item index="../components/ClassManage"
-            >班级管理</el-menu-item
-          >
-        </el-submenu>
-        <el-submenu index="3">
-          <template slot="title">习题</template>
-          <el-menu-item index="../components/ExerciseManage"
-            >习题管理</el-menu-item
-          >
-        </el-submenu>
+        <el-menu-item index="../components/TeacherManage"
+          >教师管理</el-menu-item
+        >
+        <el-menu-item index="../components/ClassManage">班级管理</el-menu-item>
+        <el-menu-item index="../components/ExerciseManage"
+          >习题管理</el-menu-item
+        >
       </el-menu>
     </el-header>
     <el-main>
@@ -61,5 +50,10 @@ export default {
 }
 .el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
   border-bottom: transparent;
+}
+.el-header {
+  padding: 0 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 </style>
