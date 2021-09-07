@@ -1,12 +1,23 @@
 <template>
   <div>
-    <div>习题管理</div>
-    <div class="addButton">
-      <div class="searchBar">
-        <input v-model="search" class="input" placeholder="请输入标题" />
-        <button type="primary" @click="Search(1)">搜索</button>
-        <button type="danger" @click="Search(2)">重置</button>
-        <button type="primary" @click="addDialogvisiable()">添加习题</button>
+    <div class="Bar">
+      <div class="topBar">
+        <el-input
+          v-model="select_word"
+          size="mini"
+          class="search_input"
+          placeholder="请输入习题标题"
+          style="width: 200px"
+        ></el-input>
+        <!-- <button type="primary" @click="Search(1)">搜索</button>
+        <button type="danger" @click="Search(2)">重置</button> -->
+        <el-button
+          size="small"
+          type="primary"
+          class="addButton"
+          @click="addDialogvisiable()"
+          >添加习题</el-button
+        >
       </div>
     </div>
     <el-table
@@ -29,6 +40,7 @@
               path: 'ExerciseAnswerManage',
               query: {
                 exerciseIdfromManage: scope.row.exerciseId,
+                page: currentPage,
               },
             }"
           >
@@ -101,10 +113,11 @@
     <div class="block">
       <el-pagination
         @current-change="handleCurrent"
-        :current-page="currentPage"
+        :current-page.sync="currentPage"
         :page-size="pagesize"
         layout="total,prev, pager, next"
         :total="this.exercise.length"
+        v-if="this.exercise.length != 0"
       >
       </el-pagination>
     </div>
@@ -311,7 +324,7 @@ export default {
     return {
       exercise: [],
       exerciseBackup: [],
-      search: "",
+      select_word: "",
       searchData: [],
       edittableData: {
         exerciseId: '',
@@ -325,6 +338,17 @@ export default {
         exerciseSubmitTimes: ''
       },
       addexerciseData: {
+        exerciseId: '',
+        exerciseTitle: '',
+        exerciseDescription: '',
+        exerciseInput: '',
+        exerciseOutPut: '',
+        exerciseSampleInput: '',
+        exerciseSampleOutput: '',
+        exerciseCorrectTimes: '0',
+        exerciseSubmitTimes: '0'
+      },
+      empty: {
         exerciseId: '',
         exerciseTitle: '',
         exerciseDescription: '',
@@ -367,16 +391,38 @@ export default {
           { required: true, message: '请输入样例输出', trigger: 'blur' },
           { min: 1, max: 1000, message: '长度为1~1000', trigger: 'blur' }
         ]
-      }
+      },
+      h: {},
     }
   },
   mounted: function () {
-    this.getExercise();//需要触发的函数
+    if (this.$route.params.page == null) {
+      this.getExercise(this.currentPage);//需要触发的函数
+    } else {
+      this.getExercise(parseInt(this.$route.params.page));//需要触发的函数
+    }
   },
   computed: {
     data () {
       return this.exercise.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
     }
+
+  },
+  watch: {
+    select_word: function () {
+      if (this.select_word == '') {
+        this.searchData = this.exercise;
+      } else {
+        this.searchData = [];
+        for (let item of this.exercise) {
+          if (item.exerciseTitle.includes(this.select_word)) {
+            this.currentPage = 1;
+            this.selectExercise.push(item);
+          }
+        }
+      }
+
+    },
   },
   methods: {
     modifyExercise (row) {
@@ -410,7 +456,7 @@ export default {
       this.edittableData.exerciseSampleInput = row.exerciseSampleInput
       this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
     },
-    getExercise () {
+    getExercise (pageNum) {
       const that = this
       this.$axios({
         method: 'post',
@@ -421,7 +467,7 @@ export default {
       }).then(function (resp) {
         that.exercise = resp.data;
         that.exerciseBackup = resp.data;
-        // console.log(that.exerciseBackup);
+        that.currentPage = pageNum
       })
     },
     modifyExerciseInfoDialog () {
@@ -444,15 +490,15 @@ export default {
         if (res.data == true) {
           this.$message.success('习题信息修改成功');
           this.edittableDataVisible_modify = false;
-          this.getExercise();
+          this.getExercise(this.currentPage);
         } else if (res.data == false) {
           this.$message.error('习题信息修改失败');
           this.edittableDataVisible_modify = false;
-          this.getExercise();
+          this.getExercise(this.currentPage);
         } else {
           this.$message.error('发生了错误');
           this.edittableDataVisible_modify = false;
-          this.getExercise();
+          this.getExercise(this.currentPage);
         }
       }).catch((res) => {
         console.log(res);
@@ -488,20 +534,19 @@ export default {
       }).then((res) => {
         if (res.data == true) {
           this.$message.success('习题删除成功');
-          this.getExercise();
+          this.getExercise(this.currentPage);
         } else if (res.data == false) {
           this.$message.error('习题删除失败');
-          this.getExercise();
+          this.getExercise(this.currentPage);
         } else {
           this.$message.error('发生了错误');
-          this.getExercise();
+          this.getExercise(this.currentPage);
         }
       }).catch((res) => {
         console.log(res);
       })
     },
     addExercise (addExercise) {
-      // console.log("提交");
       var that = this;
       this.$refs[addExercise].validate((valid) => {
         if (valid) {
@@ -526,11 +571,12 @@ export default {
               // console.log(res.data);
               this.$message.error('习题添加失败');
               this.edittableDataVisible_add = false;
-              this.getExercise();
+              this.getExercise(this.currentPage);
             } else {
               this.$message.success('习题添加成功');
               this.edittableDataVisible_add = false;
-              this.getExercise();
+              this.addexerciseData = this.empty
+              this.getExercise(this.currentPage);
             }
           })
         } else {
@@ -598,6 +644,13 @@ a {
   bottom: 0;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.addButton {
+  float: right;
+  margin-right: 25px;
+}
+.topBar {
+  margin-top: 10px;
 }
 </style>
 
