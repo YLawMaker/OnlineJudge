@@ -36,6 +36,7 @@
         
          <div class="foot">
             <router-link
+             style=" text-decoration: none;color:black"
                 :to="{  
                     path: 'exerciseStatistics',     
                     query: {   
@@ -44,6 +45,17 @@
                     }" 
                 >
                 习题统计
+            </router-link>
+            <router-link
+            style=" text-decoration: none;color:black"
+                :to="{  
+                    path: 'submitCode',     
+                    query: {   
+                        exerciseId:getExerciseId(), 
+                        },  
+                    }" 
+                >
+                代码提交
             </router-link>
         </div>
       </div>

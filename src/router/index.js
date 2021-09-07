@@ -72,6 +72,16 @@ const routes = [
         name: 'ExerciseStatistics',
         component: () => import('@/components/student/ExerciseStatistics.vue')
       },
+      {
+        path: '/submitCode',
+        name: 'SubmitCode',
+        component: () => import('@/components/student/SubmitCode.vue')
+      },
+      {
+        path: '/exerciseRealTimeStatus',
+        name: 'ExerciseRealTimeStatus',
+        component: () => import('@/components/student/ExerciseRealTimeStatus.vue')
+      },
     ]
   },
   {

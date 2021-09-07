@@ -9,6 +9,7 @@
        <el-table-column  label="习题标题"  >
               <template slot-scope="scope">
                        <router-link
+                       style=" text-decoration: none;color:black"
                        :to="{  
                             path: 'exerciseDetail',     
                             query: {   
