@@ -42,6 +42,7 @@
         :page-size="pageSize"
         :total="selectExercise.length"
         @current-change="handleCurrent"
+        v-if="selectExercise.length!=0"
       >
       </el-pagination>
     </div>
@@ -92,12 +93,35 @@ export default {
       return this.selectExercise.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
     }
   },
+  
   mounted: function () {
+  this.currentPage=this.getContextData("currentPage");
     this.getExercise();
   },
   methods: {
+    //给sessionStorage存值
+    setContextData: function(key, value) { 
+      if(typeof value == "string"){
+        sessionStorage.setItem(key, value);
+      }else{
+        sessionStorage.setItem(key, JSON.stringify(value));
+      }
+    },
+    // 从sessionStorage取值
+    getContextData: function(key){
+      const str = sessionStorage.getItem(key);
+      if( typeof str == "string" ){
+        try{
+          return JSON.parse(str);
+        }catch(e) {
+          return str;
+        }
+      }
+      return;
+    },
     handleCurrent (val) {
       this.currentPage = val;
+      this.setContextData("currentPage",this.currentPage);
     },
     getAcceptRate (exerciseCorrectTimes, exerciseSubmitTimes) {
       if (!(exerciseCorrectTimes / exerciseSubmitTimes == exerciseCorrectTimes / exerciseSubmitTimes)) {
