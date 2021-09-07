@@ -144,4 +144,4 @@ export default {
   display: inline-block;
   margin-left: 5%;
 }
-</style
+</style>
