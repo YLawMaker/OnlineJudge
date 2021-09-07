@@ -2,7 +2,7 @@
   <div>
     <div class="maintitle">习题答案管理</div>
     <div class="addButton">
-      <el-button type="primary" @click.native.prevent="goBack()">
+      <el-button type="primary" @click.native.prevent="goBack(currentPage)">
         返回
       </el-button>
       <el-button
@@ -129,16 +129,19 @@ export default {
       edittableDataRules: {},
       edittableDataVisible_add: false,
       edittableDataVisible_modify: false,
-      edit: true
+      edit: true,
+      currentPage: 1
     }
   },
   mounted: function () {
     this.edittableData.exerciseId = this.$route.query.exerciseIdfromManage
+    this.currentPage = this.$route.query.page
     this.getExerciseAnswer();//需要触发的函数
   },
   methods: {
-    goBack () {
-      this.$router.push('/components/ExerciseManage')
+    goBack (currentPage) {
+      // console.log(currentPage);
+      this.$router.push({ name: 'ExerciseManage', params: { page: currentPage } })
     },
     addExerciseAnswerDialog () {
       this.edittableDataVisible_add = true
