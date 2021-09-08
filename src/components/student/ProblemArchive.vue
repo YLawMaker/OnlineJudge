@@ -20,7 +20,7 @@
               },
             }"
           >
-            {{ scope.row.exerciseTitle }}
+            {{ scope.row.exerciseTitle}}
           </router-link>
         </template>
       </el-table-column>
@@ -96,6 +96,9 @@ export default {
   
   mounted: function () {
   this.currentPage=this.getContextData("currentPage");
+    if(this.currentPage==null){
+      this.currentPage=1;
+    }
     this.getExercise();
   },
   methods: {
