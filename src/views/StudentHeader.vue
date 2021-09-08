@@ -12,25 +12,27 @@
       >
         <el-submenu index="1">
           <template slot="title">Online Judge</template>
-          <el-menu-item index="1-1">F.A.Q</el-menu-item>
+          <el-menu-item index="/faq">F.A.Q</el-menu-item>
           <el-menu-item index="1-2">Hand In Hand</el-menu-item>
           <el-menu-item index="1-3">Online Acmers</el-menu-item>
         </el-submenu>
         <el-submenu index="2">
           <template slot="title">Online Exercise</template>
           <el-menu-item index="/problemArchive">Problem Archive</el-menu-item>
-          <el-menu-item index="/exerciseRealTimeStatus">Realtime Judge Status</el-menu-item>
+          <el-menu-item index="/exerciseRealTimeStatus"
+            >Realtime Judge Status</el-menu-item
+          >
           <el-menu-item index="/userRankList">Authors Ranklist</el-menu-item>
         </el-submenu>
         <el-submenu index="3">
           <template slot="title">Online Teaching</template>
           <el-menu-item index="3-1">Exams</el-menu-item>
         </el-submenu>
-        
+
         <div class="loginbutton">
-          <span style="margin-right:3%">{{studentName}}</span>
-          <el-button plain @click="studentLogin()">登录
-            </el-button></div>
+          <span style="margin-right: 3%">{{ studentName }}</span>
+          <el-button plain @click="studentLogin()">登录 </el-button>
+        </div>
       </el-menu>
     </el-header>
     <el-main>
@@ -41,39 +43,39 @@
 
 <script>
 export default {
-  data(){
-    return{
-      studentName:''
+  data () {
+    return {
+      studentName: ''
     }
   },
   mounted: function () {
-      this.getUserInfo();
-     },
-  methods:{
-    studentLogin(){
+    this.getUserInfo();
+  },
+  methods: {
+    studentLogin () {
       this.$router.push('/studentLogin')
     },
-    getUserInfo(){
-            let params=new URLSearchParams();
-            this.$axios({
-                method: 'post',
-                headers: {
-                            "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                url: '/student/queryStudentInfo',
-                data: params
-            })
-            .then((res)=> {
-                  if(res.data!=0){
-                      this.studentName=res.data.studentName;
-                  }
-            })
-            .catch((err)=> {
-                this.$message.error('查询学生信息失败');
-                
-            })
+    getUserInfo () {
+      let params = new URLSearchParams();
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/student/queryStudentInfo',
+        data: params
+      })
+        .then((res) => {
+          if (res.data != 0) {
+            this.studentName = res.data.studentName;
+          }
+        })
+        .catch((err) => {
+          this.$message.error('查询学生信息失败');
+
+        })
     }
-    
+
 
   }
 }

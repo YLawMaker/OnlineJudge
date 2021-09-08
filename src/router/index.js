@@ -36,6 +36,7 @@ const routes = [
     name: 'OnlineJudge',
     component: () => import('../views/OnlineJudge')
   },
+
   {
     path: '/',
     name: 'StudentHeader',
@@ -81,6 +82,11 @@ const routes = [
         path: '/exerciseRealTimeStatus',
         name: 'ExerciseRealTimeStatus',
         component: () => import('@/components/student/ExerciseRealTimeStatus.vue')
+      },
+      {
+        path: '/faq',
+        name: 'FAQ',
+        component: () => import('@/components/faq')
       },
     ]
   },

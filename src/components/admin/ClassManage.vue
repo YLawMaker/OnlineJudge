@@ -1,11 +1,17 @@
 <template>
   <div>
-    <div>班级管理</div>
-    <div class="addButton">
-      <el-button type="primary" @click.native.prevent="addDialogvisiable()"
-        >创建班级</el-button
-      >
+    <div>
+      <div class="topBar_Class">
+        <el-button
+          class="addButton_Class"
+          size="small"
+          type="primary"
+          @click.native.prevent="addDialogvisiable()"
+          >创建班级</el-button
+        >
+      </div>
     </div>
+
     <el-table :data="classes" style="width: 100%" stripe>
       <el-table-column prop="classesId" label="ID" width="180">
       </el-table-column>
@@ -91,7 +97,7 @@ export default {
       addRules: {
         classesName: [
           { required: true, message: '请输入班级名称', trigger: 'blur' },
-          { min: 1, max: 8, message: '账号长度为1~8', trigger: 'blur' }]
+          { min: 1, max: 16, message: '长度为1~16', trigger: 'blur' }]
       },
       edittableDataRules: {},
       edittableDataVisible_add: false,
@@ -111,6 +117,8 @@ export default {
     handleClose (done) {
       this.edittableDataVisible_add = false
       this.edittableDataVisible_modify = false
+      this.addClassData = new Object()
+      this.$refs.addClasses.clearValidate();
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -236,3 +244,20 @@ export default {
   }
 }
 </script>
+<style>
+.el-main {
+  display: block;
+  flex: 1;
+  flex-basis: auto;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 0px;
+}
+.addButton_Class {
+  float: right;
+  margin-right: 25px;
+}
+.topBar_Class {
+  margin-top: 10px;
+}
+</style>

@@ -1,11 +1,15 @@
 <template>
   <div>
-    <div class="maintitle">习题答案管理</div>
-    <div class="addButton">
-      <el-button type="primary" @click.native.prevent="goBack(currentPage)">
+    <div class="topBar_answer">
+      <el-button
+        size="small"
+        type="primary"
+        @click.native.prevent="goBack(currentPage, searchKey)"
+      >
         返回
       </el-button>
       <el-button
+        size="small"
         type="primary"
         @click.native.prevent="addExerciseAnswerDialog()"
         >添加答案</el-button
@@ -130,18 +134,21 @@ export default {
       edittableDataVisible_add: false,
       edittableDataVisible_modify: false,
       edit: true,
-      currentPage: 1
+      currentPage: 1,
+      searchKey: ''
     }
   },
   mounted: function () {
     this.edittableData.exerciseId = this.$route.query.exerciseIdfromManage
     this.currentPage = this.$route.query.page
+    this.searchKey = this.$route.query.searchKey
+    // alert(this.searchKey)
     this.getExerciseAnswer();//需要触发的函数
   },
   methods: {
-    goBack (currentPage) {
-      // console.log(currentPage);
-      this.$router.push({ name: 'ExerciseManage', params: { page: currentPage } })
+    goBack (currentPage, searchKey) {
+      // alert(searchKey);
+      this.$router.push({ name: 'ExerciseManage', params: { page: currentPage, key: searchKey } })
     },
     addExerciseAnswerDialog () {
       this.edittableDataVisible_add = true
@@ -292,11 +299,21 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
+.el-main {
+  display: block;
+  flex: 1;
+  flex-basis: auto;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 0px;
+}
 .maintitle {
   text-align: center;
 }
-.addButton {
+.topBar_answer {
   text-align: right;
+  margin-top: 10px;
+  margin-right: 25px;
 }
 </style>

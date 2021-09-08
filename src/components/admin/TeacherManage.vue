@@ -1,17 +1,28 @@
 <template>
   <div>
-    <div>教师管理</div>
-    <div class="addButton">
-      <el-button type="primary" @click.native.prevent="addDialogvisiable()"
-        >添加教师</el-button
-      >
+    <div>
+      <div class="topBar_Teacher">
+        <el-button
+          class="addButton_Teacher"
+          type="primary"
+          size="small"
+          @click.native.prevent="addDialogvisiable()"
+          >添加教师</el-button
+        >
+      </div>
     </div>
+
     <el-table :data="teachers" style="width: 100%" stripe>
       <el-table-column prop="teacherAccount" label="账号" width="180">
       </el-table-column>
       <el-table-column prop="teacherName" label="姓名" width="180">
       </el-table-column>
-      <el-table-column prop="teacherPassword" label="密码" width="180">
+      <el-table-column
+        prop="teacherPassword"
+        label="密码"
+        width="180"
+        :formatter="passwordFormat"
+      >
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -82,7 +93,7 @@
           <el-button type="primary" @click="addTeacher('addTeacher')"
             >添加</el-button
           >
-          <el-button>返回</el-button>
+          <el-button @click="handleClose">返回</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -139,6 +150,8 @@ export default {
     handleClose (done) {
       this.edittableDataVisible_add = false
       this.edittableDataVisible_modify = false
+      this.addTeacherData = new Object()
+      this.$refs.addTeacher.clearValidate();
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -261,7 +274,29 @@ export default {
           this.$message.error('添加失败，请检查输入的内容后后重试');
         }
       })
-    }
+    },
+    passwordFormat: function (row, column) {
+      // var length = row.teacherPassword.length
+
+      return "******";
+    },
   }
 }
   </script>
+  <style>
+.el-main {
+  display: block;
+  flex: 1;
+  flex-basis: auto;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 0px;
+}
+.addButton_Teacher {
+  float: right;
+  margin-right: 25px;
+}
+.topBar_Teacher {
+  margin-top: 10px;
+}
+</style>

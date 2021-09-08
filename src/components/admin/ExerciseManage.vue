@@ -1,20 +1,19 @@
 <template>
   <div>
-    <div class="Bar">
-      <div class="topBar">
+    <div>
+      <div class="topBar_Exercise">
         <el-input
           v-model="select_word"
           size="mini"
           class="search_input"
           placeholder="请输入习题标题"
           style="width: 200px"
+          clearable
         ></el-input>
-        <!-- <button type="primary" @click="Search(1)">搜索</button>
-        <button type="danger" @click="Search(2)">重置</button> -->
         <el-button
           size="small"
           type="primary"
-          class="addButton"
+          class="addButton_Exercise"
           @click="addDialogvisiable()"
           >添加习题</el-button
         >
@@ -41,6 +40,7 @@
               query: {
                 exerciseIdfromManage: scope.row.exerciseId,
                 page: currentPage,
+                searchKey: select_word,
               },
             }"
           >
@@ -116,8 +116,8 @@
         :current-page.sync="currentPage"
         :page-size="pagesize"
         layout="total,prev, pager, next"
-        :total="this.exercise.length"
-        v-if="this.exercise.length != 0"
+        :total="this.searchData.length"
+        v-if="this.searchData.length != 0"
       >
       </el-pagination>
     </div>
@@ -397,14 +397,14 @@ export default {
   },
   mounted: function () {
     if (this.$route.params.page == null) {
-      this.getExercise(this.currentPage);//需要触发的函数
+      this.getExercise(this.currentPage, '');//需要触发的函数
     } else {
-      this.getExercise(parseInt(this.$route.params.page));//需要触发的函数
+      this.getExercise(parseInt(this.$route.params.page), this.$route.params.key);//需要触发的函数
     }
   },
   computed: {
     data () {
-      return this.exercise.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
+      return this.searchData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
     }
 
   },
@@ -417,11 +417,10 @@ export default {
         for (let item of this.exercise) {
           if (item.exerciseTitle.includes(this.select_word)) {
             this.currentPage = 1;
-            this.selectExercise.push(item);
+            this.searchData.push(item);
           }
         }
       }
-
     },
   },
   methods: {
@@ -442,6 +441,8 @@ export default {
       this.edittableDataVisible_add = false
       this.edittableDataVisible_modify = false
       this.edittableDataVisible_info = false
+      this.addexerciseData = new Object();
+      this.$refs.addExercise.clearValidate();
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -456,7 +457,7 @@ export default {
       this.edittableData.exerciseSampleInput = row.exerciseSampleInput
       this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
     },
-    getExercise (pageNum) {
+    getExercise (pageNum, key) {
       const that = this
       this.$axios({
         method: 'post',
@@ -467,7 +468,9 @@ export default {
       }).then(function (resp) {
         that.exercise = resp.data;
         that.exerciseBackup = resp.data;
-        that.currentPage = pageNum
+        that.searchData = resp.data;
+        that.currentPage = pageNum;
+        that.select_word = key
       })
     },
     modifyExerciseInfoDialog () {
@@ -490,15 +493,15 @@ export default {
         if (res.data == true) {
           this.$message.success('习题信息修改成功');
           this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage);
+          this.getExercise(this.currentPage, '');
         } else if (res.data == false) {
           this.$message.error('习题信息修改失败');
           this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage);
+          this.getExercise(this.currentPage, '');
         } else {
           this.$message.error('发生了错误');
           this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage);
+          this.getExercise(this.currentPage, '');
         }
       }).catch((res) => {
         console.log(res);
@@ -534,13 +537,13 @@ export default {
       }).then((res) => {
         if (res.data == true) {
           this.$message.success('习题删除成功');
-          this.getExercise(this.currentPage);
+          this.getExercise(this.currentPage, '');
         } else if (res.data == false) {
           this.$message.error('习题删除失败');
-          this.getExercise(this.currentPage);
+          this.getExercise(this.currentPage, '');
         } else {
           this.$message.error('发生了错误');
-          this.getExercise(this.currentPage);
+          this.getExercise(this.currentPage, '');
         }
       }).catch((res) => {
         console.log(res);
@@ -571,12 +574,12 @@ export default {
               // console.log(res.data);
               this.$message.error('习题添加失败');
               this.edittableDataVisible_add = false;
-              this.getExercise(this.currentPage);
+              this.getExercise(this.currentPage, '');
             } else {
               this.$message.success('习题添加成功');
               this.edittableDataVisible_add = false;
               this.addexerciseData = this.empty
-              this.getExercise(this.currentPage);
+              this.getExercise(this.currentPage, '');
             }
           })
         } else {
@@ -584,30 +587,30 @@ export default {
         }
       })
     },
-    Search (index) {
-      if (index == 1) {
-        var search = this.search;
-        this.exercise = this.exerciseBackup;
-        if (this.search == '') {   //如果没有输入内容，不让往下执行
-          this.getExercise();
-          return
-        }
-        this.searchData = []
-        this.exercise.forEach((item) => {
-          if (item.exerciseTitle.indexOf(this.search) > -1) {
-            this.searchData.push(item)
-          }
-        })
-        this.exercise = this.searchData
-      } else if (index == 2) {
-        this.search = ''
-        this.getExercise()
-      }
-    }
+    // Search (index) {
+    //   if (index == 1) {
+    //     var search = this.search;
+    //     this.exercise = this.exerciseBackup;
+    //     if (this.search == '') {   //如果没有输入内容，不让往下执行
+    //       this.getExercise();
+    //       return
+    //     }
+    //     this.searchData = []
+    //     this.exercise.forEach((item) => {
+    //       if (item.exerciseTitle.indexOf(this.search) > -1) {
+    //         this.searchData.push(item)
+    //       }
+    //     })
+    //     this.exercise = this.searchData
+    //   } else if (index == 2) {
+    //     this.search = ''
+    //     this.getExercise()
+    //   }
+    // }
   }
 }
 </script>
-<style>
+<style >
 .el-tooltip__popper {
   max-width: 50%;
   background: white !important;
@@ -645,11 +648,11 @@ a {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.addButton {
+.addButton_Exercise {
   float: right;
   margin-right: 25px;
 }
-.topBar {
+.topBar_Exercise {
   margin-top: 10px;
 }
 </style>
