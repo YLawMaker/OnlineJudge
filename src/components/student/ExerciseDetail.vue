@@ -9,29 +9,19 @@
           <div class="title">
               Problem Description
           </div>
-          <div class="nei">
-             {{exercise.exerciseDescription}}
-          </div>
+          <div class="nei" style="white-space:pre-wrap;">{{exercise.exerciseDescription}}</div>
           <pre id="editor" style="height:10px"></pre>
           <div class="title">Input</div>
-          <div class="nei">
-             {{exercise.exerciseInput}}
-          </div>
+          <div class="nei" style="white-space: pre-wrap;">{{exercise.exerciseInput}}</div>
           <pre id="editor" style="height:10px"></pre>
           <div class="title">Output</div>
-         <div class="nei">
-             {{exercise.exerciseOutPut}}
-          </div>
+         <div class="nei" style="white-space: pre-wrap;">{{exercise.exerciseOutPut}}</div>
           <pre id="editor" style="height:10px"></pre>
           <div class="title">Sample Input</div>
-         <div class="nei">
-             {{exercise.exerciseSampleInput}}
-          </div>
+         <div class="nei" style="white-space: pre-wrap;">{{exercise.exerciseSampleInput}}</div>
           <pre id="editor" style="height:10px"></pre>
           <div class="title">Sample Output</div>
-           <div class="nei">
-             {{exercise.exerciseSampleOutput}}
-          </div>
+           <div class="nei" style="white-space: pre-wrap;">{{exercise.exerciseSampleOutput}}</div>
         </div>
         
          <div class="foot">
