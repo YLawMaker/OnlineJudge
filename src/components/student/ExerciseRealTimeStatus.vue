@@ -1,20 +1,24 @@
 <template>
   <div>
-
+        <span class="span-label" style="margin-left:5%">习题id</span>
         <el-input
         v-model="select_exerciseId"
         size="mini"
         placeholder="习题id"
         class="handle-input"
+        clearable=""
         >
         </el-input>
+        <span class="span-label">学生姓名</span>
         <el-input
         v-model="select_studentName"
         size="mini"
         placeholder="学生姓名"
         class="handle-input"
+        clearable=""
         >
         </el-input>
+        <span class="span-label">语言</span>
          <el-select v-model="select_language" placeholder="请选择" size="mini" class="handle-select">
             <el-option
             v-for="item in languageOptions"
@@ -23,6 +27,7 @@
             :value="item.value">
             </el-option>
         </el-select>
+          <span class="span-label">结果</span>
          <el-select v-model="select_status" placeholder="请选择" size="mini" class="handle-select">
             <el-option
             v-for="item in statusOptions"
@@ -41,7 +46,20 @@
         </el-table-column>
          <el-table-column prop="exerciseResult" label="提交结果">
         </el-table-column>
-        <el-table-column prop="exercise.exerciseId" label="习题编号">
+        <el-table-column  label="习题编号">
+            <template slot-scope="scope">
+            <router-link
+                style="text-decoration: none; color: black"
+                :to="{
+                path: 'exerciseDetail',
+                query: {
+                    exerciseId: scope.row.exercise.exerciseId,
+                },
+                }"
+            >
+            {{ scope.row.exercise.exerciseId}}
+          </router-link>
+        </template>
         </el-table-column>
         <el-table-column label="代码长度">
            <router-link
@@ -56,7 +74,20 @@
         </el-table-column>
         <el-table-column prop="exerciseSubmitLanguage" label="提交语言">
         </el-table-column>
-        <el-table-column prop="student.studentName" label="提交作者">
+        <el-table-column  label="提交作者">
+            <template slot-scope="scope">
+          <router-link
+            style="text-decoration: none; color: black"
+            :to="{
+              path: 'studentInfo',
+              query: {
+                studentId: scope.row.student.studentId,
+              },
+            }"
+          >
+            {{ scope.row.student.studentName}}
+          </router-link>
+        </template>
         </el-table-column>
     </el-table>
 
@@ -141,28 +172,42 @@ export default {
         }
     },
     mounted: function () {
-        
-        this.setContextData("currentPage",1);
+        //如果本来不存在sessionStorage默认给他设置为1 不然就使用存在的sessionStorage
+        var page=this.getContextData("currentPage");
+        if(page==null){
+            this.setContextData("currentPage",1);
+        }
+    
         this.getExerciseRealTimeInfo();
     },
     methods:{
         searchExerciseRealTimeInfo(){
+            //查询之后返回第一页
             this.setContextData("currentPage",1);
-            this.getExerciseRealTimeInfo();
+            //保存查询信息
             if(this.select_exerciseId!=''){
-                  sessionStorage.setItem(select_exerciseId, this.select_exerciseId);
+                  sessionStorage.setItem("select_exerciseId", this.select_exerciseId);
+            }else{
+                sessionStorage.setItem("select_exerciseId", '');
             }
             if(this.select_studentName!=''){
-                  sessionStorage.setItem(select_studentName, this.select_studentName);
+                  sessionStorage.setItem("select_studentName", this.select_studentName);
+            }else{
+                sessionStorage.setItem("select_studentName", '');
             }
-
-            // if(this.select_language!=''){
-            //     alert(this.select_language)
-            //       sessionStorage.setItem(select_language, this.select_language);
-            // }
+            if(this.select_language!=''){
+                  sessionStorage.setItem("select_language", this.select_language);
+            }else{
+                sessionStorage.setItem("select_language", '');
+                
+            }
             if(this.select_status!=''){
-                  sessionStorage.setItem(select_status, this.select_status);
+                  sessionStorage.setItem("select_status", this.select_status);
+            }else{
+                sessionStorage.setItem("select_status", '');
             }
+            this.getExerciseRealTimeInfo();
+            
         },
         //给sessionStorage存值
         setContextData: function(key, value) { 
@@ -189,6 +234,12 @@ export default {
             this.setContextData("currentPage",this.currentPage);
         },
         getExerciseRealTimeInfo(){
+            //获取查询信息
+            this.select_exerciseId=sessionStorage.getItem("select_exerciseId");
+            this.select_studentName=sessionStorage.getItem("select_studentName");
+            this.select_language=sessionStorage.getItem("select_language");
+            this.select_status=sessionStorage.getItem("select_status");
+          
             let params=new URLSearchParams();
             if(this.select_exerciseId!=''){
                 //不为空格
@@ -241,13 +292,8 @@ export default {
             .then((res)=> {
                   if(res.data!=0){
                     this.exerciseRealTimeInfo=res.data;
-                      
                     this.currentPage=this.getContextData("currentPage");
-                    // this.select_exerciseId=sessionStorage.getItem("select_exerciseId");
-                    // this.select_studentName=sessionStorage.getItem("select_studentName");
-                    // this.select_language=sessionStorage.getItem("select_language");
-                    // this.select_status=sessionStorage.getItem("select_status");
-                      
+                    
                       
                    
                   }else{
@@ -273,14 +319,16 @@ export default {
   display: flex;
   justify-content: center;
 }
+.span-label{
+    margin-left: 2%;
+    margin-right: 1%;
+}
 .handle-input {
   width: 200px;
   display: inline-block;
-  margin-left: 5%;
 }
 .handle-select{
   width: 200px;
   display: inline-block;
-  margin-left: 5%;
 }
 </style>
