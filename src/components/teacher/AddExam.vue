@@ -203,11 +203,14 @@ export default {
         examStartTime: '',
         examEndTime: '',
         teacherId: '',
+        classesName: '',
         classesId: '',
         examType: '',
         examLanguage: ''
       },
-      classesList: [],
+      classesList: [
+
+      ],
       language: [{ value: 'C', label: 'C' }, { value: 'C++', label: 'C++' }, { value: 'Java', label: 'Java' }],
       addExamData: {},
       addRules: {},
@@ -239,6 +242,9 @@ export default {
       this.exam_modify.examStartTime = row.examStartTime
       this.exam_modify.examEndTime = row.examEndTime
       this.exam_modify.examLanguage = row.examLanguage
+      this.exam_modify.classesName = row.classes.classesName
+      this.exam_modify.classesId = row.classes.classesId
+      // alert(this.exam_modify.classesId)
     },
     modifyExamInfo () {
       let params = new URLSearchParams();
@@ -248,6 +254,7 @@ export default {
       params.append('examName', this.exam_modify.examName);
       params.append('classesId', this.exam_modify.classesId);
       params.append('examLanguage', this.exam_modify.examLanguage);
+      // alert(this.exam_modify.classesId)
       // console.log(this.exam_modify);
       this.$axios({
         method: 'post',
