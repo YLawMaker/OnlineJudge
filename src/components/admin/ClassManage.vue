@@ -234,6 +234,7 @@ export default {
               this.$message.success('班级添加成功');
               this.edittableDataVisible_add = false;
               this.getClasses();
+              this.addClassData = new Object()
             }
           })
         } else {
