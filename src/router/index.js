@@ -90,6 +90,21 @@ const routes = [
       },
     ]
   },
+
+  {
+    path: '/examHeader',
+    name: 'ExamHeader',
+    redirect: 'examList',
+    component: () => import('../views/ExamHeader'),
+    children:[
+      {
+        path: '/examList',
+        name: 'ExamList',
+        component: () => import('../components/student/ExamList.vue')
+      }
+    ]
+  },
+
   {
     path: '/AdminBackground',
     name: 'AdminBackground',

@@ -26,7 +26,7 @@
         </el-submenu>
         <el-submenu index="3">
           <template slot="title">Online Teaching</template>
-          <el-menu-item index="3-1">Exams</el-menu-item>
+          <el-menu-item index="/examList">Exams</el-menu-item>
         </el-submenu>
 
         <div class="loginbutton">
