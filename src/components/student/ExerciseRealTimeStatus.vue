@@ -2,6 +2,7 @@
   <div>
         <span class="span-label" style="margin-left:5%">习题id</span>
         <el-input
+        style="margin-left:1%"
         v-model="select_exerciseId"
         size="mini"
         placeholder="习题id"
@@ -11,6 +12,7 @@
         </el-input>
         <span class="span-label">学生姓名</span>
         <el-input
+        style="margin-left:1%"
         v-model="select_studentName"
         size="mini"
         placeholder="学生姓名"
@@ -19,7 +21,7 @@
         >
         </el-input>
         <span class="span-label">语言</span>
-         <el-select v-model="select_language" placeholder="请选择" size="mini" class="handle-select">
+         <el-select v-model="select_language" placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%">
             <el-option
             v-for="item in languageOptions"
             :key="item.value"
@@ -28,7 +30,7 @@
             </el-option>
         </el-select>
           <span class="span-label">结果</span>
-         <el-select v-model="select_status" placeholder="请选择" size="mini" class="handle-select">
+         <el-select v-model="select_status" placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%">
             <el-option
             v-for="item in statusOptions"
             :key="item.value"
@@ -234,12 +236,12 @@ export default {
             this.setContextData("currentPage",this.currentPage);
         },
         getExerciseRealTimeInfo(){
-            //获取查询信息
+            //获取查询信息 第一次进入时没有给session赋值为null赋值之后为空或有值
             this.select_exerciseId=sessionStorage.getItem("select_exerciseId");
             this.select_studentName=sessionStorage.getItem("select_studentName");
             this.select_language=sessionStorage.getItem("select_language");
             this.select_status=sessionStorage.getItem("select_status");
-          
+
             let params=new URLSearchParams();
             if(this.select_exerciseId!=''){
                 //不为空格
@@ -256,8 +258,10 @@ export default {
                 else{
                      params.append("exerciseId",0);
                 }
-            }else{
+            }else if(this.select_exerciseId==null){
                   params.append("exerciseId",0);
+            }else{
+                params.append("exerciseId",0);
             }
             if(this.select_studentName!=''){
                  //不为空格
@@ -267,6 +271,8 @@ export default {
                 else{
                     params.append("studentName",'');
                 }
+            }else if(this.select_studentName==null){
+                params.append("studentName",'');
             }else{
                 params.append("studentName",'');
             }
@@ -293,9 +299,6 @@ export default {
                   if(res.data!=0){
                     this.exerciseRealTimeInfo=res.data;
                     this.currentPage=this.getContextData("currentPage");
-                    
-                      
-                   
                   }else{
                       var t=[]
                       this.exerciseRealTimeInfo=t;
@@ -321,7 +324,7 @@ export default {
 }
 .span-label{
     margin-left: 2%;
-    margin-right: 1%;
+
 }
 .handle-input {
   width: 200px;

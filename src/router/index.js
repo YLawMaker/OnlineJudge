@@ -32,6 +32,11 @@ const routes = [
     ]
   },
   {
+    path: '/examDetail',
+    name: 'ExamDetail',
+    component: () => import('@/components/student/ExamDetail.vue')
+  },
+  {
     path: '/OnlineJudge',
     name: 'OnlineJudge',
     component: () => import('../views/OnlineJudge')
@@ -88,15 +93,6 @@ const routes = [
         name: 'FAQ',
         component: () => import('@/components/faq')
       },
-    ]
-  },
-
-  {
-    path: '/examHeader',
-    name: 'ExamHeader',
-    redirect: 'examList',
-    component: () => import('../views/ExamHeader'),
-    children:[
       {
         path: '/examList',
         name: 'ExamList',
@@ -104,6 +100,8 @@ const routes = [
       }
     ]
   },
+
+ 
 
   {
     path: '/AdminBackground',
