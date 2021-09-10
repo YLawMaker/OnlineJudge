@@ -34,6 +34,16 @@ const routes = [
         name: 'choiceQuestionManage',
         component: () => import('@/components/teacher/choiceQuestionManage.vue')
       },
+      {
+        path: '/programmingManage',
+        name: 'programmingManage',
+        component: () => import('@/components/teacher/programmingManage.vue')
+      },
+      {
+        path: '/programmingAnswerManage',
+        name: 'programmingAnswerManage',
+        component: () => import('@/components/teacher/programmingAnswerManage.vue')
+      },
     ]
   },
   {

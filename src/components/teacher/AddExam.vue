@@ -38,7 +38,7 @@
           >
           <el-button
             type="primary"
-            @click.native.prevent="modifyClasses(scope.row)"
+            @click.native.prevent="programmingManage(scope.row)"
             >编程题</el-button
           >
           <el-button
@@ -424,8 +424,13 @@ export default {
     },
     choiceManage (row) {
       var id = row.examId;
+      // console.log(id);
+      this.$router.push({ name: 'choiceQuestionManage', params: { examId: id } })
+    },
+    programmingManage (row) {
+      var id = row.examId;
       console.log(id);
-      this.$router.push({ path: '/choiceQuestionManage', params: { examId: id } })
+      this.$router.push({ path: '/programmingManage', query: { examId: id } })
     }
   }
 }
