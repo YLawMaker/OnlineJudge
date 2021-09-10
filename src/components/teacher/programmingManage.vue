@@ -1,12 +1,21 @@
 <template>
   <div>
-    <div>
-      编程题管理
-      <div>各种按钮</div>
+    <div class="topBar_answer">
+      <el-button
+        size="small"
+        type="primary"
+        @click.native.prevent="goBack(currentPage, searchKey)"
+      >
+        返回
+      </el-button>
+      <el-button
+        size="small"
+        type="primary"
+        @click.native.prevent="addExerciseAnswerDialog()"
+        >添加编程题</el-button
+      >
     </div>
     <el-table :data="programmingList" style="width: 100%">
-      <el-table-column prop="examProgrammingId" label="编号" width="80">
-      </el-table-column>
       <el-table-column prop="examProgrammingTitle" label="标题" width="180">
         <template slot-scope="scope">
           <router-link
