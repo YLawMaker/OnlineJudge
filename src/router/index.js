@@ -22,12 +22,17 @@ const routes = [
       {
         path: '/addExam',
         name: 'AddExam',
-        component: () => import('@/components/teacher/AddExam.vue')
+        component: () => import('@/components/teacher/AddExam.vue'),
       },
       {
         path: '/teacherInfo',
         name: 'TeacherInfo',
         component: () => import('@/components/teacher/TeacherInfo.vue')
+      },
+      {
+        path: '/choiceQuestionManage',
+        name: 'choiceQuestionManage',
+        component: () => import('@/components/teacher/choiceQuestionManage.vue')
       },
     ]
   },
@@ -101,7 +106,7 @@ const routes = [
     ]
   },
 
- 
+
 
   {
     path: '/AdminBackground',

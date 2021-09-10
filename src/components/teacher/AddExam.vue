@@ -33,7 +33,7 @@
           >
           <el-button
             type="primary"
-            @click.native.prevent="modifyClasses(scope.row)"
+            @click.native.prevent="choiceManage(scope.row)"
             >选择题</el-button
           >
           <el-button
@@ -421,6 +421,11 @@ export default {
       }).catch((res) => {
         console.log(res);
       })
+    },
+    choiceManage (row) {
+      var id = row.examId;
+      console.log(id);
+      this.$router.push({ path: '/choiceQuestionManage', params: { examId: id } })
     }
   }
 }
