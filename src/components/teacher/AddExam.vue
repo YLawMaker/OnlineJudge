@@ -429,7 +429,7 @@ export default {
     },
     programmingManage (row) {
       var id = row.examId;
-      console.log(id);
+      // console.log(id);
       this.$router.push({ path: '/programmingManage', query: { examId: id } })
     }
   }
