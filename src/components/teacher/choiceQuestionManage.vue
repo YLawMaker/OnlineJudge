@@ -1,19 +1,38 @@
 <template>
   <div>
     <div class="topBar_answer">
-      <el-button
-        size="small"
-        type="primary"
-        @click.native.prevent="goBack(currentPage, searchKey)"
-      >
-        返回
-      </el-button>
-      <el-button
+        <el-button
+          size="small"
+          type="primary"
+          @click.native.prevent="goBack(currentPage, searchKey)"
+        >
+          返回
+        </el-button>
+        <el-button
         size="small"
         type="primary"
         @click="handleAdd()"
         >添加选择题</el-button
-      >
+        >
+        <el-input
+        v-model="select_word"
+        size="mini"
+        placeholder="选择题标题"
+        class="handle-input"
+        > 
+        </el-input>
+      <el-button
+        style="float:right;margin-right:20%"
+        size="small"
+        type="primary"
+        @click="uploadExcel()"
+        >下载模板</el-button
+        >
+
+        <el-upload :action="upload()" :before-upload="beforeUpLoad" :on-success="successUpload" :show-file-list="false"  style="float:right;margin-right:2%">
+              <el-button size="small" type="primary">导入Excel表格</el-button>
+        </el-upload>
+
     </div>
 
     <el-table :data="data" style="width: 90%" class="tableclass" stripe>
@@ -48,9 +67,9 @@
         layout="total,prev,pager,next"
         :current-page="currentPage"
         :page-size="pageSize"
-        :total="choiceQuestionInfo.length"
+        :total="selectChoiceQuestionInfo.length"
         @current-change="handleCurrent"
-        v-if="choiceQuestionInfo.length!=0"
+        v-if="selectChoiceQuestionInfo.length!=0"
       >
       </el-pagination>
     </div>
@@ -166,6 +185,7 @@ export default {
     return{
         examId:'',
         choiceQuestionInfo:[],
+        selectChoiceQuestionInfo:[],
         choiceQuestion:{
           examChoiceQuestionId:'',
           examChoiceQuestionTitle:'',
@@ -219,21 +239,40 @@ export default {
         delectChoiceQuestionVisible:false,
         editChoiceQuestionVisible:false,
         pageSize: 10,
-        currentPage: 1
+        currentPage: 1,
+        select_word: '',
     } 
   },
   mounted: function(){
       this.examId=this.$route.query.examId;
       this.getChoiceQuestionInfo();
-    
+  },
+  watch: {
+    select_word: function () {
+      if (this.select_word == '') {
+        this.selectChoiceQuestionInfo = this.choiceQuestionInfo;
+      } else {
+        this.selectChoiceQuestionInfo = [];
+        for (let item of this.choiceQuestionInfo) {
+          if (item.examChoiceQuestionTitle.includes(this.select_word)) {
+            this.currentPage = 1;
+            this.selectChoiceQuestionInfo.push(item);
+          }
+        }
+      }
+    }
   },
   computed: {
     data () {
-      return this.choiceQuestionInfo.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
+      return this.selectChoiceQuestionInfo.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
     }
   },
   
   methods:{
+    //下载文件
+    uploadExcel(){
+      window.location.href = 'https://github.com/YLawMaker/OnlineJudge/releases/download/Excle/formwork.xlsx'; 
+    },
     //添加选择题
     addChoiceQuestion(choiceQuestion){
        this.$refs[choiceQuestion].validate((valid) => {  //开启校验 不管标题和分数是否通过都要判断表单里的数据
@@ -428,6 +467,7 @@ export default {
       })
         .then((res) => {
           this.choiceQuestionInfo=res.data;
+          this.selectChoiceQuestionInfo=res.data;
         })
         .catch((err) => {
           this.$message.error('查询选择题信息失败');
@@ -438,9 +478,7 @@ export default {
     handleCurrent (val) {
     this.currentPage = val;
     },
-    goBack (currentPage, searchKey) {
-      
-    },
+   goBack () { this.$router.push({ name: 'AddExam' }) },
     //控制修改弹出框
     handleEdit(row){
       this.choiceQuestion=row;
@@ -479,7 +517,30 @@ export default {
       this.choice[3].input='';
       this.radio='';
       this.addChoiceQuestionVisible=true;
-    }
+    },
+    //导入excel
+    upload(){
+           return "http://localhost:8888/upload/excel?examId="+this.examId;
+        },
+        beforeUpLoad(file){
+            const isExcel=(file.type==="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            if(!isExcel){
+                this.$message.error('上传文件要为.xlsx格式');
+                return false;
+            }
+            
+            return true;
+        },
+        successUpload(res){
+            if(res==1){
+              this.$message.error('上传失败，表格行中存在空值');
+            }else if(res==2){
+              this.$message.error('上传失败，格式错误，请下载模板再填写数据并导入');
+            }else if(res==3){
+               this.$message.success('上传成功');
+               this.getChoiceQuestionInfo();
+            }
+        },
   }
 }
 </script>
@@ -510,5 +571,10 @@ export default {
 .pagination {
   display: flex;
   justify-content: center;
+}
+.handle-input {
+  width: 300px;
+  display: inline-block;
+  margin-left: 5%;
 }
 </style>
