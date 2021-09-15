@@ -244,35 +244,41 @@ export default {
 
             let params=new URLSearchParams();
             if(this.select_exerciseId!=''){
-                //不为空格
-                if(this.select_exerciseId.length > 0 && this.select_exerciseId.trim().length != 0){
-                    var numReg = /^[0-9]+$/
-                    var numRe = new RegExp(numReg)
-                    if(numRe.test(this.select_exerciseId)){
-                        params.append("exerciseId",this.select_exerciseId);
+                if(this.select_exerciseId==null){
+                  params.append("exerciseId",0);
+                }else{
+                     //不为空格 不为null
+                    if(this.select_exerciseId.length > 0 && this.select_exerciseId.trim().length != 0){
+                        var numReg = /^[0-9]+$/
+                        var numRe = new RegExp(numReg)
+                        if(numRe.test(this.select_exerciseId)){
+                            params.append("exerciseId",this.select_exerciseId);
+                        }
+                        else{
+                        params.append("exerciseId",0);
+                        }
                     }
                     else{
-                       params.append("exerciseId",0);
+                        params.append("exerciseId",0);
                     }
                 }
-                else{
-                     params.append("exerciseId",0);
-                }
-            }else if(this.select_exerciseId==null){
-                  params.append("exerciseId",0);
+                
             }else{
                 params.append("exerciseId",0);
             }
             if(this.select_studentName!=''){
-                 //不为空格
-                if(this.select_studentName.length > 0 && this.select_studentName.trim().length != 0){
-                    params.append("studentName",this.select_studentName);
-                }
-                else{
-                    params.append("studentName",'');
-                }
-            }else if(this.select_studentName==null){
+                 //不为空格  不为null
+                if(this.select_studentName==null){
                 params.append("studentName",'');
+                }else{
+                    if(this.select_studentName.length > 0 && this.select_studentName.trim().length != 0){
+                        params.append("studentName",this.select_studentName);
+                    }
+                    else{
+                        params.append("studentName",'');
+                    }
+                }
+               
             }else{
                 params.append("studentName",'');
             }
@@ -286,7 +292,6 @@ export default {
             }else{
                 params.append("exerciseResult",this.select_status);
             }
-           
             this.$axios({
                 method: 'post',
                 headers: {

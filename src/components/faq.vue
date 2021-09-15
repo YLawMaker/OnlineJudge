@@ -12,5 +12,25 @@
     <br />
     <hr size="0" color="#000000" />
     <br />
+
+  
+
+
+
+
   </div>
 </template>
+
+
+<script>
+export default {
+  data(){
+    return{
+
+    }
+  },
+  methods:{
+       
+  }
+}
+</script>

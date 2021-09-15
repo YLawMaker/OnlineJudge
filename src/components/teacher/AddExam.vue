@@ -472,7 +472,7 @@ export default {
     choiceManage (row) {
       var id = row.examId;
       // console.log(id);
-      this.$router.push({ name: 'choiceQuestionManage', params: { examId: id } })
+      this.$router.push({ path: '/choiceQuestionManage', query: { examId: id } })
     },
     programmingManage (row) {
       var id = row.examId;
