@@ -56,8 +56,8 @@ export default {
                     studentId:'',
                     studentName:'',
                     studentProfile:'',
-                    studnetSolved:'',
-                    studnetSubmit:'',
+                    studentSolved:'',
+                    studentSubmit:'',
                 },
             ],
             selectstudentInfo:[],
@@ -101,7 +101,7 @@ export default {
                 headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                             },
-                url: '/student/queryStudnetRankListInfo',
+                url: '/student/queryStudentRankListInfo',
                 data: params
             })
             .then((res)=> {
@@ -109,7 +109,7 @@ export default {
                   this.selectstudentInfo=res.data;
             })
             .catch((err)=> {
-                this.$message.error('系统错误请稍后再尝试');
+                console.log(err)
                 
             })
         },

@@ -193,8 +193,8 @@ export default {
     
                   if(res.data!=0){
                       if(res.data.classes.classesId==classesId){
-                          if(examType!="Running"){
-                              this.$message.warning('不在考试时段或考试已结束');
+                          if(examType=="Pending"){
+                              this.$message.warning('不在考试时段');
                           }else{
                               this.$router.push({path:'/examDetail',query: {"examId":examId}})
                           }

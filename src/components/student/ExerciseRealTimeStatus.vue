@@ -292,7 +292,6 @@ export default {
             }else{
                 params.append("exerciseResult",this.select_status);
             }
-            alert(params);
             this.$axios({
                 method: 'post',
                 headers: {
