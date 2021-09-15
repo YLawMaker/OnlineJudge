@@ -15,6 +15,7 @@
           <el-menu-item index="/faq">F.A.Q</el-menu-item>
           <el-menu-item index="1-2">Hand In Hand</el-menu-item>
           <el-menu-item index="1-3">Online Acmers</el-menu-item>
+          <el-menu-item index="/managerLogin">管理员登陆</el-menu-item>
         </el-submenu>
         <el-submenu index="2">
           <template slot="title">Online Exercise</template>
@@ -30,7 +31,12 @@
         </el-submenu>
 
         <div class="loginbutton">
-          <span style="margin-right: 3%">{{ studentName }}</span>
+          <span
+            style="margin-right: 3%; cursor: pointer"
+            el-dropdown-link
+            @click="gotoStudentInfo()"
+            >{{ studentName }}</span
+          >
           <el-button plain @click="studentLogin()">登录 </el-button>
         </div>
       </el-menu>
@@ -45,7 +51,9 @@
 export default {
   data () {
     return {
-      studentName: ''
+      studentName: '',
+      studentId: '',
+      classesId: ''
     }
   },
   mounted: function () {
@@ -68,15 +76,18 @@ export default {
         .then((res) => {
           if (res.data != 0) {
             this.studentName = res.data.studentName;
+            this.studentId = res.data.studentId;
+            this.classesId = res.data.classesId;
           }
         })
         .catch((err) => {
           this.$message.error('查询学生信息失败');
 
         })
+    },
+    gotoStudentInfo () {
+      this.$router.push({ path: '/studentInfo', query: { studentId: this.studentId } })
     }
-
-
   }
 }
 </script>

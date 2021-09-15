@@ -1,53 +1,27 @@
 <template>
-  <div>
-    <div class="header">
-      <div class="collapse-btn">
-        <i class="el-icon-menu"></i>
-      </div>
-      <div class="logo">教师管理</div>
-      <div class="header-right">
+  <el-container>
+    <el-header
+      ><el-menu
+        :default-active="this.$route.path"
+        router
+        mode="horizontal"
+        menu-trigger="click"
+        :unique-opened="isunique"
+        text-color="#000000"
+        :collapse-transition="iscollapse"
+      >
+        <el-menu-item index="../addExam">考试管理</el-menu-item>
         <div class="teacherName-right" @click="gotoTeacherInfo()">
           <span el-dropdown-link>
             {{ teacherName }}
           </span>
         </div>
-        <el-dropdown class="user-name" trigger="click">
-          <span class="el-dropdown-link">
-            退出
-            <i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="logout">退出</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
-    </div>
-    <div class="sidebar">
-      <el-menu
-        class="sidebar-el-menu"
-        :default-active="onRoutes"
-        :collapse="collapse"
-        background-color="#334256"
-        text-color="#ffffff"
-        active-text-color="#20a0ff"
-        router
-      >
-        <template v-for="item in items">
-          <template>
-            <el-menu-item :index="item.index" :key="item.index">
-              <i :class="item.icon"></i>
-              {{ item.title }}
-            </el-menu-item>
-          </template>
-        </template>
       </el-menu>
-    </div>
-    <div class="contnet-box">
-      <el-main>
-        <router-view></router-view>
-      </el-main>
-    </div>
-  </div>
+    </el-header>
+    <el-main>
+      <router-view></router-view>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -57,6 +31,8 @@ export default {
     return {
       teacherName: '',
       collapse: false,
+      isunique: true,
+      iscollapse: true,
       items: [
         {
           icon: 'el-icon-doucument',
@@ -179,6 +155,7 @@ export default {
 .teacherName-right span {
   font-size: 14px;
   cursor: pointer;
+  margin-top: 20px;
 }
 .teacherName-right {
   float: right;

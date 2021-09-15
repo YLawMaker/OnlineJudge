@@ -12,7 +12,7 @@
       >
     </div>
     <el-table
-      :data="programmingList"
+      :data="data"
       style="width: 100%"
       :row-style="{ height: '20px' }"
       stripe
@@ -100,6 +100,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block">
+      <el-pagination
+        @current-change="handleCurrent"
+        :current-page.sync="currentPage"
+        :page-size="pagesize"
+        layout="total,prev, pager, next"
+        :total="this.programmingList.length"
+      >
+      </el-pagination>
+    </div>
     <el-dialog
       title="添加编程题"
       :visible.sync="edittableDataVisible_add"
@@ -343,7 +353,9 @@ export default {
       examIdFromAddExam: '',
       edittableDataVisible_add: false,
       edittableDataVisible_modify: false,
-      edittableDataVisible_info: false
+      edittableDataVisible_info: false,
+      currentPage: 1,
+      pagesize: 8,
     }
   },
   mounted: function () {
@@ -351,12 +363,21 @@ export default {
     this.examIdFromAddExam = this.$route.query.examId;
     this.getprogramming(this.$route.query.examId);
   },
+  computed: {
+    data () {
+      return this.programmingList.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
+    }
+
+  },
   methods: {
     handleClose (done) {
       this.edittableDataVisible_add = false
       this.edittableDataVisible_modify = false
       this.edittableDataVisible_info = false
       this.addProgrammingData = new Object();
+    },
+    handleCurrent (val) {
+      this.currentPage = val;
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -545,5 +566,11 @@ export default {
 a {
   /* text-decoration: none; */
   color: #606266;
+}
+.block {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

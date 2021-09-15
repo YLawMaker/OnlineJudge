@@ -2,6 +2,14 @@
   <div>
     <div>
       <div class="topBar_Teacher">
+        <el-input
+          v-model="select_word"
+          size="mini"
+          class="search_input"
+          placeholder="请输入考试名称"
+          style="width: 200px"
+          clearable
+        ></el-input>
         <el-button
           class="addButton_Exam"
           type="primary"
@@ -11,7 +19,7 @@
         >
       </div>
     </div>
-    <el-table :data="examList" style="width: 100%" stripe>
+    <el-table :data="data" style="width: 100%" stripe>
       <el-table-column prop="examName" label="考试名称" width="180">
       </el-table-column>
       <el-table-column prop="examStartTime" label="开始时间" width="180">
@@ -49,6 +57,17 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block">
+      <el-pagination
+        @current-change="handleCurrent"
+        :current-page.sync="currentPage"
+        :page-size="pagesize"
+        layout="total,prev, pager, next"
+        :total="this.searchData.length"
+        v-if="this.searchData.length != 0"
+      >
+      </el-pagination>
+    </div>
     <el-dialog
       title="添加考试"
       :visible.sync="edittableDataVisible_add"
@@ -216,7 +235,11 @@ export default {
       addRules: {},
       examList: [],
       edittableDataVisible_add: false,
-      edittableDataVisible_modify: false
+      edittableDataVisible_modify: false,
+      currentPage: 1,
+      pagesize: 7,
+      select_word: "",
+      searchData: []
     }
   },
   mounted: function () {
@@ -224,10 +247,34 @@ export default {
     this.getExamInfo();
     this.setClassesList()
   },
+  computed: {
+    data () {
+      return this.searchData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
+    }
+
+  },
+  watch: {
+    select_word: function () {
+      if (this.select_word == '') {
+        this.searchData = this.examList;
+      } else {
+        this.searchData = [];
+        for (let item of this.examList) {
+          if (item.examName.includes(this.select_word)) {
+            this.currentPage = 1;
+            this.searchData.push(item);
+          }
+        }
+      }
+    },
+  },
   methods: {
     handleClose (done) {
       this.edittableDataVisible_add = false
       this.edittableDataVisible_modify = false
+    },
+    handleCurrent (val) {
+      this.currentPage = val;
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -296,7 +343,8 @@ export default {
           this.classesList = res.data;
         })
         .catch((err) => {
-          this.$message.error('系统错误请稍后再尝试');
+          // this.$message.error('系统错误请稍后再尝试');
+          console.log(err);
 
         })
     },
@@ -311,13 +359,11 @@ export default {
         data: params
       })
         .then((res) => {
-          this.teacher = res.data;
-          // console.log(this.teacher.teacherId);
-          // console.log(this.teacher.teacherName);
+          this.teacher = res.data;;
         })
         .catch((err) => {
-          this.$message.error('系统错误请稍后再尝试');
-
+          // this.$message.error('系统错误请稍后再尝试');
+          this.$router.push({ path: '/managerLogin' })
         })
     },
     getExamInfo () {
@@ -333,15 +379,16 @@ export default {
         data: params
       })
         .then((res) => {
+
           that.examList = res.data;
+          that.searchData = res.data;
           for (var key in res.data) {
             that.exam_modify[key] = res.data[key];
           }
-          // console.log(that.examList);
-          // console.log(that.exam_modify);
         })
         .catch((err) => {
-          this.$message.error('系统错误请稍后再尝试');
+          // this.$message.error('系统错误请稍后再尝试');
+          console.log(err);
         })
     },
     addExam (addExam) {
@@ -437,4 +484,10 @@ export default {
 </script>
 
 <style>
+.block {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 </style>
