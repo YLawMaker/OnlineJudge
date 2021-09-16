@@ -3,6 +3,7 @@
     <el-form
       ref="studentRegister"
       :model="studentInfo"
+      :rules="rules"
       class="studentRegisterForm"
     >
       <el-form-item label="姓名" prop="studentName"
@@ -68,6 +69,28 @@ export default {
       },
       classesList: [
       ],
+      rules: {
+        studentName: [
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+          { min: 2, max: 4, message: '长度在 2 到 4 个字符', trigger: 'blur' }
+        ],
+        studentAccount: [
+          { required: true, message: '请输入账号', trigger: 'blur' },
+          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+        ],
+        studentPassword: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+        ],
+        classesId: [
+          { required: true, message: '请选择班级', trigger: 'change', type: 'number' },
+        ],
+        studentPasswordR: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+        ],
+        studentEmail: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, { pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: '邮箱格式不正确', trigger: 'blur' }]
+      }
     }
   },
   mounted: function () {
