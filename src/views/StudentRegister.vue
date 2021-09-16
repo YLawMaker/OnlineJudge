@@ -71,9 +71,27 @@ export default {
     }
   },
   mounted: function () {
-    this.setClassesList()
+    this.email();
+    this.setClassesList();
   },
   methods: {
+    email(){
+       let params = new URLSearchParams();
+        this.$axios({
+          method: 'post',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          url: '/email/text',
+          data: params
+        })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+
+          })
+    },
     register (studentRegister) {
       this.$refs[studentRegister].validate((valid) => {
         if (valid) {
