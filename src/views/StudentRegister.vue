@@ -91,7 +91,7 @@ export default {
       rules: {
         studentName: [
           { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 1, max: 4, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
         ],
         studentAccount: [
           { required: true, message: '请输入账号', trigger: 'blur' },
@@ -128,6 +128,7 @@ export default {
         if(numRe.test(this.studentInfo.studentEmail)){
           this.$message.success("发送验证码成功");
             let params = new URLSearchParams();
+            params.append('Email', this.studentInfo.studentEmail);
             this.$axios({
               method: 'post',
               headers: {
@@ -148,37 +149,47 @@ export default {
       
     },
     register (studentRegister) {
-
-      
       this.$refs[studentRegister].validate((valid) => {
         if (valid) {
-
           if(this.verificationCode==this.studentInfo.userInputVerificationCode){
                 if(this.studentInfo.studentPassword == this.studentInfo.studentPasswordR) {
                     let params = new URLSearchParams();
                     params.append('studentAccount', this.studentInfo.studentAccount);
-                    params.append('classesId', this.studentInfo.classesId);
-                    params.append('studentPassword', this.studentInfo.studentPassword);
-                    params.append('studentName', this.studentInfo.studentName);
-                    params.append('studentEmail', this.studentInfo.studentEmail);
-                    // console.log(this.studentInfo.studentAccount);
-                    // console.log(this.studentInfo.classesId);
-                    // console.log(this.studentInfo.studentPassword);
-                    // console.log(this.studentInfo.studentName);
-                    // console.log(this.studentInfo.studentEmail);
                     this.$axios({
                       method: 'post',
                       headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                       },
-                      url: '/student/addStudentInfo',
+                      url: '/student/isStudentInfoExist',
                       data: params
                     }).then((res) => {
-                      if (res.data == '0') {
-                        this.$message.error('注册失败');
+                      if (res.data == true) {
+                        this.$message.error('该账号已经注册过');
                       } else {
-                        this.$message.success('注册成功');
-                         this.$router.go(-1);
+                        //账号未注册过
+                        let params = new URLSearchParams();
+                        params.append('studentAccount', this.studentInfo.studentAccount);
+                        params.append('classesId', this.studentInfo.classesId);
+                        params.append('studentPassword', this.studentInfo.studentPassword);
+                        params.append('studentName', this.studentInfo.studentName);
+                        params.append('studentEmail', this.studentInfo.studentEmail);
+                        this.$axios({
+                          method: 'post',
+                          headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                          },
+                          url: '/student/addStudentInfo',
+                          data: params
+                        }).then((res) => {
+                          if (res.data == '0') {
+                            this.$message.error('注册失败');
+                          } else {
+                            this.$message.success('注册成功');
+                            this.$router.go(-1);
+                          }
+                        }).catch((res) => {
+                          console.log(res);
+                        })     
                       }
                     }).catch((res) => {
                       console.log(res);
@@ -189,6 +200,8 @@ export default {
             }else{
                this.$message.error('验证码错误');
             }
+        }else{
+          this.$message.error('输入格式不规范');
         }
       })
    

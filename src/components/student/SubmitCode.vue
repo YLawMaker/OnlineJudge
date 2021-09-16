@@ -2,7 +2,7 @@
   <div>
       <div class="submit">
            <div class="select">
-                <el-select v-model="value" placeholder="请选择" style="width:20%">
+                <el-select v-model.trim="value" placeholder="请选择" style="width:20%">
                         <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -56,7 +56,7 @@ export default {
             })
             .then((res)=> {
                   if(res.data!=0){
-                        if(this.code.length<20){
+                        if(this.code.trim().length<20){
                             this.$message.warning('代码长度过短');
                         }
                         else{

@@ -21,7 +21,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item class="btn">
-        <el-button type="primary" @click="login">登录 </el-button>
+        <el-button type="primary" @click="login('loginForm')">登录 </el-button>
         <el-button @click="register">注册 </el-button>
       </el-form-item>
     </el-form>
@@ -49,52 +49,57 @@ export default {
     }
   },
   methods: {
-    login () {
-      let params = new URLSearchParams();
-      params.append('studentAccount', this.student.studentAccount);
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/student/isStudentInfoExist',
-        data: params
-      })
-        .then((res) => {
-          if (res.data == true) {
+    login (loginForm) {
+      this.$refs[loginForm].validate((valid) => {
+         if (valid) {
             let params = new URLSearchParams();
             params.append('studentAccount', this.student.studentAccount);
-            params.append('studentPassword', this.student.studentPassword);
             this.$axios({
               method: 'post',
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
               },
-              url: '/student/isStudentExist',
+              url: '/student/isStudentInfoExist',
               data: params
             })
-              .then((res) => {
-                if (res.data != false) {
-                  this.$message.success('登录成功');
-                  this.$router.go(-1);
+            .then((res) => {
+                if (res.data == true) {
+                  let params = new URLSearchParams();
+                  params.append('studentAccount', this.student.studentAccount);
+                  params.append('studentPassword', this.student.studentPassword);
+                  this.$axios({
+                    method: 'post',
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    url: '/student/isStudentExist',
+                    data: params
+                  })
+                    .then((res) => {
+                      if (res.data != false) {
+                        this.$message.success('登录成功');
+                        this.$router.go(-1);
+                      } else {
+                        this.$message.error('密码错误');
+                      }
+                    })
+                    .catch((err) => {
+                      this.$message.error('查询密码错误');
+
+                    })
                 } else {
-                  this.$message.error('密码错误');
+                  this.$message.error('账号不存在');
                 }
-              })
-              .catch((err) => {
-                this.$message.error('系统错误请稍后再尝试');
+            })
+            .catch((err) => {
+              this.$message.error('查询账号错误');
 
-              })
-          } else {
-            this.$message.error('账号不存在');
-          }
-
-
-        })
-        .catch((err) => {
-          this.$message.error('系统错误请稍后再尝试');
-
-        })
+            })
+         }else{
+            this.$message.error('输入格式不规范');
+         }
+      })
+      
     },
     register () {
       this.$router.push('/studentRegister')
