@@ -42,7 +42,7 @@ export default {
         ],
         userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+          { min: 5, max: 8, message: '长度在 6 到 12个字符', trigger: 'blur' }
         ]
       },
     }

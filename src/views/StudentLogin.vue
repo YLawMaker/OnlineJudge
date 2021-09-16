@@ -6,6 +6,7 @@
       :rules="loginRules"
       class="loginForm"
     >
+    <h2>用户登录</h2>
       <el-form-item prop="studentAccount">
         <el-input
           v-model="student.studentAccount"
@@ -38,11 +39,11 @@ export default {
       loginRules: {
         studentAccount: [
           { required: true, message: '请输入账号', trigger: 'blur' },
-          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+          { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ],
         studentPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+          { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ]
       },
     }
@@ -114,8 +115,8 @@ export default {
   width: 350px;
   height: 280px;
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 40%;
+  left: 48%;
   transform: translate(-50%, -50%);
   border-radius: 5px;
 }

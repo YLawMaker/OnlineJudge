@@ -25,13 +25,13 @@
         </el-table-column>
        <el-table-column prop="studentProfile" label="个人简介"  >
         </el-table-column>
-        <el-table-column prop="studnetSolved" label="解决数"  >
+        <el-table-column prop="studentSolved" label="解决数"  >
         </el-table-column>
-        <el-table-column prop="studnetSubmit" label="提交数"  >  
+        <el-table-column prop="studentSubmit" label="提交数"  >  
         </el-table-column>
          <el-table-column  label="成功率"  align="center" >
             <template slot-scope="scope">
-                {{getAcceptRate(scope.row.studnetSolved,scope.row.studnetSubmit)}}
+                {{getAcceptRate(scope.row.studentSolved,scope.row.studentSubmit)}}
             </template> 
         </el-table-column>
      </el-table>
@@ -105,6 +105,7 @@ export default {
                 data: params
             })
             .then((res)=> {
+                console.log(res)
                   this.studentInfo=res.data;
                   this.selectstudentInfo=res.data;
             })

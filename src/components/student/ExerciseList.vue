@@ -68,7 +68,7 @@ export default {
       ],
       selectExercise: [],
       select_word: '',
-      pageSize: 4,
+      pageSize: 10,
       currentPage: 1
 
     }
