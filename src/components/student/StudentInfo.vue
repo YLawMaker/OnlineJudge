@@ -1,7 +1,11 @@
 <template>
   <div>
     <p style="text-align: center">{{ student.studentName }}</p>
-    <p style="text-align: center">{{ student.studentProfile }}</p>
+    <p style="text-align: center">
+      {{ student.studentProfile }}<el-button>修改</el-button>
+    </p>
+    <p style="text-align: center"><el-button>修改密码</el-button></p>
+
     <h2 style="text-align: center">未解决问题</h2>
 
     <el-link
@@ -29,6 +33,7 @@ export default {
         studnetSubmit: '',
       },
       exerciseInfo: [],
+      edittableDataVisible_add: true
     }
   },
   mounted: function () {

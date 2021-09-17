@@ -562,6 +562,7 @@ export default {
           params.append('exerciseOutPut', this.addexerciseData.exerciseOutPut);
           params.append('exerciseSampleInput', this.addexerciseData.exerciseSampleInput);
           params.append('exerciseSampleOutput', this.addexerciseData.exerciseSampleOuput);
+          // console.log(this.addexerciseData.exerciseCorrectTimes);
           this.$axios({
             method: 'post',
             headers: {
