@@ -118,7 +118,7 @@ export default {
       this.edittableDataVisible_add = false
       this.edittableDataVisible_modify = false
       this.addClassData = new Object()
-      this.$refs.addClasses.clearValidate();
+      // this.$refs.addClasses.clearValidate();
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -155,7 +155,7 @@ export default {
           this.edittableDataVisible_modify = false;
           this.getClasses();
         } else if (res.data == false) {
-          this.$message.error('教师信息修改失败');
+          this.$message.error('班级信息修改失败');
           this.edittableDataVisible_modify = false;
           this.getClasses();
         } else {

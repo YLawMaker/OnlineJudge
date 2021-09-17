@@ -5,7 +5,7 @@
         :default-active="this.$route.path"
         router
         mode="horizontal"
-        menu-trigger="click"
+        menu-trigger="click.stop"
         :unique-opened="true"
         text-color="#000000"
         :collapse-transition="true"

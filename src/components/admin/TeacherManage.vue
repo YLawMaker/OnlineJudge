@@ -44,11 +44,7 @@
       :visible.sync="edittableDataVisible_modify"
       :before-close="handleClose"
     >
-      <el-form
-        :model="edittableData"
-        :rules="edittableDataRules"
-        ref="edittableData"
-      >
+      <el-form :model="edittableData" ref="edittableData">
         <el-form-item label="账号" prop="teacherAccount">
           <el-input
             v-model="edittableData.teacherAccount"
@@ -125,7 +121,15 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
         ],
+        teacherPassword: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+        ],
         name: [
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+          { min: 2, max: 4, message: '长度在 2 到 4 个字符', trigger: 'blur' }
+        ],
+        teacherName: [
           { required: true, message: '请输入姓名', trigger: 'blur' },
           { min: 2, max: 4, message: '长度在 2 到 4 个字符', trigger: 'blur' }
         ],
@@ -141,6 +145,7 @@ export default {
   },
   methods: {
     modifyTeacher (row) {
+      // console.log(row.teacherId);
       this.edittableDataVisible_modify = true
       this.edittableData.teacherAccount = row.teacherAccount
       this.edittableData.teacherName = row.teacherName
@@ -151,7 +156,7 @@ export default {
       this.edittableDataVisible_add = false
       this.edittableDataVisible_modify = false
       this.addTeacherData = new Object()
-      this.$refs.addTeacher.clearValidate();
+      // this.$refs.addTeacherData.clearValidate();
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -172,9 +177,12 @@ export default {
     modifyTeacherInfoDialog () {
       let params = new URLSearchParams();
       params.append('teacherId', this.edittableData.teacherId);
-      params.append('teacherAccount', this.edittableData.teacherAccount);
+      // params.append('teacherAccount', this.edittableData.teacherAccount);
       params.append('teacherName', this.edittableData.teacherName);
       params.append('teacherPassword', this.edittableData.teacherPassword);
+      // console.log(this.edittableData.teacherId);
+      // console.log(this.edittableData.teacherName);
+      // console.log(this.edittableData.teacherPassword);
       this.$axios({
         method: 'post',
         headers: {
@@ -192,7 +200,7 @@ export default {
           this.edittableDataVisible_modify = false;
           this.getTeachers();
         } else {
-          this.$message.error('发生了错误');
+          this.$message.error('输入信息不合法，请检查输入的内容后后重试');
           this.edittableDataVisible_modify = false;
           this.getTeachers();
         }
@@ -260,18 +268,19 @@ export default {
             data: params
           }).then((res) => {
             if (res.data == '0') {
-              console.log(res.data);
+              // console.log(res.data);
               this.$message.error('教师添加失败');
               this.edittableDataVisible_add = false;
               this.getTeachers();
             } else {
               this.$message.success('教师添加成功');
               this.edittableDataVisible_add = false;
+              this.addTeacherData = new Object()
               this.getTeachers();
             }
           })
         } else {
-          this.$message.error('添加失败，请检查输入的内容后后重试');
+          this.$message.error('输入信息不合法，请检查输入的内容后后重试');
         }
       })
     },
