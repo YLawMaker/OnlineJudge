@@ -6,6 +6,7 @@
       :rules="loginRules"
       class="loginForm"
     >
+    <h2>用户登录</h2>
       <el-form-item prop="studentAccount">
         <el-input
           v-model="student.studentAccount"
@@ -20,7 +21,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item class="btn">
-        <el-button type="primary" @click="login">登录 </el-button>
+        <el-button type="primary" @click="login('loginForm')">登录 </el-button>
         <el-button @click="register">注册 </el-button>
       </el-form-item>
     </el-form>
@@ -38,62 +39,67 @@ export default {
       loginRules: {
         studentAccount: [
           { required: true, message: '请输入账号', trigger: 'blur' },
-          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+          { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ],
         studentPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+          { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ]
       },
     }
   },
   methods: {
-    login () {
-      let params = new URLSearchParams();
-      params.append('studentAccount', this.student.studentAccount);
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/student/isStudentInfoExist',
-        data: params
-      })
-        .then((res) => {
-          if (res.data == true) {
+    login (loginForm) {
+      this.$refs[loginForm].validate((valid) => {
+         if (valid) {
             let params = new URLSearchParams();
             params.append('studentAccount', this.student.studentAccount);
-            params.append('studentPassword', this.student.studentPassword);
             this.$axios({
               method: 'post',
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
               },
-              url: '/student/isStudentExist',
+              url: '/student/isStudentInfoExist',
               data: params
             })
-              .then((res) => {
-                if (res.data != false) {
-                  this.$message.success('登录成功');
-                  this.$router.go(-1);
+            .then((res) => {
+                if (res.data == true) {
+                  let params = new URLSearchParams();
+                  params.append('studentAccount', this.student.studentAccount);
+                  params.append('studentPassword', this.student.studentPassword);
+                  this.$axios({
+                    method: 'post',
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    url: '/student/isStudentExist',
+                    data: params
+                  })
+                    .then((res) => {
+                      if (res.data != false) {
+                        this.$message.success('登录成功');
+                        this.$router.go(-1);
+                      } else {
+                        this.$message.error('密码错误');
+                      }
+                    })
+                    .catch((err) => {
+                      this.$message.error('查询密码错误');
+
+                    })
                 } else {
-                  this.$message.error('密码错误');
+                  this.$message.error('账号不存在');
                 }
-              })
-              .catch((err) => {
-                this.$message.error('系统错误请稍后再尝试');
+            })
+            .catch((err) => {
+              this.$message.error('查询账号错误');
 
-              })
-          } else {
-            this.$message.error('账号不存在');
-          }
-
-
-        })
-        .catch((err) => {
-          this.$message.error('系统错误请稍后再尝试');
-
-        })
+            })
+         }else{
+            this.$message.error('输入格式不规范');
+         }
+      })
+      
     },
     register () {
       this.$router.push('/studentRegister')
@@ -114,8 +120,8 @@ export default {
   width: 350px;
   height: 280px;
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 40%;
+  left: 48%;
   transform: translate(-50%, -50%);
   border-radius: 5px;
 }

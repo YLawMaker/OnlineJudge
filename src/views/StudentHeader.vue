@@ -19,11 +19,11 @@
         </el-submenu>
         <el-submenu index="2">
           <template slot="title">Online Exercise</template>
-          <el-menu-item index="/problemArchive">Problem Archive</el-menu-item>
+          <el-menu-item index="/exerciseList">ExerciseList</el-menu-item>
           <el-menu-item index="/exerciseRealTimeStatus"
             >Realtime Judge Status</el-menu-item
           >
-          <el-menu-item index="/userRankList">Authors Ranklist</el-menu-item>
+          <el-menu-item index="/studentRankList">StudentRankList</el-menu-item>
         </el-submenu>
         <el-submenu index="3">
           <template slot="title">Online Teaching</template>

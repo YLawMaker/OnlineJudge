@@ -68,7 +68,7 @@ export default {
       ],
       selectExercise: [],
       select_word: '',
-      pageSize: 4,
+      pageSize: 10,
       currentPage: 1
 
     }
@@ -95,6 +95,7 @@ export default {
   },
   
   mounted: function () {
+     this.$message.error('读取代码失败');
   this.currentPage=this.getContextData("currentPage");
     if(this.currentPage==null){
       this.currentPage=1;
@@ -150,7 +151,7 @@ export default {
           this.exercise = res.data;
         })
         .catch((err) => {
-          this.$message.error('系统错误请稍后再尝试');
+          this.$message.error('习题列表加载失败');
 
         })
     },

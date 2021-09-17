@@ -24,12 +24,17 @@ const routes = [
     name: 'ExamRankList',
     component: () => import('@/components/student/ExamRankList.vue')
   },
+
+
+
+
   {
     path: '/teacherAside',
     name: 'TeacherAside',
+    redirect: 'addExam',
     component: () => import('../views/TeacherAside.vue'),
     children: [
-      {
+      { 
         path: '/addExam',
         name: 'AddExam',
         component: () => import('@/components/teacher/AddExam.vue'),
@@ -56,6 +61,10 @@ const routes = [
       },
     ]
   },
+
+
+
+
   {
     path: '/examDetail',
     name: 'ExamDetail',
@@ -67,6 +76,8 @@ const routes = [
     component: () => import('../views/OnlineJudge')
   },
 
+
+
   {
     path: '/',
     name: 'StudentHeader',
@@ -74,9 +85,9 @@ const routes = [
     component: () => import('../views/StudentHeader'),
     children: [
       {
-        path: '/problemArchive',
-        name: 'ProblemArchive',
-        component: () => import('@/components/student/ProblemArchive.vue')
+        path: '/exerciseList',
+        name: 'ExerciseList',
+        component: () => import('@/components/student/ExerciseList.vue')
       },
       {
         path: '/userMainInterface',
@@ -89,9 +100,9 @@ const routes = [
         component: () => import('@/components/student/ExerciseDetail.vue')
       },
       {
-        path: '/userRankList',
-        name: 'UserRankList',
-        component: () => import('@/components/student/UserRankList.vue')
+        path: '/studentRankList',
+        name: 'StudentRankList',
+        component: () => import('@/components/student/StudentRankList.vue')
       },
       {
         path: '/studentInfo',
