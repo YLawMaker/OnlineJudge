@@ -95,7 +95,7 @@ export default {
   },
   
   mounted: function () {
-     this.$message.error('读取代码失败');
+     
   this.currentPage=this.getContextData("currentPage");
     if(this.currentPage==null){
       this.currentPage=1;

@@ -110,7 +110,7 @@ export default {
                   this.selectstudentInfo=res.data;
             })
             .catch((err)=> {
-                console.log(err)
+                this.$message.error('读取学生排行榜失败');
                 
             })
         },

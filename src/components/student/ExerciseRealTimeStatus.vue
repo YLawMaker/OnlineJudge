@@ -64,15 +64,24 @@
         </template>
         </el-table-column>
         <el-table-column label="代码长度">
-           <router-link
-            style="text-decoration: none; color: black"
-            :to="{
-              path: '/submitCode',
-              
-            }"
-          >
+            <template slot-scope="scope">
+            <router-link
+                v-if="scope.row.student.studentId==studentId"
+                style="text-decoration: none; color: blue"
+                :to="{
+                path: '/submitCode',
+                query:{exerciseHistoryId:this.exerciseHistoryId},
+                
+                }"
+            >
             代码
           </router-link>
+          <span
+                v-else     
+            >
+            代码
+          </span>
+          </template>
         </el-table-column>
         <el-table-column prop="exerciseSubmitLanguage" label="提交语言">
         </el-table-column>
@@ -163,6 +172,8 @@ export default {
             select_status: '',
             pageSize: 4,
             currentPage: 1,
+            viewCodeIsVisiable:false,
+            studentId:'',
         }
     },
     
@@ -174,6 +185,8 @@ export default {
         }
     },
     mounted: function () {
+        //获取用户信息
+        this.getUserInfo();
         //如果本来不存在sessionStorage默认给他设置为1 不然就使用存在的sessionStorage
         var page=this.getContextData("currentPage");
         if(page==null){
@@ -183,6 +196,29 @@ export default {
         this.getExerciseRealTimeInfo();
     },
     methods:{
+        //查看用户是否登录 若登录成功则获取studentId
+        getUserInfo(){
+            let params=new URLSearchParams();
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/student/queryStudentInfo',
+                data: params
+            })
+            .then((res)=> {
+                    //等于0表示用户没有登录
+                  if(res.data!=0){
+                      this.studentId=res.data.studentId;
+                      this.viewCodeIsVisiable=true;
+                  }
+            })
+            .catch((err)=> {
+                this.$message.error('查询学生信息失败');
+                
+            })
+        },
         searchExerciseRealTimeInfo(){
             //查询之后返回第一页
             this.setContextData("currentPage",1);
@@ -200,8 +236,7 @@ export default {
             if(this.select_language!=''){
                   sessionStorage.setItem("select_language", this.select_language);
             }else{
-                sessionStorage.setItem("select_language", '');
-                
+                sessionStorage.setItem("select_language", '');     
             }
             if(this.select_status!=''){
                   sessionStorage.setItem("select_status", this.select_status);
@@ -231,17 +266,18 @@ export default {
             }
             return;
             },
+            //页面变换
         handleCurrent (val) {
             this.currentPage = val;
             this.setContextData("currentPage",this.currentPage);
         },
+        //获取习题实时数据
         getExerciseRealTimeInfo(){
             //获取查询信息 第一次进入时没有给session赋值为null赋值之后为空或有值
             this.select_exerciseId=sessionStorage.getItem("select_exerciseId");
             this.select_studentName=sessionStorage.getItem("select_studentName");
             this.select_language=sessionStorage.getItem("select_language");
             this.select_status=sessionStorage.getItem("select_status");
-
             let params=new URLSearchParams();
             if(this.select_exerciseId!=''){
                 if(this.select_exerciseId==null){
@@ -278,7 +314,6 @@ export default {
                         params.append("studentName",'');
                     }
                 }
-               
             }else{
                 params.append("studentName",'');
             }
@@ -292,6 +327,8 @@ export default {
             }else{
                 params.append("exerciseResult",this.select_status);
             }
+
+
             this.$axios({
                 method: 'post',
                 headers: {
@@ -311,7 +348,7 @@ export default {
                   }
             })
             .catch((err)=> {
-                this.$message.error('查询学生信息失败');
+                this.$message.error('读取习题实时状态失败');
                 
             })
         }

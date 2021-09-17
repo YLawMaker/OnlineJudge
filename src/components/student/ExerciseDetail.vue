@@ -98,7 +98,7 @@ export default {
                   console.log(this.exercise);
             })
             .catch((err)=> {
-                this.$message.error('系统错误请稍后再尝试');
+                this.$message.error('习题详情读取失败');
             })
         },
         

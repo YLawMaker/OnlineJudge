@@ -93,7 +93,7 @@ export default {
                 this.exerciseStatisticsInfo=res.data;
         })
         .catch((err)=> {
-            this.$message.error('查询习题统计排行榜失败');
+            this.$message.error('查询习题统计信息失败');
         })
     },
     getResultInfo(){
@@ -112,7 +112,7 @@ export default {
                 this.drawLine();
         })
         .catch((err)=> {
-            this.$message.error('查询习题结果信息');
+            this.$message.error('查询习题结果信息失败');
         })
     }
     }
