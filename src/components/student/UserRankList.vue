@@ -4,7 +4,7 @@
 
         </el-input>
       <el-table :data="data" style="width: 90%" class="tableclass" stripe>
-          <el-table-column  label="名次" prop="studentName">
+          <el-table-column  label="名次" prop="userName">
                 <template slot-scope="scope">
                     {{scope.$index+1}}
                 </template>
@@ -13,25 +13,25 @@
              <template slot-scope="scope">
                        <router-link
                        :to="{  
-                            path: 'studentInfo',     
+                            path: 'userInfo',     
                             query: {   
-                                studentId:scope.row.studentId, 
+                                userId:scope.row.userId, 
                                 },  
                             }" 
                         >
-                        {{scope.row.studentName}}
+                        {{scope.row.userName}}
                         </router-link>
                 </template>
         </el-table-column>
-       <el-table-column prop="studentProfile" label="个人简介"  >
+       <el-table-column prop="userProfile" label="个人简介"  >
         </el-table-column>
-        <el-table-column prop="studentSolved" label="解决数"  >
+        <el-table-column prop="userSolved" label="解决数"  >
         </el-table-column>
-        <el-table-column prop="studentSubmit" label="提交数"  >  
+        <el-table-column prop="userSubmit" label="提交数"  >  
         </el-table-column>
          <el-table-column  label="成功率"  align="center" >
             <template slot-scope="scope">
-                {{getAcceptRate(scope.row.studentSolved,scope.row.studentSubmit)}}
+                {{getAcceptRate(scope.row.userSolved,scope.row.userSubmit)}}
             </template> 
         </el-table-column>
      </el-table>
@@ -40,7 +40,7 @@
             layout="total,prev,pager,next"
             :current-page="currentPage"
             :page-size="pageSize"
-            :total="selectstudentInfo.length"
+            :total="selectUserInfo.length"
             @current-change="handleCurrent">
             </el-pagination>
       </div>
@@ -51,16 +51,16 @@
 export default {
     data(){
         return{
-            studentInfo:[
+            userInfo:[
                 {
-                    studentId:'',
-                    studentName:'',
-                    studentProfile:'',
-                    studentSolved:'',
-                    studentSubmit:'',
+                    userId:'',
+                    userName:'',
+                    userProfile:'',
+                    userSolved:'',
+                    userSubmit:'',
                 },
             ],
-            selectstudentInfo:[],
+            selectUserInfo:[],
             select_word:'',
             pageSize:4,
             currentPage:1
@@ -68,19 +68,19 @@ export default {
     },
     computed:{
         data(){
-            return this.selectstudentInfo.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize);
+            return this.selectUserInfo.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize);
         }
     },
     watch:{
         select_word:function(){
             if(this.select_word==''){
-                this.selectstudentInfo=this.studentInfo;
+                this.selectUserInfo=this.UserInfo;
             }else{
-                this.selectstudentInfo=[];
-                for(let item of this.studentInfo){
-                    if(item.studentName.includes(this.select_word)){
+                this.selectUserInfo=[];
+                for(let item of this.userInfo){
+                    if(item.userName.includes(this.select_word)){
                         this.currentPage=1;
-                        this.selectstudentInfo.push(item);
+                        this.selectUserInfo.push(item);
                     }
                 }
             }
@@ -88,29 +88,30 @@ export default {
         }
     },
     mounted:function(){
-        this.getStudentInfo();
+        this.getUserInfo();
     },
     methods:{
         handleCurrent(val){
             this.currentPage=val;
         },
-        getStudentInfo(){
+        getUserInfo(){
             let params=new URLSearchParams();
             this.$axios({
                 method: 'post',
                 headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                             },
-                url: '/student/queryStudentRankListInfo',
+                url: '/user/queryUserRankListInfo',
                 data: params
             })
             .then((res)=> {
-                console.log(res)
-                  this.studentInfo=res.data;
-                  this.selectstudentInfo=res.data;
+                
+                  this.userInfo=res.data;
+                  this.selectUserInfo=res.data;
+                      console.log(res.data);
             })
             .catch((err)=> {
-                this.$message.error('读取学生排行榜失败');
+                this.$message.error('读取用户排行榜失败');
                 
             })
         },

@@ -2,21 +2,21 @@
   <div class="login_center">
     <el-form
       ref="loginForm"
-      :model="student"
+      :model="user"
       :rules="loginRules"
       class="loginForm"
     >
     <h2>用户登录</h2>
-      <el-form-item prop="studentAccount">
+      <el-form-item prop="userAccount">
         <el-input
-          v-model="student.studentAccount"
+          v-model="user.userAccount"
           prefix-icon="el-icon-user"
         ></el-input>
       </el-form-item>
-      <el-form-item prop="studentPassword">
+      <el-form-item prop="userPassword">
         <el-input
           type="password"
-          v-model="student.studentPassword"
+          v-model="user.userPassword"
           prefix-icon="el-icon-lock"
         ></el-input>
       </el-form-item>
@@ -32,16 +32,16 @@
 export default {
   data () {
     return {
-      student: {
-        studentAccount: '',
-        studentPassword: ''
+      user: {
+        userAccount: '',
+        userPassword: ''
       },
       loginRules: {
-        studentAccount: [
+        userAccount: [
           { required: true, message: '请输入账号', trigger: 'blur' },
           { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ],
-        studentPassword: [
+        userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ]
@@ -53,26 +53,26 @@ export default {
       this.$refs[loginForm].validate((valid) => {
          if (valid) {
             let params = new URLSearchParams();
-            params.append('studentAccount', this.student.studentAccount);
+            params.append('userAccount', this.user.userAccount);
             this.$axios({
               method: 'post',
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
               },
-              url: '/student/isStudentInfoExist',
+              url: '/user/isUserInfoExist',
               data: params
             })
             .then((res) => {
                 if (res.data == true) {
                   let params = new URLSearchParams();
-                  params.append('studentAccount', this.student.studentAccount);
-                  params.append('studentPassword', this.student.studentPassword);
+                  params.append('userAccount', this.user.userAccount);
+                  params.append('userPassword', this.user.userPassword);
                   this.$axios({
                     method: 'post',
                     headers: {
                       "Content-Type": "application/x-www-form-urlencoded"
                     },
-                    url: '/student/isStudentExist',
+                    url: '/user/isUserExist',
                     data: params
                   })
                     .then((res) => {
@@ -102,7 +102,7 @@ export default {
       
     },
     register () {
-      this.$router.push('/studentRegister')
+      this.$router.push('/userRegister')
     }
   }
 }

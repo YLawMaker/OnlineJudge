@@ -8,14 +8,15 @@
         placeholder="习题id"
         class="handle-input"
         clearable=""
+        @keyup.native="proving"
         >
         </el-input>
-        <span class="span-label">学生姓名</span>
+        <span class="span-label">用户姓名</span>
         <el-input
         style="margin-left:1%"
-        v-model="select_studentName"
+        v-model="select_userName"
         size="mini"
-        placeholder="学生姓名"
+        placeholder="用户姓名"
         class="handle-input"
         clearable=""
         >
@@ -63,17 +64,20 @@
           </router-link>
         </template>
         </el-table-column>
+        
         <el-table-column label="代码长度">
+            
             <template slot-scope="scope">
             <router-link
-                v-if="scope.row.student.studentId==studentId"
+                v-if="scope.row.user.userId===userId"
                 style="text-decoration: none; color: blue"
                 :to="{
                 path: '/submitCode',
-                query:{exerciseHistoryId:this.exerciseHistoryId},
+                query:{exerciseHistoryId:scope.row.exerciseHistoryId},
                 
                 }"
             >
+
             代码
           </router-link>
           <span
@@ -92,11 +96,11 @@
             :to="{
               path: 'studentInfo',
               query: {
-                studentId: scope.row.student.studentId,
+                userId: scope.row.user.userId,
               },
             }"
           >
-            {{ scope.row.student.studentName}}
+            {{ scope.row.user.userName}}
           </router-link>
         </template>
         </el-table-column>
@@ -127,9 +131,9 @@ export default {
                    exerciseResult:'',
                    exerciseSubmitLanguage:'',   
                    exerciseCode:'',
-                   student:{
-                       studentId:'',
-                       studentName:''
+                   user:{
+                       userId:'',
+                       userName:''
                    },
                    exercise:{
                        exerciseId:'',
@@ -167,13 +171,12 @@ export default {
                 },
             ],
             select_exerciseId: '',
-            select_studentName: '',
+            select_userName: '',
             select_language: '',
             select_status: '',
             pageSize: 4,
             currentPage: 1,
-            viewCodeIsVisiable:false,
-            studentId:'',
+            userId:'',
         }
     },
     
@@ -192,11 +195,12 @@ export default {
         if(page==null){
             this.setContextData("currentPage",1);
         }
+        
     
         this.getExerciseRealTimeInfo();
     },
     methods:{
-        //查看用户是否登录 若登录成功则获取studentId
+        //查看用户是否登录 若登录成功则获取userId
         getUserInfo(){
             let params=new URLSearchParams();
             this.$axios({
@@ -204,21 +208,24 @@ export default {
                 headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                             },
-                url: '/student/queryStudentInfo',
+                url: '/user/queryUserInfo',
                 data: params
             })
             .then((res)=> {
-                    //等于0表示用户没有登录
+                    //等于0表示用户没有登录 这里表示登录成功
                   if(res.data!=0){
-                      this.studentId=res.data.studentId;
-                      this.viewCodeIsVisiable=true;
+                      
+                      this.userId=res.data.userId;
+                  } else{
+                       this.userId=0;
                   }
             })
             .catch((err)=> {
-                this.$message.error('查询学生信息失败');
+                this.$message.error('查询用户信息失败');
                 
             })
         },
+        //查询习题实时状态
         searchExerciseRealTimeInfo(){
             //查询之后返回第一页
             this.setContextData("currentPage",1);
@@ -228,10 +235,10 @@ export default {
             }else{
                 sessionStorage.setItem("select_exerciseId", '');
             }
-            if(this.select_studentName!=''){
-                  sessionStorage.setItem("select_studentName", this.select_studentName);
+            if(this.select_userName!=''){
+                  sessionStorage.setItem("select_userName", this.select_userName);
             }else{
-                sessionStorage.setItem("select_studentName", '');
+                sessionStorage.setItem("select_userName", '');
             }
             if(this.select_language!=''){
                   sessionStorage.setItem("select_language", this.select_language);
@@ -273,11 +280,23 @@ export default {
         },
         //获取习题实时数据
         getExerciseRealTimeInfo(){
-            //获取查询信息 第一次进入时没有给session赋值为null赋值之后为空或有值
-            this.select_exerciseId=sessionStorage.getItem("select_exerciseId");
-            this.select_studentName=sessionStorage.getItem("select_studentName");
-            this.select_language=sessionStorage.getItem("select_language");
-            this.select_status=sessionStorage.getItem("select_status");
+            //获取查询信息 第一次进入时没有给session赋值为null赋值之后为空或有值  (不能赋值为null)
+            if(sessionStorage.getItem("select_exerciseId")!=null){
+                this.select_exerciseId=sessionStorage.getItem("select_exerciseId");
+            }
+            if(sessionStorage.getItem("select_userName")!=null){
+              this.select_userName=sessionStorage.getItem("select_userName");
+            }
+            if(sessionStorage.getItem("select_language")!=null){
+                  this.select_language=sessionStorage.getItem("select_language");
+            }
+            if(sessionStorage.getItem("select_status")!=null){
+                this.select_status=sessionStorage.getItem("select_status");
+            }
+        
+            
+          
+           
             let params=new URLSearchParams();
             if(this.select_exerciseId!=''){
                 if(this.select_exerciseId==null){
@@ -302,20 +321,21 @@ export default {
             }else{
                 params.append("exerciseId",0);
             }
-            if(this.select_studentName!=''){
-                 //不为空格  不为null
-                if(this.select_studentName==null){
-                params.append("studentName",'');
+            if(this.select_userName!=''){
+                 
+                if(this.select_userName==null){
+                params.append("userName",'');
+                //不为空格  不为null
                 }else{
-                    if(this.select_studentName.length > 0 && this.select_studentName.trim().length != 0){
-                        params.append("studentName",this.select_studentName);
+                    if(this.select_userName.length > 0 && this.select_userName.trim().length != 0){
+                        params.append("userName",this.select_userName);
                     }
                     else{
-                        params.append("studentName",'');
+                        params.append("userName",'');
                     }
                 }
             }else{
-                params.append("studentName",'');
+                params.append("userName",'');
             }
             if(this.select_language==null){
                 params.append("exerciseSubmitLanguage",'');
@@ -338,8 +358,10 @@ export default {
                 data: params
             })
             .then((res)=> {
+                   
                   if(res.data!=0){
                     this.exerciseRealTimeInfo=res.data;
+                  
                     this.currentPage=this.getContextData("currentPage");
                   }else{
                       var t=[]
@@ -351,7 +373,11 @@ export default {
                 this.$message.error('读取习题实时状态失败');
                 
             })
-        }
+        },
+        // 只能输入数字且只有一位小数
+            proving() {
+　　　　　　　　　 this.select_exerciseId = this.select_exerciseId.replace(/[^\d]/g,"");
+            },
     }
 }
 </script>

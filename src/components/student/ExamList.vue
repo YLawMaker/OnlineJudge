@@ -121,6 +121,7 @@ export default {
         }
   },
     mounted: function () {
+       this.$message.error('读取习题统计信息失败');
         var page=this.getContextData("currentPage");
         if(page==null){
             this.setContextData("currentPage",1);

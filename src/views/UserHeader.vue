@@ -23,7 +23,7 @@
           <el-menu-item index="/exerciseRealTimeStatus"
             >Realtime Judge Status</el-menu-item
           >
-          <el-menu-item index="/studentRankList">StudentRankList</el-menu-item>
+          <el-menu-item index="/userRankList">UserRankList</el-menu-item>
         </el-submenu>
         <el-submenu index="3">
           <template slot="title">Online Teaching</template>
@@ -35,7 +35,7 @@
             style="margin-right: 3%; cursor: pointer"
             el-dropdown-link
             @click="gotoStudentInfo()"
-            >{{ studentName }}</span
+            >{{ userName }}</span
           >
           <el-button plain @click="studentLogin()">登录 </el-button>
         </div>
@@ -51,8 +51,8 @@
 export default {
   data () {
     return {
-      studentName: '',
-      studentId: '',
+      userName: '',
+      userId: '',
       classesId: ''
     }
   },
@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     studentLogin () {
-      this.$router.push('/studentLogin')
+      this.$router.push('/userLogin')
     },
     getUserInfo () {
       let params = new URLSearchParams();
@@ -70,14 +70,13 @@ export default {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/student/queryStudentInfo',
+        url: '/user/queryUserInfo',
         data: params
       })
         .then((res) => {
           if (res.data != 0) {
-            this.studentName = res.data.studentName;
-            this.studentId = res.data.studentId;
-            this.classesId = res.data.classesId;
+            this.userName = res.data.userName;
+            this.userId = res.data.userId;
           }
         })
         .catch((err) => {

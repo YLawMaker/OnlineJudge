@@ -5,14 +5,14 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/studentLogin',
-    name: 'StudentLogin',
-    component: () => import('../views/StudentLogin.vue')
+    path: '/userLogin',
+    name: 'UserLogin',
+    component: () => import('../views/UserLogin.vue')
   },
   {
-    path: '/studentRegister',
-    name: 'StudentRegister',
-    component: () => import('../views/StudentRegister.vue')
+    path: '/userRegister',
+    name: 'UserRegister',
+    component: () => import('../views/UserRegister.vue')
   },
   {
     path: '/managerLogin',
@@ -80,9 +80,9 @@ const routes = [
 
   {
     path: '/',
-    name: 'StudentHeader',
+    name: 'UserHeader',
     redirect: 'userMainInterface',
-    component: () => import('../views/StudentHeader'),
+    component: () => import('../views/UserHeader'),
     children: [
       {
         path: '/exerciseList',
@@ -100,9 +100,9 @@ const routes = [
         component: () => import('@/components/student/ExerciseDetail.vue')
       },
       {
-        path: '/studentRankList',
-        name: 'StudentRankList',
-        component: () => import('@/components/student/StudentRankList.vue')
+        path: '/userRankList',
+        name: 'UserRankList',
+        component: () => import('@/components/student/UserRankList.vue')
       },
       {
         path: '/studentInfo',
