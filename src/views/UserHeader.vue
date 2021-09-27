@@ -27,17 +27,17 @@
         </el-submenu>
         <el-submenu index="3">
           <template slot="title">Online Teaching</template>
-          <el-menu-item index="/examList">Exams</el-menu-item>
+          <el-menu-item @click="goToExamList()">Exams</el-menu-item>
         </el-submenu>
 
         <div class="loginbutton">
           <span
             style="margin-right: 3%; cursor: pointer"
             el-dropdown-link
-            @click="gotoStudentInfo()"
+            @click="gotoUserInfo()"
             >{{ userName }}</span
           >
-          <el-button plain @click="studentLogin()">登录 </el-button>
+          <el-button plain @click="userLogin()">登录 </el-button>
         </div>
       </el-menu>
     </el-header>
@@ -60,10 +60,21 @@ export default {
     this.getUserInfo();
   },
   methods: {
-    studentLogin () {
+    //跳转到考试列表界面
+    goToExamList(){
+      if(this.userId==""){
+          this.$message.error("请先登录用户");
+          this.$router.push('/userLogin')
+      }else{
+          this.$router.push({ path: '/examList', query: { userId: this.userId } });
+      }
+    },
+    //跳转到用户登录界面
+    userLogin(){
       this.$router.push('/userLogin')
     },
-    getUserInfo () {
+    //获取用户信息
+    getUserInfo() {
       let params = new URLSearchParams();
       this.$axios({
         method: 'post',
@@ -84,9 +95,11 @@ export default {
 
         })
     },
-    gotoStudentInfo () {
-      this.$router.push({ path: '/studentInfo', query: { studentId: this.studentId } })
-    }
+    //跳转到用户信息界面
+    gotoUserInfo () {
+      this.$router.push({ path: '/userInfo', query: { userId: this.userId } })
+    },
+
   }
 }
 </script>

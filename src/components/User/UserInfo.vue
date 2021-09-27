@@ -1,8 +1,8 @@
 <template>
   <div>
-    <p style="text-align: center">{{ student.studentName }}</p>
+    <p style="text-align: center">{{ user.userName }}</p>
     <p style="text-align: center">
-      {{ student.studentProfile }}<el-button>修改</el-button>
+      {{ user.userProfile }}<el-button>修改</el-button>
     </p>
     <p style="text-align: center"><el-button>修改密码</el-button></p>
 
@@ -25,24 +25,25 @@
 export default {
   data () {
     return {
-      student: {
-        studentId: '',
-        studentName: '',
-        studentProfile: '',
-        studnetSolved: '',
-        studnetSubmit: '',
+      user: {
+        userId: '',
+        userName: '',
+        userProfile: '',
+        userSolved: '',
+        userSubmit: '',
       },
       exerciseInfo: [],
       edittableDataVisible_add: true
     }
   },
   mounted: function () {
-    this.student.studentId = this.$route.query.studentId
+    this.user.userId = this.$route.query.userId
 
-    this.getStudentInfo();
-    this.getStudentExerciseInfo();
+    this.getUserInfo();
+    this.getUserExerciseInfo();
   },
   methods: {
+    //跳转至习题详情界面
     gotoExerciseDetail (item) {
       this.$router.push({
         path: '/exerciseDetail',
@@ -51,34 +52,36 @@ export default {
         }
       });
     },
-    getStudentInfo () {
+    //获取用户信息
+    getUserInfo () {
       let params = new URLSearchParams();
-      params.append('studentId', this.student.studentId);
+      params.append('userId', this.user.userId);
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/student/queryStudentInfoById',
+        url: '/user/queryUserInfoById',
         data: params
       })
         .then((res) => {
-          this.student = res.data;
+          this.user = res.data;
         })
         .catch((err) => {
-          this.$message.error('系统错误请稍后再尝试');
+          this.$message.error('查询用户信息失败');
 
         })
     },
-    getStudentExerciseInfo () {
+    //获取用户系统信息
+    getUserExerciseInfo () {
       let params = new URLSearchParams();
-      params.append('studentId', this.student.studentId);
+      params.append('userId', this.user.userId);
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/exerciseHistory/queryExerciseIdByStudentId',
+        url: '/exerciseHistory/queryExerciseIdByUserId',
         data: params
       })
         .then((res) => {
@@ -86,7 +89,7 @@ export default {
 
         })
         .catch((err) => {
-          this.$message.error('系统错误请稍后再尝试');
+          this.$message.error('查询用户习题信息失败');
 
         })
     }

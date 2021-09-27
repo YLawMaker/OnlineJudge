@@ -36,14 +36,24 @@ export default {
                     value: 'java',
                     label: 'java'
                 }],
-            value:'c'
+            value:'c',
+            exerciseHistoryId:'',
         }    
     },
     mounted: function () {
       this.exercise.exerciseId = this.$route.query.exerciseId;
-  
+      this.exerciseHistoryId = this.$route.query.exerciseHistoryId;
+      if(this.exerciseHistoryId==""){
+
+      }
+      //有传值过来
+      else{
+            this.getCodeInfo();
+      }
+      
     },
     methods:{
+        //提交代码
         submitCode(){
             let params=new URLSearchParams();
             this.$axios({
@@ -51,7 +61,7 @@ export default {
                 headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                             },
-                url: '/student/queryStudentInfo',
+                url: '/user/queryUserInfo',
                 data: params
             })
             .then((res)=> {
@@ -66,7 +76,6 @@ export default {
                         　　let hh = new Date().getHours()<10?'0'+new Date().getHours():new Date().getHours();
                         　　let mf = new Date().getMinutes()<10 ? '0'+new Date().getMinutes() : new Date().getMinutes();
                         　　var time = yy+'-'+mm+'-'+dd+' '+hh+':'+mf;
-                    
                             let params=new URLSearchParams();
                             params.append('exerciseId',this.exercise.exerciseId);
                             params.append('exerciseSubmitLanguage',this.value);
@@ -93,7 +102,7 @@ export default {
                         
                   }else{
                       this.$message('请先登录');
-                      this.$router.push('/studentLogin');
+                      this.$router.push('/userLogin');
                   }
             })
             .catch((err)=> {
@@ -102,6 +111,29 @@ export default {
             })
            
         },
+        //获得提交的代码信息
+        getCodeInfo(){
+             
+                let params=new URLSearchParams();
+                params.append('exerciseHistoryId',this.exerciseHistoryId);
+            
+                this.$axios({
+                    method: 'post',
+                    headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                    url: '/exerciseHistory/queryCodeInfoByExerciseHistoryId',
+                    data: params
+                })
+                .then((res)=> {
+                    this.code=res.data;
+                })
+                .catch((err)=> {
+                    this.$message.error('查看代码失败');
+                })
+            }
+                        
+                
         
     }
 

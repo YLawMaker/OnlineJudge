@@ -1,12 +1,12 @@
 <template>
   <div>
        <el-table :data="exerciseStatisticsInfo" style="width: 90%" class="tableclass" stripe>
-          <el-table-column  label="名次" prop="studentName">
+          <el-table-column  label="名次" >
                 <template slot-scope="scope">
                     {{scope.$index+1}}
                 </template>
         </el-table-column>
-        <el-table-column prop="student.studentName" label="个人姓名"  >
+        <el-table-column prop="user.userName" label="个人姓名"  >
         </el-table-column>
        <el-table-column prop="exerciseSubmitLanguage" label="语言"  >
         </el-table-column>
@@ -29,8 +29,8 @@ export default {
                 {
                     exerciseSubmitLanguage:'',
                     exerciseSubmitTime:'',
-                    student:{
-                        studentName:'',
+                    user:{
+                        userName:'',
                     },
                 },
             ],

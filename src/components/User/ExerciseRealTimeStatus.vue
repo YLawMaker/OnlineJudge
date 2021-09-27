@@ -73,7 +73,7 @@
                 style="text-decoration: none; color: blue"
                 :to="{
                 path: '/submitCode',
-                query:{exerciseHistoryId:scope.row.exerciseHistoryId},
+                query:{exerciseHistoryId:scope.row.exerciseHistoryId,exerciseId:scope.row.exercise.exerciseId},
                 
                 }"
             >
@@ -94,7 +94,7 @@
           <router-link
             style="text-decoration: none; color: black"
             :to="{
-              path: 'studentInfo',
+              path: 'userInfo',
               query: {
                 userId: scope.row.user.userId,
               },
