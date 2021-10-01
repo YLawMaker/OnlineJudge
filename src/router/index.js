@@ -87,7 +87,7 @@ const routes = [
       {
         path: '/exerciseList',
         name: 'ExerciseList',
-        component: () => import('@/components/User/ExerciseList.vue')
+        component: () => import('@/components/User/ExerciseList.vue'),
       },
       {
         path: '/userMainInterface',

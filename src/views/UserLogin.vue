@@ -34,7 +34,8 @@ export default {
     return {
       user: {
         userAccount: '',
-        userPassword: ''
+        userPassword: '',
+        userIdentity:'',
       },
       loginRules: {
         userAccount: [
@@ -82,8 +83,13 @@ export default {
                   })
                     .then((res) => {
                       if (res.data != false) {
-                        this.$message.success('登录成功');
-                        this.$router.go(-1);
+                        if(res.data.userIdentity=="teacher"){
+                          this.$router.push("/teacherAside")
+                        }else{
+                          this.$message.success('登录成功');
+                          this.$router.go(-1);
+                        }
+                        
                       } else {
                         this.$message.error('密码错误');
                       }

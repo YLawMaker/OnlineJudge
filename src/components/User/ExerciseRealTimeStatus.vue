@@ -106,7 +106,9 @@
         </el-table-column>
     </el-table>
 
-     <div class="pagination">
+   
+
+     <div class="pagination" v-if="pageView">
         <el-pagination
             layout="total,prev,pager,next"
             :current-page="currentPage"
@@ -117,7 +119,10 @@
         >
         </el-pagination>
      </div>
+
+      
   </div>
+ 
 </template>
 
 <script>
@@ -177,6 +182,7 @@ export default {
             pageSize: 4,
             currentPage: 1,
             userId:'',
+            pageView:false,
         }
     },
     
@@ -187,19 +193,38 @@ export default {
 
         }
     },
-    mounted: function () {
+     mounted: function () {
         //获取用户信息
         this.getUserInfo();
-        //如果本来不存在sessionStorage默认给他设置为1 不然就使用存在的sessionStorage
-        var page=this.getContextData("currentPage");
-        if(page==null){
-            this.setContextData("currentPage",1);
+       if(sessionStorage.getItem("isPublish")=="false"){
+            if(sessionStorage.getItem("exerciseRealTimeStatusCurrentPage")!=null){
+                this.currentPage=Number(sessionStorage.getItem("exerciseRealTimeStatusCurrentPage"));
+            }
+            //获取查询信息 从session中读取
+            if(sessionStorage.getItem("select_exerciseId")!=null){
+                this.select_exerciseId=sessionStorage.getItem("select_exerciseId");
+            }
+            if(sessionStorage.getItem("select_userName")!=null){
+                this.select_userName=sessionStorage.getItem("select_userName");
+            }
+            if(sessionStorage.getItem("select_language")!=null){
+                    this.select_language=sessionStorage.getItem("select_language");
+            }
+            if(sessionStorage.getItem("select_status")!=null){
+                this.select_status=sessionStorage.getItem("select_status");
+            } 
+        }else{
+            sessionStorage.setItem("isPublish","false");
         }
+             
         
-    
         this.getExerciseRealTimeInfo();
+       
     },
+    
     methods:{
+        
+        
         //查看用户是否登录 若登录成功则获取userId
         getUserInfo(){
             let params=new URLSearchParams();
@@ -227,8 +252,9 @@ export default {
         },
         //查询习题实时状态
         searchExerciseRealTimeInfo(){
-            //查询之后返回第一页
-            this.setContextData("currentPage",1);
+            //查询之后返回第一页 查询后保存页码为1
+            this.currentPage=1;
+            this.setContextData("exerciseRealTimeStatusCurrentPage",1);
             //保存查询信息
             if(this.select_exerciseId!=''){
                   sessionStorage.setItem("select_exerciseId", this.select_exerciseId);
@@ -276,28 +302,13 @@ export default {
             //页面变换
         handleCurrent (val) {
             this.currentPage = val;
-            this.setContextData("currentPage",this.currentPage);
+            this.setContextData("exerciseRealTimeStatusCurrentPage",val);
         },
         //获取习题实时数据
-        getExerciseRealTimeInfo(){
-            //获取查询信息 第一次进入时没有给session赋值为null赋值之后为空或有值  (不能赋值为null)
-            if(sessionStorage.getItem("select_exerciseId")!=null){
-                this.select_exerciseId=sessionStorage.getItem("select_exerciseId");
-            }
-            if(sessionStorage.getItem("select_userName")!=null){
-              this.select_userName=sessionStorage.getItem("select_userName");
-            }
-            if(sessionStorage.getItem("select_language")!=null){
-                  this.select_language=sessionStorage.getItem("select_language");
-            }
-            if(sessionStorage.getItem("select_status")!=null){
-                this.select_status=sessionStorage.getItem("select_status");
-            }
-        
-            
-          
+        async getExerciseRealTimeInfo(){
            
             let params=new URLSearchParams();
+
             if(this.select_exerciseId!=''){
                 if(this.select_exerciseId==null){
                   params.append("exerciseId",0);
@@ -321,8 +332,8 @@ export default {
             }else{
                 params.append("exerciseId",0);
             }
+
             if(this.select_userName!=''){
-                 
                 if(this.select_userName==null){
                 params.append("userName",'');
                 //不为空格  不为null
@@ -337,18 +348,18 @@ export default {
             }else{
                 params.append("userName",'');
             }
+
             if(this.select_language==null){
                 params.append("exerciseSubmitLanguage",'');
             }else{
                  params.append("exerciseSubmitLanguage",this.select_language);
             }
+
             if(this.select_status==null){
                  params.append("exerciseResult",'');
             }else{
                 params.append("exerciseResult",this.select_status);
             }
-
-
             this.$axios({
                 method: 'post',
                 headers: {
@@ -360,9 +371,9 @@ export default {
             .then((res)=> {
                    
                   if(res.data!=0){
+                    //再刷新一次页码
+                    this.pageView=true;
                     this.exerciseRealTimeInfo=res.data;
-                  
-                    this.currentPage=this.getContextData("currentPage");
                   }else{
                       var t=[]
                       this.exerciseRealTimeInfo=t;
@@ -375,9 +386,9 @@ export default {
             })
         },
         // 只能输入数字且只有一位小数
-            proving() {
-　　　　　　　　　 this.select_exerciseId = this.select_exerciseId.replace(/[^\d]/g,"");
-            },
+        proving() {
+　　　　　　　this.select_exerciseId = this.select_exerciseId.replace(/[^\d]/g,"");
+        },
     }
 }
 </script>

@@ -3,20 +3,20 @@
     <p>后台登录</p>
     <el-form
       ref="loginForm"
-      :model="user"
+      :model="admin"
       :rules="loginRules"
       class="loginForm"
     >
-      <el-form-item prop="userAccount">
+      <el-form-item prop="adminAccount">
         <el-input
-          v-model="user.userAccount"
+          v-model="admin.adminAccount"
           prefix-icon="el-icon-user"
         ></el-input>
       </el-form-item>
-      <el-form-item prop="userPassword">
+      <el-form-item prop="adminPassword">
         <el-input
           type="password"
-          v-model="user.userPassword"
+          v-model="admin.adminPassword"
           prefix-icon="el-icon-lock"
         ></el-input>
       </el-form-item>
@@ -31,16 +31,16 @@
 export default {
   data () {
     return {
-      user: {
-        userAccount: '',
-        userPassword: ''
+      admin: {
+        adminAccount: '',
+        adminPassword: ''
       },
       loginRules: {
-        userAccount: [
+        adminAccount: [
           { required: true, message: '请输入账号', trigger: 'blur' },
-          { min: 5, max: 6, message: '长度在 5 到 6 个字符', trigger: 'blur' }
+          { min: 6, max: 6, message: '长度在 5 到 6 个字符', trigger: 'blur' }
         ],
-        userPassword: [
+        adminPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 5, max: 8, message: '长度在 6 到 12个字符', trigger: 'blur' }
         ]
@@ -51,37 +51,9 @@ export default {
     login (loginForm) {
       this.$refs[loginForm].validate((valid) => {
          if (valid) {
-            if (this.user.userAccount.length == 5) {
+            if (this.admin.adminAccount.length == 6) {
               let params = new URLSearchParams();
-              params.append('teacherAccount', this.user.userAccount);
-              this.$axios({
-                method: 'post',
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded"
-                },
-                url: '/teacher/teacherLogin',
-                data: params
-              })
-              .then((res) => {
-                if (res.data == "") {
-                  this.$message.error('账号或密码错误');
-                } else {
-                  if (this.user.userPassword == res.data.teacherPassword) {
-                    this.$router.push('/teacherAside')
-                    this.$message.success('教师登录成功');
-                  } else {
-                    this.$message.error('账号或密码错误');
-                  }
-                }
-              })
-              .catch((err) => {
-                this.$message.error('系统错误请稍后再尝试');
-
-              })
-            }
-            if (this.user.userAccount.length == 6) {
-              let params = new URLSearchParams();
-              params.append('adminAccount', this.user.userAccount);
+              params.append('adminAccount', this.admin.adminAccount);
               this.$axios({
                 method: 'post',
                 headers: {
@@ -94,7 +66,7 @@ export default {
                   if (res.data == "") {
                     this.$message.error('账号或密码错误');
                   } else {
-                    if (this.user.userPassword == res.data) {
+                    if (this.admin.adminPassword == res.data) {
                       this.$router.push('/AdminBackground')
                       this.$message.success('管理登录成功');
                     } else {

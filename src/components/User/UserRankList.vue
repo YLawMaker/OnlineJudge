@@ -35,7 +35,7 @@
             </template> 
         </el-table-column>
      </el-table>
-      <div class="pagination">
+      <div class="pagination" v-if="pageView">
             <el-pagination
             layout="total,prev,pager,next"
             :current-page="currentPage"
@@ -63,7 +63,9 @@ export default {
             selectUserInfo:[],
             select_word:'',
             pageSize:4,
-            currentPage:1
+            currentPage:1,
+            selectBackWord:'',
+            pageView:false,
         }
     },
     computed:{
@@ -79,6 +81,8 @@ export default {
                 this.selectUserInfo=[];
                 for(let item of this.userInfo){
                     if(item.userName.includes(this.select_word)){
+                        sessionStorage.setItem("userRankListSelectWord",this.select_word);
+                        sessionStorage.setItem("userRankListCurrentPage",1);
                         this.currentPage=1;
                         this.selectUserInfo.push(item);
                     }
@@ -88,12 +92,25 @@ export default {
         }
     },
     mounted:function(){
+        if(sessionStorage.getItem("isPublish")=="false"){
+            if(sessionStorage.getItem("userRankListCurrentPage")!=null){
+                this.currentPage=Number(sessionStorage.getItem("userRankListCurrentPage"));
+            }
+            if(sessionStorage.getItem("userRankListSelectWord")!=null){
+                this.selectBackWord=sessionStorage.getItem("userRankListSelectWord");
+            }
+        }else{
+            sessionStorage.setItem("isPublish","false");
+        }
         this.getUserInfo();
     },
     methods:{
+        //改变页码
         handleCurrent(val){
+            sessionStorage.setItem("userRankListCurrentPage",val);
             this.currentPage=val;
         },
+        //获取用户信息
         getUserInfo(){
             let params=new URLSearchParams();
             this.$axios({
@@ -105,16 +122,18 @@ export default {
                 data: params
             })
             .then((res)=> {
-                
+                  //再刷新一次页码
+                  this.pageView=true;
                   this.userInfo=res.data;
                   this.selectUserInfo=res.data;
-                      console.log(res.data);
+                  this.select_word=this.selectBackWord;
             })
             .catch((err)=> {
                 this.$message.error('读取用户排行榜失败');
                 
             })
         },
+        //获取比例
         getAcceptRate(exerciseCorrectTimes,exerciseSubmitTimes){
                 if(!(exerciseCorrectTimes/exerciseSubmitTimes==exerciseCorrectTimes/exerciseSubmitTimes)){
                        var acceptRate=0+"%";

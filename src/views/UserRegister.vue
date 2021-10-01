@@ -2,54 +2,44 @@
   <div class="register_center">
     <h2 style="text-align:center">用户注册</h2>
     <el-form
-      ref="studentRegister"
-      :model="studentInfo"
+      ref="userRegister"
+      :model="userInfo"
       :rules="rules"
-      class="studentRegisterForm"
+      class="userRegisterForm"
       :label-position="labelPosition"
       label-width=80px
     >
-      <el-form-item label="姓名" prop="studentName">
-        <el-input v-model="studentInfo.studentName" style="width: 262px">
+      <el-form-item label="姓名" prop="userName">
+        <el-input v-model="userInfo.userName" style="width: 262px">
         </el-input>
       </el-form-item>
-      <el-form-item label="账号" prop="studentAccount">
+      <el-form-item label="账号" prop="userAccount">
         <el-input
-          v-model="studentInfo.studentAccount"
+          v-model="userInfo.userAccount"
           style="width: 262px"
         >
         </el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="studentPassword">
+      <el-form-item label="密码" prop="userPassword">
         <el-input
           type="password"
-          v-model="studentInfo.studentPassword"
+          v-model="userInfo.userPassword"
           style="width: 262px"
         >
         </el-input>
       </el-form-item>
-      <el-form-item label="重复密码" prop="studentPasswordR">
+      <el-form-item label="重复密码" prop="userPasswordR">
         <el-input
           type="password"
-          v-model="studentInfo.studentPasswordR"
+          v-model="userInfo.userPasswordR"
           style="width: 262px"
         >
         </el-input>
       </el-form-item>
-      <el-form-item label="班级" prop="classesId">
-        <el-select v-model="studentInfo.classesId" placeholder="请选择">
-          <el-option
-            v-for="item in classesList"
-            :key="item.classesId"
-            :label="item.classesName"
-            :value="item.classesId"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="studentEmail">
+     
+      <el-form-item label="邮箱" prop="userEmail">
         <el-input
-          v-model="studentInfo.studentEmail"
+          v-model="userInfo.userEmail"
           style="width: 262px"
         >
         </el-input>
@@ -61,14 +51,14 @@
       <el-form-item label="验证码"       prop="userInputVerificationCode">
         <el-input
          maxlength="4"
-          v-model="studentInfo.userInputVerificationCode"
+          v-model="userInfo.userInputVerificationCode"
           style="width: 262px"
         >
         </el-input>
       </el-form-item>
      
       <el-form-item
-        ><el-button @click="register('studentRegister')">注册</el-button>
+        ><el-button @click="register('userRegister')">注册</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -77,34 +67,30 @@
 export default {
   data () {
     return {
-      studentInfo: {
-        studentAccount: '',
-        classesId: '',
-        studentPassword: '',
-        studentPasswordR: '',
-        studentName: '',
-        studentEmail: '',
+      userInfo: {
+        userAccount: '',
+        userPassword: '',
+        userPasswordR: '',
+        userName: '',
+        userEmail: '',
         userInputVerificationCode:'',
       },
-      classesList: [
-      ],
+
       rules: {
-        studentName: [
+        userName: [
           { required: true, message: '请输入姓名', trigger: 'blur' },
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
         ],
-        studentAccount: [
+        userAccount: [
           { required: true, message: '请输入账号', trigger: 'blur' },
           { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ],
-        studentPassword: [
+        userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ],
-        classesId: [
-          { required: true, message: '请选择班级', trigger: 'change', type: 'number' },
-        ],
-        studentPasswordR: [
+      
+        userPasswordR: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ],
@@ -112,23 +98,23 @@ export default {
           { required: true, message: '请输入验证码', trigger: 'blur' },
           { min: 1, max: 4, message: '长度在 1 到 4 个字符', trigger: 'blur' }
         ],
-        studentEmail: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, { pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: '邮箱格式不正确', trigger: 'blur' }]
+        userEmail: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, { pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: '邮箱格式不正确', trigger: 'blur' }]
       },
       verificationCode:'12345',
       labelPosition:'right'
     }
   },
   mounted: function () {
-    this.setClassesList();
+    
   },
   methods: {
     getVerificationCode(){
         var numReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         var numRe = new RegExp(numReg)
-        if(numRe.test(this.studentInfo.studentEmail)){
+        if(numRe.test(this.userInfo.userEmail)){
           this.$message.success("发送验证码成功");
             let params = new URLSearchParams();
-            params.append('Email', this.studentInfo.studentEmail);
+            params.append('Email', this.userInfo.userEmail);
             this.$axios({
               method: 'post',
               headers: {
@@ -148,19 +134,19 @@ export default {
         }
       
     },
-    register (studentRegister) {
-      this.$refs[studentRegister].validate((valid) => {
+    register (userRegister) {
+      this.$refs[userRegister].validate((valid) => {
         if (valid) {
-          if(this.verificationCode==this.studentInfo.userInputVerificationCode){
-                if(this.studentInfo.studentPassword == this.studentInfo.studentPasswordR) {
+          if(this.verificationCode==this.userInfo.userInputVerificationCode){
+                if(this.userInfo.userPassword == this.userInfo.userPasswordR) {
                     let params = new URLSearchParams();
-                    params.append('studentAccount', this.studentInfo.studentAccount);
+                    params.append('userAccount', this.userInfo.userAccount);
                     this.$axios({
                       method: 'post',
                       headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                       },
-                      url: '/student/isStudentInfoExist',
+                      url: '/user/isuserInfoExist',
                       data: params
                     }).then((res) => {
                       if (res.data == true) {
@@ -168,17 +154,16 @@ export default {
                       } else {
                         //账号未注册过
                         let params = new URLSearchParams();
-                        params.append('studentAccount', this.studentInfo.studentAccount);
-                        params.append('classesId', this.studentInfo.classesId);
-                        params.append('studentPassword', this.studentInfo.studentPassword);
-                        params.append('studentName', this.studentInfo.studentName);
-                        params.append('studentEmail', this.studentInfo.studentEmail);
+                        params.append('userAccount', this.userInfo.userAccount);
+                        params.append('userPassword', this.userInfo.userPassword);
+                        params.append('userName', this.userInfo.userName);
+                        params.append('userEmail', this.userInfo.userEmail);
                         this.$axios({
                           method: 'post',
                           headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                           },
-                          url: '/student/addStudentInfo',
+                          url: '/user/adduserInfo',
                           data: params
                         }).then((res) => {
                           if (res.data == '0') {
@@ -208,25 +193,7 @@ export default {
 
       
     },
-    setClassesList () {
-      let params = new URLSearchParams();
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/classes/queryClassesInfo',
-        data: params
-      })
-        .then((res) => {
-          this.classesList = res.data;
-        })
-        .catch((err) => {
-          // this.$message.error('系统错误请稍后再尝试');
-          console.log(err);
-
-        })
-    }
+   
   }
 }
 </script>

@@ -69,11 +69,13 @@ export default {
       selectExercise: [],
       select_word: '',
       pageSize: 10,
-      currentPage: 1
-
+      currentPage: 1,
+      isPublish:false,
+      selectBackWord:'',
     }
   },
   watch: {
+    immediate: true,
     select_word: function () {
       if (this.select_word == '') {
         this.selectExercise = this.exercise;
@@ -82,10 +84,14 @@ export default {
         for (let item of this.exercise) {
           if (item.exerciseTitle.includes(this.select_word)) {
             this.currentPage = 1;
+            //保存查询后页码为1
+            sessionStorage.setItem("exerciseListCurrentPage",1);
+            sessionStorage.setItem("exerciseListSelectWord",this.select_word);
             this.selectExercise.push(item);
           }
         }
       }
+      
     }
   },
   computed: {
@@ -93,16 +99,27 @@ export default {
       return this.selectExercise.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
     }
   },
-  
+    
   mounted: function () {
+     if(sessionStorage.getItem("isPublish")=="false"){
+        if(sessionStorage.getItem("exerciseListCurrentPage")!=null){
+          this.currentPage=Number(sessionStorage.getItem("exerciseListCurrentPage"));
+        }
+        if(sessionStorage.getItem("exerciseListSelectWord")!=null){
+          this.selectBackWord=sessionStorage.getItem("exerciseListSelectWord");
+        }
+      }else{
+          sessionStorage.setItem("isPublish","false");
+      }
+    
+    this.getExercise()
      
-  this.currentPage=this.getContextData("currentPage");
-    if(this.currentPage==null){
-      this.currentPage=1;
-    }
-    this.getExercise();
   },
+
+  
+
   methods: {
+      
     //给sessionStorage存值
     setContextData: function(key, value) { 
       if(typeof value == "string"){
@@ -124,9 +141,11 @@ export default {
       return;
     },
     handleCurrent (val) {
+      //保存页码信息
+      sessionStorage.setItem("exerciseListCurrentPage",val);
       this.currentPage = val;
-      this.setContextData("currentPage",this.currentPage);
     },
+    //获得习题比率
     getAcceptRate (exerciseCorrectTimes, exerciseSubmitTimes) {
       if (!(exerciseCorrectTimes / exerciseSubmitTimes == exerciseCorrectTimes / exerciseSubmitTimes)) {
         var acceptRate = 0 + "%" + "(" + exerciseCorrectTimes + "/" + exerciseSubmitTimes + ")";
@@ -136,6 +155,7 @@ export default {
       }
       return acceptRate;
     },
+    //获取习题列表
     getExercise () {
       let params = new URLSearchParams();
       this.$axios({
@@ -149,6 +169,7 @@ export default {
         .then((res) => {
           this.selectExercise = res.data;
           this.exercise = res.data;
+          this.select_word=this.selectBackWord;
         })
         .catch((err) => {
           this.$message.error('习题列表加载失败');

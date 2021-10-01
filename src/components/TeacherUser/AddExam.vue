@@ -243,7 +243,7 @@ export default {
     }
   },
   mounted: function () {
-    this.getTeacherInfo();
+    // this.getTeacherInfo();
     this.getExamInfo();
     this.setClassesList()
   },

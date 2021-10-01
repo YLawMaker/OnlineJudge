@@ -19,11 +19,10 @@
         </el-submenu>
         <el-submenu index="2">
           <template slot="title">Online Exercise</template>
-          <el-menu-item index="/exerciseList">ExerciseList</el-menu-item>
-          <el-menu-item index="/exerciseRealTimeStatus"
-            >Realtime Judge Status</el-menu-item
+          <el-menu-item @click="goToExerciseList()">ExerciseList</el-menu-item>
+          <el-menu-item @click="goToExerciseRealTimeStatus()">Realtime Judge Status</el-menu-item
           >
-          <el-menu-item index="/userRankList">UserRankList</el-menu-item>
+          <el-menu-item @click="gotoUserRankList()">UserRankList</el-menu-item>
         </el-submenu>
         <el-submenu index="3">
           <template slot="title">Online Teaching</template>
@@ -42,7 +41,14 @@
       </el-menu>
     </el-header>
     <el-main>
-      <router-view></router-view>
+
+
+          <router-view >
+          </router-view>
+
+
+
+
     </el-main>
   </el-container>
 </template>
@@ -53,13 +59,40 @@ export default {
     return {
       userName: '',
       userId: '',
-      classesId: ''
+      classesId: '',
     }
   },
   mounted: function () {
+    sessionStorage.setItem("isPublish","false");
     this.getUserInfo();
   },
+ 
   methods: {
+    //跳转到用户排行榜 保存返回值
+    gotoUserRankList(){
+      if(this.$route.path!="/userRankList"){
+        sessionStorage.setItem("isPublish","true");
+        this.$router.push('/userRankList')
+      }
+    },
+
+    //跳转到习题实时状态界面 保存返回值用
+    goToExerciseRealTimeStatus(){
+      if(this.$route.path!="/exerciseRealTimeStatus"){
+        sessionStorage.setItem("isPublish","true");
+        this.$router.push('/exerciseRealTimeStatus')
+      }
+    },
+    //跳转到习题列表界面 保存返回值用
+    goToExerciseList(){
+
+      if(this.$route.path!="/exerciseList"){
+        sessionStorage.setItem("isPublish","true");
+        this.$router.push('/exerciseList')
+      }  
+    },
+
+
     //跳转到考试列表界面
     goToExamList(){
       if(this.userId==""){
@@ -71,6 +104,7 @@ export default {
     },
     //跳转到用户登录界面
     userLogin(){
+      sessionStorage.setItem("isPublish","true");
       this.$router.push('/userLogin')
     },
     //获取用户信息
