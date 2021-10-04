@@ -26,9 +26,7 @@
       </el-table-column>
       <el-table-column prop="examEndTime" label="结束时间" width="180">
       </el-table-column>
-      <el-table-column prop="classes.classesName" label="考试班级" width="180">
-      </el-table-column>
-      <el-table-column prop="examType" label="考试状态" width="180">
+      <el-table-column prop="examStatus" label="考试状态" width="180">
       </el-table-column>
       <el-table-column prop="examLanguage" label="代码语言" width="80">
       </el-table-column>
@@ -102,21 +100,7 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="考试班级" prop="classesId">
-          <el-select
-            v-model="exam_add.classesId"
-            placeholder="请选择"
-            filterable
-          >
-            <el-option
-              v-for="item in classesList"
-              :key="item.classesId"
-              :label="item.classesName"
-              :value="item.classesId"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
+       
         <el-form-item label="语言类型" prop="examLanguage">
           <el-select v-model="exam_add.examLanguage" placeholder="请选择">
             <el-option
@@ -163,21 +147,7 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="考试班级" prop="classesId">
-          <el-select
-            v-model="exam_modify.classesId"
-            placeholder="请选择"
-            filterable
-          >
-            <el-option
-              v-for="item in classesList"
-              :key="item.classesId"
-              :label="item.classesName"
-              :value="item.classesId"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
+        
         <el-form-item label="语言类型" prop="examLanguage">
           <el-select v-model="exam_modify.examLanguage" placeholder="请选择">
             <el-option
@@ -212,8 +182,7 @@ export default {
         examStartTime: '',
         examEndTime: '',
         teacherId: '',
-        classesId: '',
-        examType: '',
+        examStatus: '',
         examLanguage: ''
       },
       exam_modify: {
@@ -222,14 +191,10 @@ export default {
         examStartTime: '',
         examEndTime: '',
         teacherId: '',
-        classesName: '',
-        classesId: '',
-        examType: '',
+        examStatus: '',
         examLanguage: ''
       },
-      classesList: [
-
-      ],
+      
       language: [{ value: 'C', label: 'C' }, { value: 'C++', label: 'C++' }, { value: 'Java', label: 'Java' }],
       addExamData: {},
       addRules: {},
@@ -245,7 +210,6 @@ export default {
   mounted: function () {
     // this.getTeacherInfo();
     this.getExamInfo();
-    this.setClassesList()
   },
   computed: {
     data () {
@@ -278,19 +242,15 @@ export default {
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
-      this.setClassesList()
       this.exam_add = new Object();
     },
     modifyExamDialog (row) {
       this.edittableDataVisible_modify = true
-      this.setClassesList()
       this.exam_modify.examId = row.examId
       this.exam_modify.examName = row.examName
       this.exam_modify.examStartTime = row.examStartTime
       this.exam_modify.examEndTime = row.examEndTime
       this.exam_modify.examLanguage = row.examLanguage
-      this.exam_modify.classesName = row.classes.classesName
-      this.exam_modify.classesId = row.classes.classesId
       // alert(this.exam_modify.classesId)
     },
     modifyExamInfo () {
@@ -299,7 +259,6 @@ export default {
       params.append('examStartTime', this.exam_modify.examStartTime);
       params.append('examEndTime', this.exam_modify.examEndTime);
       params.append('examName', this.exam_modify.examName);
-      params.append('classesId', this.exam_modify.classesId);
       params.append('examLanguage', this.exam_modify.examLanguage);
       // alert(this.exam_modify.classesId)
       // console.log(this.exam_modify);
@@ -329,43 +288,26 @@ export default {
         console.log(res);
       })
     },
-    setClassesList () {
-      let params = new URLSearchParams();
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/classes/queryClassesInfo',
-        data: params
-      })
-        .then((res) => {
-          this.classesList = res.data;
-        })
-        .catch((err) => {
-          // this.$message.error('系统错误请稍后再尝试');
-          console.log(err);
-
-        })
-    },
-    getTeacherInfo () {
-      let params = new URLSearchParams();
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/teacher/queryTeacherInfoById',
-        data: params
-      })
-        .then((res) => {
-          this.teacher = res.data;;
-        })
-        .catch((err) => {
-          // this.$message.error('系统错误请稍后再尝试');
-          this.$router.push({ path: '/managerLogin' })
-        })
-    },
+    
+    //获取教师用户信息
+    // getUserInfo () {
+    //   let params = new URLSearchParams();
+    //   this.$axios({
+    //     method: 'post',
+    //     headers: {
+    //       "Content-Type": "application/x-www-form-urlencoded"
+    //     },
+    //     url: '/user/queryUserInfo',
+    //     data: params
+    //   })
+    //     .then((res) => {
+    //       this.teacher = res.data;;
+    //     })
+    //     .catch((err) => {
+    //       // this.$message.error('系统错误请稍后再尝试');
+    //       this.$router.push({ path: '/managerLogin' })
+    //     })
+    // },
     getExamInfo () {
       const that = this
       let params = new URLSearchParams();
@@ -375,7 +317,7 @@ export default {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/exam/teacherQueryExamInfo',
+        url: '/exam/queryExamInfo',
         data: params
       })
         .then((res) => {
@@ -400,7 +342,6 @@ export default {
           params.append('examStartTime', this.exam_add.examStartTime);
           params.append('examEndTime', this.exam_add.examEndTime);
           params.append('teacherId', this.exam_add.teacherId);
-          params.append('classesId', this.exam_add.classesId);
           params.append('examType', 'Pending');
           params.append('examLanguage', this.exam_add.examLanguage);
           this.$axios({

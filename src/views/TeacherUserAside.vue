@@ -3,7 +3,7 @@
     <el-header
       ><el-menu
         :default-active="this.$route.path"
-        router
+        router  
         mode="horizontal"
         menu-trigger="click"
         :unique-opened="isunique"
@@ -13,7 +13,7 @@
         <el-menu-item index="../addExam">考试管理</el-menu-item>
         <div class="teacherName-right" @click="gotoTeacherInfo()">
           <span el-dropdown-link>
-            {{ teacherName }}
+            {{ teacherUserName }}
           </span>
         </div>
       </el-menu>
@@ -29,7 +29,7 @@
 export default {
   data () {
     return {
-      teacherName: '',
+      teacherUserName: '',
       collapse: false,
       isunique: true,
       iscollapse: true,
@@ -77,11 +77,12 @@ export default {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/teacher/queryTeacherInfoById',
+        url: '/user/queryUserInfo',
         data: params
       })
         .then((res) => {
-          this.teacherName = res.data.teacherName;
+    
+          this.teacherUserName = res.data.userName;
           // console.log(this.teacher);
         })
         .catch((err) => {

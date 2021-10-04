@@ -29,10 +29,10 @@ const routes = [
 
 
   {
-    path: '/teacherAside',
-    name: 'TeacherAside',
+    path: '/teacherUserAside',
+    name: 'TeacherUserAside',
     redirect: 'addExam',
-    component: () => import('../views/TeacherAside.vue'),
+    component: () => import('../views/TeacherUserAside.vue'),
     children: [
       { 
         path: '/addExam',
