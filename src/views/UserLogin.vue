@@ -84,7 +84,7 @@ export default {
                     .then((res) => {
                       if (res.data != false) {
                         if(res.data.userIdentity=="teacher"){
-                          this.$router.push("/teacherAside")
+                          this.$router.push("/addExam")
                         }else{
                           this.$message.success('登录成功');
                           this.$router.go(-1);

@@ -1,27 +1,67 @@
 <template>
+  <div>
+ <el-container>
+  <el-aside width="200px"  style="background-color:#545c64;height:900px">
+      <h3 >标签</h3>
+      <el-row class="tac">
+        <el-col>  
+          <el-menu
+            default-active="2"
+            class="el-menu-vertical-demo"
+            background-color="#545c64"
+            text-color="#fff"
+            :unique-opened=true
+            active-text-color="#ffd04b">
+            <el-submenu index="1">
+              <template slot="title">
+                <i class="el-icon-location"></i>
+                <span>导航一</span>
+              </template>
+              <el-menu-item-group>
+                <template slot="title">分组一</template>
+                <el-menu-item index="1-1">选项1</el-menu-item>
+                <el-menu-item index="1-2">选项2</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group title="分组2">
+                <el-menu-item index="1-3">选项3</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="2">
+              <template slot="title">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">导航二</span>
+              </template>
+              <el-menu-item-group>
+                <template slot="title">分组一</template>
+                <el-menu-item index="1-1">选项1</el-menu-item>
+                <el-menu-item index="1-2">选项2</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group title="分组2">
+                <el-menu-item index="1-3">选项3</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+          </el-menu>
+        </el-col>
+      </el-row>
+    </el-aside>
   <el-container>
-    <el-header
-      ><el-menu
-        :default-active="this.$route.path"
-        router  
-        mode="horizontal"
-        menu-trigger="click"
-        :unique-opened="isunique"
-        text-color="#000000"
-        :collapse-transition="iscollapse"
-      >
-        <el-menu-item index="../addExam">考试管理</el-menu-item>
-        <div class="teacherName-right" @click="gotoTeacherInfo()">
-          <span el-dropdown-link>
-            {{ teacherUserName }}
-          </span>
+    <el-header style="">
+      <div class="teacherName-right" @click="gotoTeacherInfo()">
+        <span el-dropdown-link>
+          {{ teacherUserName }}
+        </span>
         </div>
-      </el-menu>
     </el-header>
     <el-main>
-      <router-view></router-view>
+      <router-view>
+      </router-view>
     </el-main>
+    <el-footer>
+      Footer
+    </el-footer>
   </el-container>
+</el-container>
+   </div>
 </template>
 
 <script>
@@ -96,54 +136,14 @@ export default {
 </script>
 
 <style scoped>
-.sidebar {
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 70px;
-  bottom: 0;
-  background-color: #334256;
-}
-.sidebar-el-menu:not(.el-menu--collapse) {
-  width: 150px;
-}
-.sidebar::-webkit-scrollbar {
-  width: 0px;
-}
-.sidebar > ul {
-  height: 100%;
-}
-.contnet-box {
-  margin-left: 150px;
-}
-.header {
-  position: relative;
-  background-color: #253041;
-  box-sizing: border-box;
-  width: 100%;
-  height: 70px;
-  font-size: 22px;
-  color: #ffffff;
-  margin-left: -0.4%;
-  margin-top: -0.3%;
-}
+
+
+
 .collapse-btn {
   float: left;
   padding: 0 21px;
   cursor: pointer;
   line-height: 70px;
-}
-.header .logo {
-  float: left;
-  line-height: 70px;
-}
-.header-right {
-  float: right;
-  padding-right: 50px;
-  /*居中 */
-  display: flex;
-  height: 70px;
-  align-items: center;
 }
 
 .user-name {
