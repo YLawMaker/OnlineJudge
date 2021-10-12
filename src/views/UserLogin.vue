@@ -6,7 +6,7 @@
       :rules="loginRules"
       class="loginForm"
     >
-    <h2>用户登录</h2>
+      <h2>用户登录</h2>
       <el-form-item prop="userAccount">
         <el-input
           v-model="user.userAccount"
@@ -35,7 +35,7 @@ export default {
       user: {
         userAccount: '',
         userPassword: '',
-        userIdentity:'',
+        userIdentity: '',
       },
       loginRules: {
         userAccount: [
@@ -46,71 +46,71 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ]
-      }, 
+      },
     }
-  
+
   },
-  mounted: function(){
+  mounted: function () {
 
 
   },
   methods: {
     login (loginForm) {
       this.$refs[loginForm].validate((valid) => {
-         if (valid) {
-            let params = new URLSearchParams();
-            params.append('userAccount', this.user.userAccount);
-            this.$axios({
-              method: 'post',
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-              },
-              url: '/user/isUserInfoExist',
-              data: params
-            })
+        if (valid) {
+          let params = new URLSearchParams();
+          params.append('userAccount', this.user.userAccount);
+          this.$axios({
+            method: 'post',
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            url: '/user/isUserInfoExist',
+            data: params
+          })
             .then((res) => {
-                if (res.data == true) {
-                  let params = new URLSearchParams();
-                  params.append('userAccount', this.user.userAccount);
-                  params.append('userPassword', this.user.userPassword);
-                  this.$axios({
-                    method: 'post',
-                    headers: {
-                      "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    url: '/user/isUserExist',
-                    data: params
-                  })
-                    .then((res) => {
-                      if (res.data != false) {
-                        if(res.data.userIdentity=="teacher"){
-                          this.$router.push("/addExam")
-                        }else{
-                          this.$message.success('登录成功');
-                          this.$router.go(-1);
-                        }
-                        
+              if (res.data == true) {
+                let params = new URLSearchParams();
+                params.append('userAccount', this.user.userAccount);
+                params.append('userPassword', this.user.userPassword);
+                this.$axios({
+                  method: 'post',
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                  },
+                  url: '/user/isUserExist',
+                  data: params
+                })
+                  .then((res) => {
+                    if (res.data != false) {
+                      if (res.data.userIdentity == "teacher") {
+                        this.$router.push("/addExam")
                       } else {
-                        this.$message.error('密码错误');
+                        this.$message.success('登录成功');
+                        this.$router.go(-1);
                       }
-                    })
-                    .catch((err) => {
-                      this.$message.error('查询密码错误');
 
-                    })
-                } else {
-                  this.$message.error('账号不存在');
-                }
+                    } else {
+                      this.$message.error('密码错误');
+                    }
+                  })
+                  .catch((err) => {
+                    this.$message.error('查询密码错误');
+
+                  })
+              } else {
+                this.$message.error('账号不存在');
+              }
             })
             .catch((err) => {
               this.$message.error('查询账号错误');
 
             })
-         }else{
-            this.$message.error('输入格式不规范');
-         }
+        } else {
+          this.$message.error('输入格式不规范');
+        }
       })
-      
+
     },
     register () {
       this.$router.push('/userRegister')

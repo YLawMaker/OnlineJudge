@@ -13,10 +13,16 @@
         <el-menu-item index="../components/TeacherManage"
           >教师管理</el-menu-item
         >
-        <el-menu-item index="../components/ClassManage">班级管理</el-menu-item>
+        <el-menu-item index="../components/ExerciseLabelManage"
+          >习题标签管理</el-menu-item
+        >
         <el-menu-item index="../components/ExerciseManage"
           >习题管理</el-menu-item
         >
+        <el-menu-item index="../components/QuestionLabelManage"
+          >问题标签管理</el-menu-item
+        >
+        <el-menu-item index="../components/GroupManage">分组管理</el-menu-item>
       </el-menu>
     </el-header>
     <el-main>

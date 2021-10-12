@@ -310,6 +310,14 @@
             :disabled="edit"
           ></el-input>
         </el-form-item>
+        <el-form-item label="标签" prop="exerciseSampleOutput">
+          <el-input
+            type="textarea"
+            :autosize="true"
+            v-model="edittableData.exerciseSampleOutput"
+            :disabled="edit"
+          ></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button type="primary" @click="handleClose">确 定</el-button>
@@ -365,7 +373,7 @@ export default {
       edittableDataVisible_info: false,
       edit: true,
       currentPage: 1,
-      pagesize: 8,
+      pagesize: 9,
       addRules: {
         exerciseTitle: [
           { required: true, message: '请输入题目标题', trigger: 'blur' },
@@ -642,6 +650,7 @@ a {
   border-color: white;
   color: black;
   cursor: default;
+  resize: none;
 }
 .block {
   position: absolute;
