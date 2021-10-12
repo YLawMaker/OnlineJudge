@@ -34,7 +34,7 @@ const routes = [
     redirect: 'addExam',
     component: () => import('../views/TeacherUserAside.vue'),
     children: [
-      { 
+      {
         path: '/addExam',
         name: 'AddExam',
         component: () => import('@/components/TeacherUser/AddExam.vue'),
@@ -156,9 +156,14 @@ const routes = [
       },
 
       {
-        path: '/components/ClassManage',
-        name: 'ClassManage',
-        component: () => import('@/components/admin/ClassManage')
+        path: '/components/ExerciseLabelManage',
+        name: 'ExerciseLabelManage',
+        component: () => import('@/components/admin/ExerciseLabelManage')
+      },
+      {
+        path: '/components/QuestionLabelManage',
+        name: 'QuestionLabelManage',
+        component: () => import('@/components/admin/QuestionLabelManage')
       },
 
       {
@@ -171,6 +176,11 @@ const routes = [
         path: '/components/ExerciseAnswerManage',
         name: 'ExerciseAnswerManage',
         component: () => import('@/components/admin/ExerciseAnswerManage')
+      },
+      {
+        path: '/components/GroupManage',
+        name: 'GroupManage',
+        component: () => import('@/components/admin/GroupManage')
       },
     ]
   },
