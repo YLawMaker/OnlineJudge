@@ -236,6 +236,13 @@
             v-model="addexerciseData.exerciseSampleOuput"
           ></el-input>
         </el-form-item>
+        <el-form-item label="习题标签" prop="labels">
+            <el-cascader
+                v-model="addexerciseData.labels"
+                :options="options"
+                :props="{multiple:true}"
+                clearable></el-cascader>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="addExercise('addExercise')"
             >添加</el-button
@@ -244,6 +251,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <!-- 详情 -->
     <el-dialog
       title="详情"
       :visible.sync="edittableDataVisible_info"
@@ -354,7 +362,8 @@ export default {
         exerciseSampleInput: '',
         exerciseSampleOutput: '',
         exerciseCorrectTimes: '0',
-        exerciseSubmitTimes: '0'
+        exerciseSubmitTimes: '0',
+        labels:[],
       },
       empty: {
         exerciseId: '',
@@ -398,9 +407,14 @@ export default {
         exerciseSampleOuput: [
           { required: true, message: '请输入样例输出', trigger: 'blur' },
           { min: 1, max: 1000, message: '长度为1~1000', trigger: 'blur' }
+        ],
+        labels:[
+          { required: true, message: '请选择标签', trigger: 'blur' },
         ]
       },
       h: {},
+      labels:[],
+      options:[],
     }
   },
   mounted: function () {
@@ -409,6 +423,7 @@ export default {
     } else {
       this.getExercise(parseInt(this.$route.params.page), this.$route.params.key);//需要触发的函数
     }
+    this.getInfo();
   },
   computed: {
     data () {
@@ -561,6 +576,7 @@ export default {
       var that = this;
       this.$refs[addExercise].validate((valid) => {
         if (valid) {
+          console.log()
           let params = new URLSearchParams();
           params.append('exerciseTitle', this.addexerciseData.exerciseTitle);
           params.append('exerciseCorrectTimes', this.addexerciseData.exerciseCorrectTimes);
@@ -570,6 +586,13 @@ export default {
           params.append('exerciseOutPut', this.addexerciseData.exerciseOutPut);
           params.append('exerciseSampleInput', this.addexerciseData.exerciseSampleInput);
           params.append('exerciseSampleOutput', this.addexerciseData.exerciseSampleOuput);
+          for(var i=0;i<this.addexerciseData.labels.length;i++){
+            var label=new Object;
+            label.labelId=this.addexerciseData.labels[i][1];
+            console.log(label.labelId)
+            this.labels.push(label);
+          }
+          params.append('labels',JSON.stringify(this.labels))
           // console.log(this.addexerciseData.exerciseCorrectTimes);
           this.$axios({
             method: 'post',
@@ -596,6 +619,57 @@ export default {
         }
       })
     },
+
+    getInfo(){
+        let params = new URLSearchParams();
+        this.$axios({
+          method: 'post',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          url: '/label/queryLabelFirstPointInfo',
+          data: params
+        })
+          .then((res) => {
+              for(var i=0;i<res.data.length;i++){
+                var firstPoint=new Object;
+                firstPoint.label=res.data[i];
+                firstPoint.children=[];
+                this.options.push(firstPoint);  
+              }
+              for(var i=0;i<this.options.length;i++){
+                this.getInfo2(i);
+              }
+          })
+          .catch((err) => {
+            this.$message.error('失败1');
+          })
+       },
+       getInfo2(i){
+          let params = new URLSearchParams();
+          params.append("firstPoint",this.options[i].label)
+          this.$axios({
+            method: 'post',
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            url: '/label/queryLabelSecondPointInfo',
+            data: params
+          })
+          .then((res) => {
+            for(var o=0;o<res.data.length;o++){
+              var secondPoint=new Object;
+              secondPoint.label=res.data[o].secondPoint;
+              secondPoint.value=res.data[o].labelId;
+              this.options[i].children.push(secondPoint);
+            }
+          })
+          .catch((err) => {
+            this.$message.error('失败2');
+          })
+      }
+
+    
     // Search (index) {
     //   if (index == 1) {
     //     var search = this.search;
@@ -616,6 +690,7 @@ export default {
     //     this.getExercise()
     //   }
     // }
+    
   }
 }
 </script>

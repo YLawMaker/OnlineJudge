@@ -6,8 +6,9 @@ import axios from 'axios';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import * as echarts from 'echarts'
-axios.defaults.baseURL = 'http://localhost:8181'
+axios.defaults.baseURL = 'http://localhost:8888'
 Vue.config.productionTip = false
+//前端跨域
 axios.defaults.withCredentials = true
 Vue.prototype.$axios = axios;
 Vue.use(ElementUI);
