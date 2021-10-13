@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div class="topBar_GroupManage">
+      <div class="topBar_GroupInfoManage">
         <el-input
           v-model="select_word"
           size="mini"
@@ -10,6 +10,13 @@
           style="width: 200px"
           clearable
         ></el-input>
+        <el-button
+          size="small"
+          type="primary"
+          class="addButton_GroupInfoManage"
+          @click="addDialogvisiable()"
+          >添加分组</el-button
+        >
       </div>
     </div>
     <div>
@@ -71,11 +78,26 @@
         </el-pagination>
       </div>
       <el-dialog
-        title="详情"
-        :visible.sync="edittableDataVisible_info"
+        title="添加分组"
+        :visible.sync="edittableDataVisible_add"
         :before-close="handleClose"
         :close-on-click-modal="false"
       >
+        <el-form>
+          <el-form-item label="名称">
+            <el-input></el-input>
+          </el-form-item>
+          <el-form-item label="是否设置为私有">
+            <el-radio v-model="radio" label="1">是</el-radio>
+            <el-radio v-model="radio" label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="add('addExerciseLabel')"
+              >添加</el-button
+            >
+            <el-button @click="handleClose">取消</el-button>
+          </el-form-item>
+        </el-form>
       </el-dialog>
     </div>
   </div>
@@ -90,17 +112,17 @@ export default {
       select_word: '',
       currentPage: 1,
       pagesize: 9,
-      edittableDataVisible_info: false
+      radio: '1',
+      edittableDataVisible_add: false
     }
 
   },
   mounted: function () {
-    // if (this.$route.params.page == null) {
-    //   this.getExercise(this.currentPage, '');//需要触发的函数
-    // } else {
-    //   this.getExercise(parseInt(this.$route.params.page), this.$route.params.key);//需要触发的函数
-    // }
-    this.getGroupInfo()
+    if (this.$route.params.page == null) {
+      this.getGroupInfo(this.currentPage, '');//需要触发的函数
+    } else {
+      this.getGroupInfo(parseInt(this.$route.params.page), this.$route.params.key);//需要触发的函数
+    }
   },
   computed: {
     data () {
@@ -118,6 +140,7 @@ export default {
           if (item.groupName.includes(this.select_word)) {
             this.currentPage = 1;
             this.searchData.push(item);
+
           }
         }
       }
@@ -128,14 +151,18 @@ export default {
       this.currentPage = val;
     },
     handleClose (done) {
-      this.edittableDataVisible_info = false
-      this.addexerciseData = new Object();
-      this.$refs.addExercise.clearValidate();
+      this.edittableDataVisible_add = false
+    },
+    addDialogvisiable () {
+      this.edittableDataVisible_add = true
     },
     GroupInfoDialog (row) {
-      alert(row.groupName)
+      // alert(row.groupId)
+      // alert(this.currentPage)
+      // alert(this.select_word)
+      this.$router.push({ path: 'GroupUserManage', query: { page: this.currentPage, groupIdFromInfoManage: row.groupId, searchKeyFromInfoManage: this.select_word } })
     },
-    getGroupInfo () {
+    getGroupInfo (pageNum, key) {
       const that = this
       this.$axios({
         method: 'post',
@@ -146,6 +173,8 @@ export default {
       }).then(function (resp) {
         that.groupList = resp.data;
         that.searchData = resp.data;
+        that.currentPage = pageNum;
+        that.select_word = key
       })
     }
   }
@@ -164,8 +193,12 @@ export default {
   box-sizing: border-box;
   padding: 0px;
 }
-.topBar_GroupManage {
+.topBar_GroupInfoManage {
   margin-top: 10px;
+}
+.addButton_GroupInfoManage {
+  float: right;
+  margin-right: 25px;
 }
 .router-link-active {
   text-decoration: none;

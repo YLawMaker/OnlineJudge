@@ -64,6 +64,21 @@ const routes = [
         name: 'ChoiceQuestionList',
         component: () => import('@/components/TeacherUser/ChoiceQuestionList.vue')
       },
+      {
+        path: '/testManage',
+        name: 'TestManage',
+        component: () => import('@/components/TeacherUser/TestManage.vue')
+      },
+      {
+        path: '/groupInfoManage',
+        name: 'GroupInfoManage',
+        component: () => import('@/components/TeacherUser/GroupInfoManage.vue')
+      },
+      {
+        path: '/groupUserManage',
+        name: 'GroupUserManage',
+        component: () => import('@/components/TeacherUser/GroupUserManage.vue')
+      },
     ]
   },
 
