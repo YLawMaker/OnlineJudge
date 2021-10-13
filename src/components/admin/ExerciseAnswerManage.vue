@@ -51,6 +51,7 @@
       title="添加答案"
       :visible.sync="edittableDataVisible_add"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form
         :model="edittableData"
@@ -83,6 +84,7 @@
       title="修改答案"
       :visible.sync="edittableDataVisible_modify"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form
         :model="edittableData"

@@ -7,8 +7,8 @@
     <div class="block">
       <el-timeline >
         <el-timeline-item  v-for="exam in pageExamInfo" :key="exam.examId" :timestamp="exam.examStartTime" placement="top">
-          <el-card>
-            <h4>{{exam.examName}}</h4>
+          <el-card >
+            <h4 @click="gotoExamDetail(exam.examId)">{{exam.examName}}</h4>
             <p style="width:300px;float:left">开始时间{{exam.examStartTime}}</p>
             <p style="width:300px;float:left">结束时间{{exam.examEndTime}}</p>
           </el-card>
@@ -92,7 +92,12 @@ export default {
         },
         //去到考试详情界面
         gotoExamDetail(examId){
-          this.$router.push({path:'/examDetail',query: {"examId":examId}})
+          if(this.userId==""){
+                this.$message.error("请先登录用户");
+                this.$router.push('/userLogin')
+            }else{
+                this.$router.push({ path: '/examDetail', query: { userId: this.userId ,examId:this.examId} });
+            }
         },
         //换页时调用
         handleCurrent (val) {

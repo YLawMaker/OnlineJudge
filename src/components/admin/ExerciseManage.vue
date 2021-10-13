@@ -125,6 +125,7 @@
       title="修改习题信息"
       :visible.sync="edittableDataVisible_modify"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form
         :model="edittableData"
@@ -191,6 +192,7 @@
       title="添加习题"
       :visible.sync="edittableDataVisible_add"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="addExercise"
@@ -256,6 +258,7 @@
       title="详情"
       :visible.sync="edittableDataVisible_info"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form
         :model="edittableData"

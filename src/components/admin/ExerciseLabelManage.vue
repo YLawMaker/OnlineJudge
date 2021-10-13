@@ -70,6 +70,7 @@
       title="修改标签信息"
       :visible.sync="edittableDataVisible_modify"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form
         :model="edittableData"
@@ -100,6 +101,7 @@
       title="添加标签"
       :visible.sync="edittableDataVisible_add"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="addExerciseLabel"

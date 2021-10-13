@@ -24,7 +24,21 @@ const routes = [
     name: 'ExamRankList',
     component: () => import('@/components/User/ExamRankList.vue')
   },
-
+  {
+    path: '/examChoice',
+    name: 'ExamChoice',
+    component: () => import('@/components/User/ExamChoice.vue')
+  },
+  {
+    path: '/examCompletion',
+    name: 'ExamCompletion',
+    component: () => import('@/components/User/ExamCompletion.vue')
+  },
+  {
+    path: '/examProgramming',
+    name: 'ExamProgramming',
+    component: () => import('@/components/User/ExamProgramming.vue')
+  },
 
 
 
@@ -63,6 +77,21 @@ const routes = [
         path: '/choiceQuestionList',
         name: 'ChoiceQuestionList',
         component: () => import('@/components/TeacherUser/ChoiceQuestionList.vue')
+      },
+      {
+        path: '/testManage',
+        name: 'TestManage',
+        component: () => import('@/components/TeacherUser/TestManage.vue')
+      },
+      {
+        path: '/groupInfoManage',
+        name: 'GroupInfoManage',
+        component: () => import('@/components/TeacherUser/GroupInfoManage.vue')
+      },
+      {
+        path: '/groupUserManage',
+        name: 'GroupUserManage',
+        component: () => import('@/components/TeacherUser/GroupUserManage.vue')
       },
     ]
   },
