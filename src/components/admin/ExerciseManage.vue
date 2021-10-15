@@ -73,6 +73,21 @@
         :show-overflow-tooltip="true"
       >
       </el-table-column>
+       <el-table-column
+        prop="exerciseOutPut"
+        label="问题输出"
+        width="180"
+        :show-overflow-tooltip="true"
+      >
+      </el-table-column>
+      <el-table-column prop="labels[0].firstPoint" label="第一知识点"> </el-table-column>
+      <el-table-column  label="第二知识点" min-width="100%" :show-overflow-tooltip="true"> 
+          <template slot-scope="scope">
+              <div v-for="item in scope.row.labels" :key="item.labelId" style="margin-top:0px;margin-bottom:0px;display:inline;" >
+                    {{item.secondPoint}}  
+              </div>  
+          </template>
+      </el-table-column>
       <el-table-column prop="exerciseSampleInput" label="样例输入" width="180">
         <template slot-scope="scope">
           <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
@@ -180,6 +195,13 @@
             v-model="edittableData.exerciseSampleOutput"
           ></el-input>
         </el-form-item>
+         <el-form-item label="习题标签" prop="labels">
+            <el-cascader
+                v-model="edittableData.labels"
+                :options="options"
+                :props="{multiple:true}"
+                clearable></el-cascader>
+        </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button @click="handleClose">取 消</el-button>
@@ -187,6 +209,7 @@
           >确 定</el-button
         >
       </span>
+      <!-- 添加 -->
     </el-dialog>
     <el-dialog
       title="添加习题"
@@ -321,14 +344,15 @@
             :disabled="edit"
           ></el-input>
         </el-form-item>
-        <el-form-item label="标签" prop="exerciseSampleOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseSampleOutput"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
+         <el-form-item prop="firstPoint" label="第一知识点" size="mini">
+              <el-input v-model="edittableData.labels[0].firstPoint" placeholder="第一知识点" type="textarea" :autosize="true"  :disabled="true" v-if="edittableData.labels.length>0">
+              </el-input>
+          </el-form-item>
+          <el-form-item prop="secondPoint" label="第二知识点" size="mini"> 
+              <p v-for="(item,index) in edittableData.labels" :key="index" style="margin-left:10px;float:left;margin-top:0px;color:black;font-size:12px;margin-bottom: 0px;">
+                  {{item.secondPoint}}
+              </p>
+          </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button type="primary" @click="handleClose">确 定</el-button>
@@ -354,7 +378,8 @@ export default {
         exerciseSampleInput: '',
         exerciseSampleOutput: '',
         exerciseCorrectTimes: '',
-        exerciseSubmitTimes: ''
+        exerciseSubmitTimes: '',
+        labels:[],
       },
       addexerciseData: {
         exerciseId: '',
@@ -416,8 +441,12 @@ export default {
         ]
       },
       h: {},
+      //标签信息上传用
       labels:[],
+      //后台读取的标签信息 放入下拉框中
       options:[],
+      //标签选择用
+      labelChoice:[],
     }
   },
   mounted: function () {
@@ -426,7 +455,7 @@ export default {
     } else {
       this.getExercise(parseInt(this.$route.params.page), this.$route.params.key);//需要触发的函数
     }
-    this.getInfo();
+    this.getFirstPointInfo();
   },
   computed: {
     data () {
@@ -459,6 +488,12 @@ export default {
       this.edittableData.exerciseOutPut = row.exerciseOutPut
       this.edittableData.exerciseSampleInput = row.exerciseSampleInput
       this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
+      this.edittableData.labels=[]
+      for(var i=0;i<row.labels.length;i++){
+          this.labelChoice=[];
+          this.labelChoice[1]=row.labels[i].labelId;
+          this.edittableData.labels.push(this.labelChoice);
+      }
     },
     handleCurrent (val) {
       this.currentPage = val;
@@ -468,7 +503,7 @@ export default {
       this.edittableDataVisible_modify = false
       this.edittableDataVisible_info = false
       this.addexerciseData = new Object();
-      this.$refs.addExercise.clearValidate();
+      // this.$refs.addExercise.clearValidate();
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -482,6 +517,8 @@ export default {
       this.edittableData.exerciseOutPut = row.exerciseOutPut
       this.edittableData.exerciseSampleInput = row.exerciseSampleInput
       this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
+      this.edittableData.labels=row.labels
+      
     },
     getExercise (pageNum, key) {
       const that = this
@@ -508,6 +545,13 @@ export default {
       params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
       params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
       params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
+      for(var i=0;i<this.edittableData.labels.length;i++){
+            var label=new Object;
+            label.labelId=this.edittableData.labels[i][1];
+            console.log(label.labelId)
+            this.labels.push(label);
+          }
+          params.append('labels',JSON.stringify(this.labels))
       this.$axios({
         method: 'post',
         headers: {
@@ -579,7 +623,6 @@ export default {
       var that = this;
       this.$refs[addExercise].validate((valid) => {
         if (valid) {
-          console.log()
           let params = new URLSearchParams();
           params.append('exerciseTitle', this.addexerciseData.exerciseTitle);
           params.append('exerciseCorrectTimes', this.addexerciseData.exerciseCorrectTimes);
@@ -623,7 +666,7 @@ export default {
       })
     },
 
-    getInfo(){
+    getFirstPointInfo(){
         let params = new URLSearchParams();
         this.$axios({
           method: 'post',
@@ -641,14 +684,14 @@ export default {
                 this.options.push(firstPoint);  
               }
               for(var i=0;i<this.options.length;i++){
-                this.getInfo2(i);
+                this.getSecondPointInfo(i);
               }
           })
           .catch((err) => {
             this.$message.error('失败1');
           })
        },
-       getInfo2(i){
+       getSecondPointInfo(i){
           let params = new URLSearchParams();
           params.append("firstPoint",this.options[i].label)
           this.$axios({
