@@ -7,32 +7,77 @@
          @click="handleAdd()"
         >添加选择题</el-button
         >
+        <span class="span-label">章节</span>
+         <el-select  placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%" v-model="searchChapterChoice" @change="searchChapter()">
+            <el-option
+            v-for="item in searchChapterOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+            </el-option>
+        </el-select>
+        <span class="span-label">第一知识点</span>
+        <el-select  placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%" v-model="searchFirstKnowledgeChoice" :disabled="searchFirstKnowledgePointVisiable" @change="searchFirstPoint()" >
+            <el-option
+            v-for="item in searchFirstKnowledgePointOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+            </el-option>
+        </el-select>
+        <span class="span-label">第二知识点</span>
+        <el-select  placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%" v-model="searchSecondKnowledgeChoice" :disabled="searchSecondKnowledgePointVisiable">
+            <el-option
+            v-for="item in searchSecondKnowledgePointOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+            </el-option>
+        </el-select>
+        <span class="span-label">教师用户姓名</span>
+        <el-select  placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%" v-model="searchTeacherUserId">
+            <el-option
+            v-for="item in teacherUserList"
+            :key="item.userId"
+            :label="item.userName"
+            :value="item.userId">
+            </el-option>
+        </el-select>
+
+        <el-button type="primary" size="mini" @click="searchChoiceQuestionInfo()" style="margin-left:2%">查询</el-button>
     </div>
-     <el-table :data="data" style="width: 100%" class="tableclass" stripe >
-      <el-table-column prop="choiceQuestionId" label="选择题编号"> </el-table-column>
-      <el-table-column prop="user.userName" label="创建人"> </el-table-column>
-      <el-table-column prop="choiceQuestionDescription" label="选择题描述"  :show-overflow-tooltip="true"> </el-table-column>
-      <el-table-column prop="questionLabels[0].chapter" label="选择题章节"> </el-table-column>
-      <el-table-column prop="questionLabels[0].firstKnowledgePoint" label="选择题一级知识点"> </el-table-column>
+     <el-table :data="data" style="width: 100%;font-size:12px" class="tableclass" stripe  :header-cell-style="{'text-align':'center'}" :row-style="{height:'20px'}" :cell-style="{padding:'0px'}" >
+      <el-table-column prop="choiceQuestionId" label="选择题编号" align="center" width="100px"> </el-table-column>
+      <el-table-column prop="user.userName" label="创建人" align="center"> </el-table-column>
+      <el-table-column prop="choiceQuestionDescription" label="选择题描述"  :show-overflow-tooltip="true" align="center"> </el-table-column>
+      <el-table-column prop="questionLabels[0].chapter" label="选择题章节" align="center"> </el-table-column>
+      <el-table-column prop="questionLabels[0].firstKnowledgePoint" label="选择题一级知识点" align="center"> </el-table-column>
       <el-table-column  label="选择题二级知识点" min-width="100%" :show-overflow-tooltip="true"> 
-          <template slot-scope="scope">
-              <div v-for="item in scope.row.questionLabels" :key="item.questionLabelId" style="margin-top:0px;margin-bottom:0px;display:inline;" >
-                    {{item.secondKnowledgePoint}}  
+          <template slot-scope="scope"> 
+              <div v-for="(item,index) in scope.row.questionLabels" :key="item.questionLabelId"  >
+                  <p v-if="index==3" align="center" style="margin-top:0px;margin-bottom:0px;display;">
+                      ...
+                  </p>
+                  <p v-if="index<3" align="center" style="margin-top:0px;margin-bottom:0px;display;">
+                    {{item.secondKnowledgePoint}}
+                  </p>
+                  <p v-if="index>3" style="margin-top:0px;margin-bottom:0px;display;">
+                  </p>
               </div>  
           </template>
       </el-table-column>
-      <el-table-column prop="choiceQuestionDifficulty" label="选择题难度"> </el-table-column>
+      <el-table-column prop="choiceQuestionDifficulty" label="选择题难度" align="center"> </el-table-column>
       <el-table-column prop="isPrivate" label="是否私有"> 
           <template slot-scope="scope">
-              <p v-if="scope.row.isPrivate===true">
+              <p v-if="scope.row.isPrivate===true" align="center">
                   私有
               </p>  
-              <p v-if="scope.row.isPrivate===false">
+              <p v-if="scope.row.isPrivate===false" align="center">
                   公有
               </p>  
           </template>
       </el-table-column>
-      <el-table-column label="操作" width="300px">
+      <el-table-column label="操作" width="300px" align="center">
         <template slot-scope="scope">
            <el-button
             type="primary"
@@ -151,7 +196,7 @@
 
     <!-- 修改选择题弹出框 -->
     <el-dialog title="修改选择题" :visible.sync="editChoiceQuestionVisible"  center>
-        <el-form :model="eChoiceQuestionInfo" ref="eChoiceQuestionInfo" label-width="80px"  :rules="submitRules">
+        <el-form :model="eChoiceQuestionInfo" ref="eChoiceQuestionInfo" label-width="80px"  :rules="editSubmitRules">
             <el-form-item prop="choiceQuestionDescription" label="题目描述" size="mini">
                 <el-input v-model="eChoiceQuestionInfo.choiceQuestionDescription" placeholder="题目描述" type="textarea" :autosize="true" style="resize:none;" >
                 </el-input>
@@ -235,52 +280,52 @@
 
     <!-- 选择题详情弹出框 -->
     <el-dialog title="选择题详情" :visible.sync="choiceQuestionShowVisible"  center>
-        <el-form :model="choiceQuestionInfo" ref="choiceQuestionInfo" label-width="100px" :label-position="'top'" >
+        <el-form :model="showChoiceQuestionInfo" ref="showChoiceQuestionInfo" label-width="100px" :label-position="'top'" >
             <el-form-item prop="choiceQuestionDescription" label="题目描述" size="mini">
-                <el-input v-model="choiceQuestionInfo.choiceQuestionDescription" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true" >
+                <el-input v-model="showChoiceQuestionInfo.choiceQuestionDescription" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true" >
                 </el-input>
             </el-form-item>
             <el-form-item prop="choiceQuestionStemA" label="题目A选项" size="mini">
-                <el-input v-model="choiceQuestionInfo.choiceQuestionStemA" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
+                <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemA" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
                 </el-input>
             </el-form-item>
             <el-form-item prop="choiceQuestionStemB" label="题目B选项" size="mini">
-                <el-input v-model="choiceQuestionInfo.choiceQuestionStemB" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
+                <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemB" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
                 </el-input>
             </el-form-item>
             <el-form-item prop="choiceQuestionStemC" label="题目C选项" size="mini">
-                <el-input v-model="choiceQuestionInfo.choiceQuestionStemC" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
+                <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemC" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
                 </el-input>
             </el-form-item>
             <el-form-item prop="choiceQuestionStemD" label="题目D选项" size="mini">
-                <el-input v-model="choiceQuestionInfo.choiceQuestionStemD" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
+                <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemD" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
                 </el-input>
             </el-form-item>
             <el-form-item prop="chapter" label="所属章节" size="mini">                                                              <!-- 初始化页面时不让他初始化没有对应的值 -->
-                <el-input v-model="choiceQuestionInfo.questionLabels[0].chapter" placeholder="所属章节" type="textarea" :autosize="true"  :disabled="true" v-if="choiceQuestionInfo.questionLabels.length>0">
+                <el-input v-model="showChoiceQuestionInfo.questionLabels[0].chapter" placeholder="所属章节" type="textarea" :autosize="true"  :disabled="true" v-if="choiceQuestionInfo.questionLabels.length>0">
                 </el-input>
             </el-form-item>
             <el-form-item prop="firstKnowledgePoint" label="第一知识点" size="mini">
-                <el-input v-model="choiceQuestionInfo.questionLabels[0].firstKnowledgePoint" placeholder="第一知识点" type="textarea" :autosize="true"  :disabled="true" v-if="choiceQuestionInfo.questionLabels.length>0">
+                <el-input v-model="showChoiceQuestionInfo.questionLabels[0].firstKnowledgePoint" placeholder="第一知识点" type="textarea" :autosize="true"  :disabled="true" v-if="choiceQuestionInfo.questionLabels.length>0">
                 </el-input>
             </el-form-item>
             <el-form-item prop="secondKnowledgePoint" label="第二知识点" size="mini"> 
-                <p v-for="(item,index) in choiceQuestionInfo.questionLabels" :key="index" style="margin-left:10px;float:left;margin-top:0px;color:black;font-size:12px;margin-bottom: 0px;">
+                <p v-for="(item,index) in showChoiceQuestionInfo.questionLabels" :key="index" style="margin-left:10px;float:left;margin-top:0px;color:black;font-size:12px;margin-bottom: 0px;">
                     {{item.secondKnowledgePoint}}
                 </p>
             </el-form-item>
             <el-form-item >
                 <el-form inline>
                     <el-form-item  label="是否私有" size="mini"> 
-                        <el-input v-model="choiceQuestionInfo.isPrivate" placeholder="是否私有" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
+                        <el-input v-model="showChoiceQuestionInfo.isPrivate" placeholder="是否私有" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
                         </el-input>
                     </el-form-item>
                     <el-form-item  label="题目难度" size="mini"> 
-                        <el-input v-model="choiceQuestionInfo.choiceQuestionDifficulty" placeholder="题目难度" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
+                        <el-input v-model="showChoiceQuestionInfo.choiceQuestionDifficulty" placeholder="题目难度" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
                         </el-input>
                     </el-form-item>
                     <el-form-item  label="题目正确选项" size="mini"> 
-                        <el-input v-model="choiceQuestionInfo.choiceQuestionCorrectOption" placeholder="题目正确选项" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
+                        <el-input v-model="showChoiceQuestionInfo.choiceQuestionCorrectOption" placeholder="题目正确选项" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
                         </el-input>
                     </el-form-item>
                 </el-form>
@@ -334,6 +379,23 @@ export default {
                 },
                 questionLabels:[] //下拉框选择(多选)
             },
+            //详情用选择题信息
+            showChoiceQuestionInfo:{
+                choiceQuestionId:'',
+                choiceQuestionDescription:'',
+                choiceQuestionStemA:'',
+                choiceQuestionStemB:'',
+                choiceQuestionStemC:'',
+                choiceQuestionStemD:'',
+                choiceQuestionCorrectOption:'',
+                choiceQuestionDifficulty:'',
+                isPrivate:'',
+                user:{
+                    userId:'',
+                    userName:'',
+                },
+                questionLabels:[] //下拉框选择(多选)
+            },
             //添加选择题的校验
             submitRules: {
                 choiceQuestionDescription: [
@@ -352,18 +414,46 @@ export default {
                   
                 ],
             },
-            choiceQuestionList:[],
+            //修改选择题的校验
+            editSubmitRules: {
+                choiceQuestionDescription: [
+                  { required: true, message: '请输入标题', trigger: 'blur' },
+                  { min: 1, max: 300, message: '长度在 1 到 300 个字符', trigger: 'blur' }
+                ],
+                questionLabels: [
+                  { required: true, message: '请选择标签', trigger: 'blur' },
+                ],
+                choiceQuestionDifficulty: [
+                  { required: true, message: '请选择难度', trigger: 'blur' },
+                
+                ],
+                isPrivate: [
+                  { required: true, message: '请选择是否私有', trigger: 'blur' },
+                  
+                ],
+            },
+            teacherUserList:[],//教师用户列表
+            choiceQuestionList:[],//选择题列表
             chapterList:[],//chapter数组
             chapterChoice:'',//下拉框选择
             chapterOptions:[],//参数为label value
+            searchChapterOptions:[],//查询用章节信息
             firstKnowledgePointList:[],//firstKnowledgePoint数组
             firstKnowledgePointChoice:'',//下拉框选择
             firstKnowledgePointOptions:[],//参数为label value
+            searchFirstKnowledgePointOptions:[],//查询用第一知识点
             secondKnowledgePointList:[],//secondKnowledgePoint数组
             secondKnowledgePointOptions:[],//参数为label value
+            searchSecondKnowledgePointOptions:[],//查询用第二知识点
             firstKnowledgePointVisiable:true,//第一知识点下拉框能否使用 true为禁用
             secondKnowledgePointVisiable:true,//第二知识点下拉框能否使用 true为禁用
             editSecondKnowledgePointVisiable:false,//修改选择题信息时下拉框能否使用 true为禁用
+            searchChapterChoice:'',//查询时的章节选择
+            searchFirstKnowledgeChoice:'',//查询时的第一知识点选择
+            searchSecondKnowledgeChoice:'',//查询时的第二知识点选择
+            searchTeacherUserId:'',//查询时的教师用户名称选择
+            searchFirstKnowledgePointVisiable:true,//查询时第一知识点下拉框能否使用 true为禁用
+            searchSecondKnowledgePointVisiable:true,//查询时第二知识点下拉框能否使用 true为禁用
             //表示ABCD四个选项
             choice:[
             {
@@ -430,6 +520,7 @@ export default {
                     value:10,
                 },
             ],
+            //下拉选择是否公有或私有
             isPrivateOption:[
                 {
                     value:true,
@@ -453,7 +544,7 @@ export default {
             //修改选择题弹出框
             editChoiceQuestionVisible:false,
             
-            pageSize: 9,
+            pageSize: 4,
             currentPage: 1,
             kongge:" ",
         }
@@ -462,9 +553,13 @@ export default {
     mounted:function(){
         //获取选择题标签信息
         this.getQuestionLabelInfo();
+        //获取查询选择题标签信息
+        this.getSearchQuestionLabelInfo();
         //获取选择题信息
-        this.getChoiceQuestionInfo();
-        //获取教师用户信息
+        this.searchChoiceQuestionInfo();
+        //获取当前教师用户信息
+        this.getCurrentTeacherUserInfo();
+        //获取全部教师信息
         this.getTeacherUserInfo();
     },
     computed: {
@@ -474,6 +569,98 @@ export default {
     },
     
     methods:{
+        //获取全部教师信息 
+        getTeacherUserInfo(){
+            let params = new URLSearchParams();
+            this.$axios({
+                method: 'post',
+                headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+                },
+                url: '/user/queryTeacherUserInfo',
+                data: params
+            })
+            .then((res) => {
+                var teacherUser=new Object;
+                teacherUser.userId='';
+                teacherUser.userName='';
+                this.teacherUserList=res.data;
+                this.teacherUserList.unshift(teacherUser);
+            })
+            .catch((err) => {
+            this.$message.error('系统错误请稍后再尝试');
+
+            })
+        },
+        //点击查询选择题信息  这里他把=0也识别为''会用true所以加上 userId为0也会传0
+        searchChoiceQuestionInfo(){
+            let params=new URLSearchParams();
+            if(this.searchTeacherUserId==''){
+                params.append("userId",0);
+            }else{
+                params.append("userId",this.searchTeacherUserId);
+            }
+            if(this.searchChapterChoice==''&&this.searchChapterChoice!='0'||this.searchChapterChoice==' '){
+                params.append("chapter",'');
+            }else{
+                params.append("chapter",this.searchChapterOptions[this.searchChapterChoice].label);   
+            }
+            if(this.searchFirstKnowledgeChoice==''&&this.searchFirstKnowledgeChoice!='0'||this.searchFirstKnowledgeChoice==' '){
+                params.append("firstKnowledge",'');
+            }else{
+                params.append("firstKnowledge",this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice].label);
+            }
+            if(this.searchSecondKnowledgeChoice==''||this.searchSecondKnowledgeChoice==' '){
+                params.append("questionLabelId",0);
+            }else{
+                params.append("questionLabelId",this.searchSecondKnowledgeChoice);
+            }
+            this.$axios({
+                method: 'post',
+                headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+                },
+                url: '/choiceQuestion/queryChoiceQuestionInfoBySearchInfo',
+                data: params
+            })
+            .then((res) => {
+                this.currentPage=1;
+                this.choiceQuestionList=res.data;
+            })
+            .catch((err) => {
+            this.$message.error('查询信息错误');
+
+            })
+        },
+        //查询时点击章节信息
+        searchChapter(){
+            //不为空时 查询时第一知识点可以使用 第二知识点禁用 第一知识点和第二知识点选择为空
+            if(this.searchChapterOptions[this.searchChapterChoice].label!=' '){
+                this.searchFirstKnowledgePointVisiable=false;
+                this.searchSecondKnowledgePointVisiable=true;
+                this.searchSecondKnowledgeChoice='';
+                this.searchFirstKnowledgeChoice='';
+                //获取第一知识点的数据写在下拉框数据里
+                this.getSearchFirstKnowledgePointInfo(this.searchChapterOptions[this.searchChapterChoice].label);
+            }else{
+                this.searchFirstKnowledgePointVisiable=true;
+                this.searchSecondKnowledgePointVisiable=true;
+                this.searchSecondKnowledgeChoice='';
+                this.searchFirstKnowledgeChoice='';
+            }   
+        },
+        //查询时点击第一知识点
+        searchFirstPoint(){
+            //查询时第二知识点可以使用  第二知识点选择为空
+            if(this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice].label!=' '){
+                this.searchSecondKnowledgePointVisiable=false;
+                this.searchSecondKnowledgeChoice='';
+                this.getSearchSecondKnowledgePointInfo(this.searchChapterOptions[this.searchChapterChoice].label,this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice].label)
+            }else{
+                this.searchSecondKnowledgePointVisiable=true;
+                this.searchSecondKnowledgeChoice='';
+            }
+        },
         //跳转页面调用
         handleCurrent (val) {
             this.currentPage = val;
@@ -485,7 +672,7 @@ export default {
             this.firstKnowledgePointChoice='';
             this.secondKnowledgePointChoice=[];
             //获取第一知识点的数据写在下拉框数据里
-            this.getFirstKnowledgePointInfo();
+            this.getFirstKnowledgePointInfo(this.chapterOptions[this.chapterChoice].label);
         },
         //添加信息点击第一知识点
         addFirstKnowledgePointClick(){
@@ -494,20 +681,20 @@ export default {
             this.secondKnowledgePointChoice=[];
             this.choiceQuestionInfo.questionLabels=[];
             //获取第二知识点的数据写在下拉框数据里
-            this.getSecondKnowledgePointInfo();
+            this.getSecondKnowledgePointInfo(this.chapterOptions[this.chapterChoice].label,this.firstKnowledgePointOptions[this.firstKnowledgePointChoice].label);
         },
         //修改信息点击章节
         editChapterClick(){
             this.editSecondKnowledgePointVisiable=true;
             this.eChoiceQuestionInfo.questionLabels=[];
             //获取第一知识点的数据写在下拉框数据里
-            this.getFirstKnowledgePointInfo();
+            this.getFirstKnowledgePointInfo(this.chapterOptions[this.chapterChoice].label);
         },
         editFirstKnowledgePointClick(){
             this.editSecondKnowledgePointVisiable=false;
             this.eChoiceQuestionInfo.questionLabels=[];
             //获取第二知识点的数据写在下拉框数据里
-            this.getSecondKnowledgePointInfo();
+            this.getSecondKnowledgePointInfo(this.chapterOptions[this.chapterChoice].label,this.firstKnowledgePointOptions[this.firstKnowledgePointChoice].label);
         },
         //添加选择题
         addChoiceQuestionInfo(choiceQuestionInfo){
@@ -557,7 +744,7 @@ export default {
                         .then((res)=> {
                             this.addChoiceQuestionVisible=false;
                             if(res.data==true){
-                                this.getChoiceQuestionInfo();
+                                this.searchChoiceQuestionInfo();
                                 this.$message.success('添加成功');
                             }else{
                                 this.$message.error('添加失败');
@@ -640,7 +827,7 @@ export default {
                         .then((res)=> {
                             this.editChoiceQuestionVisible=false;
                             if(res.data==true){
-                                this.getChoiceQuestionInfo();
+                                this.searchChoiceQuestionInfo();
                                 this.$message.success('修改成功');
                             }else{
                                 this.$message.error('修改失败');
@@ -699,8 +886,6 @@ export default {
         },
         //控制修改弹出框 获取对应信息并赋值
         handleEdit(row){
-            //选择框可以使用
-
             //清空数据
             this.chapterChoice='';
             this.choice[0].input='';
@@ -742,39 +927,20 @@ export default {
         },
         //控制详情弹出框并赋值
         handleShow(row){
-            this.choiceQuestionInfo.choiceQuestionDescription=row.choiceQuestionDescription;
-            this.choiceQuestionInfo.choiceQuestionStemA=row.choiceQuestionStemA;
-            this.choiceQuestionInfo.choiceQuestionStemB=row.choiceQuestionStemB;
-            this.choiceQuestionInfo.choiceQuestionStemC=row.choiceQuestionStemC;
-            this.choiceQuestionInfo.choiceQuestionStemD=row.choiceQuestionStemD;
-            this.choiceQuestionInfo.choiceQuestionCorrectOption=row.choiceQuestionCorrectOption;
-            this.choiceQuestionInfo.choiceQuestionDifficulty=row.choiceQuestionDifficulty;
+            this.showChoiceQuestionInfo.choiceQuestionDescription=row.choiceQuestionDescription;
+            this.showChoiceQuestionInfo.choiceQuestionStemA=row.choiceQuestionStemA;
+            this.showChoiceQuestionInfo.choiceQuestionStemB=row.choiceQuestionStemB;
+            this.showChoiceQuestionInfo.choiceQuestionStemC=row.choiceQuestionStemC;
+            this.showChoiceQuestionInfo.choiceQuestionStemD=row.choiceQuestionStemD;
+            this.showChoiceQuestionInfo.choiceQuestionCorrectOption=row.choiceQuestionCorrectOption;
+            this.showChoiceQuestionInfo.choiceQuestionDifficulty=row.choiceQuestionDifficulty;
             if(row.isPrivate==true){
-                this.choiceQuestionInfo.isPrivate="私有";
+                this.showChoiceQuestionInfo.isPrivate="私有";
             }else{
-                this.choiceQuestionInfo.isPrivate="公有";
+                this.showChoiceQuestionInfo.isPrivate="公有";
             }
-            this.choiceQuestionInfo.questionLabels=row.questionLabels;
+            this.showChoiceQuestionInfo.questionLabels=row.questionLabels;
             this.choiceQuestionShowVisible=true;
-        },
-        //获取用户可以查询的选择题信息(不用传参数)
-        getChoiceQuestionInfo(){
-            let params = new URLSearchParams();
-            this.$axios({
-                method: 'post',
-                headers: {
-                            "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                url: '/choiceQuestion/queryChoiceQuestionInfo',
-                data: params
-            })
-            .then((res)=> {
-                this.choiceQuestionList=res.data;
-            })
-            .catch((err)=> {
-                this.$message.error('错误');
-                
-            })
         },
         //获取标签信息(获取chapter)
         getQuestionLabelInfo(){
@@ -788,6 +954,7 @@ export default {
                 data: params
             })
             .then((res)=> {
+                //初始化
                 this.chapterList=res.data;
                 for(var i=0;i<this.chapterList.length;i++){
                     var chapter=new Object();
@@ -802,10 +969,41 @@ export default {
                 
             })
         },
-         //获取第一知识点
-        getFirstKnowledgePointInfo(){
+        //获取查询标签信息(获取chapter)
+        getSearchQuestionLabelInfo(){
             let params = new URLSearchParams();
-            params.append("chapter",this.chapterOptions[this.chapterChoice].label);
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/queryChapterInfo',
+                data: params
+            })
+            .then((res)=> {
+                //初始化
+                this.chapterList=res.data;
+                if(this.chapterList.length>0){
+                    var chapter=new Object();
+                    chapter=' ';
+                    this.chapterList.unshift(chapter);
+                }
+                for(var i=0;i<this.chapterList.length;i++){
+                    var chapter=new Object();
+                    chapter.label=this.chapterList[i];
+                    chapter.value=i;
+                    this.searchChapterOptions.push(chapter);
+                }
+                
+            })
+            .catch((err)=> {
+                this.$message.error('获取章节信息错误'); 
+            })
+        },
+         //获取第一知识点信息
+        getFirstKnowledgePointInfo(chapter){
+            let params = new URLSearchParams(chapter);
+            params.append("chapter",chapter);
             this.$axios({
                 method: 'post',
                 headers: {
@@ -815,14 +1013,49 @@ export default {
                 data: params
             })
             .then((res)=> {
-                //给下拉框内容清空
-               this.firstKnowledgePointOptions=[];
-               this.firstKnowledgePointList=res.data;
+                //给下拉框内容清空 并初始化
+                this.firstKnowledgePointOptions=[];
+                this.firstKnowledgePointList=res.data;
                 for(var i=0;i<this.firstKnowledgePointList.length;i++){
                     var firstKnowledgePoint=new Object();
                     firstKnowledgePoint.label=this.firstKnowledgePointList[i];
                     firstKnowledgePoint.value=i;
                     this.firstKnowledgePointOptions.push(firstKnowledgePoint);
+                }
+                
+
+            })
+            .catch((err)=> {
+                this.$message.error('获取第一知识点错误');
+                
+            })
+        },
+        //获取查询第一知识点信息
+        getSearchFirstKnowledgePointInfo(chapter){
+            let params = new URLSearchParams(chapter);
+            params.append("chapter",chapter);
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/queryFirstKnowledgePointInfoByChapter',
+                data: params
+            })
+            .then((res)=> {
+                //给下拉框内容清空 并初始化
+                this.searchFirstKnowledgePointOptions=[];
+                this.firstKnowledgePointList=res.data;
+                if(this.firstKnowledgePointList.length>0){
+                    var firstKnowledgePoint=new Object();
+                    firstKnowledgePoint=' ';
+                    this.firstKnowledgePointList.unshift(firstKnowledgePoint);
+                }
+                for(var i=0;i<this.firstKnowledgePointList.length;i++){
+                    var firstKnowledgePoint=new Object();
+                    firstKnowledgePoint.label=this.firstKnowledgePointList[i];
+                    firstKnowledgePoint.value=i;
+                    this.searchFirstKnowledgePointOptions.push(firstKnowledgePoint);
                 }
             })
             .catch((err)=> {
@@ -831,10 +1064,10 @@ export default {
             })
         },
         //获取第二知识点
-        getSecondKnowledgePointInfo(){
+        getSecondKnowledgePointInfo(chapter,firstKnowledgePoint){
             let params = new URLSearchParams();
-            params.append("chapter",this.chapterOptions[this.chapterChoice].label);
-            params.append("firstKnowledgePoint",this.firstKnowledgePointOptions[this.firstKnowledgePointChoice].label);
+            params.append("chapter",chapter);
+            params.append("firstKnowledgePoint",firstKnowledgePoint);
             this.$axios({
                 method: 'post',
                 headers: {
@@ -844,9 +1077,10 @@ export default {
                 data: params
             })
             .then((res)=> {
-               //给下拉框内容清空
-               this.secondKnowledgePointOptions=[];
-               this.secondKnowledgePointList=res.data;
+                //给下拉框内容清空 并初始化
+                this.secondKnowledgePointOptions=[];
+                this.secondKnowledgePointList=res.data;
+                
                 //重新赋值
                 for(var i=0;i<this.secondKnowledgePointList.length;i++){
                     var secondKnowledgePoint=new Object();
@@ -854,16 +1088,51 @@ export default {
                     secondKnowledgePoint.value=this.secondKnowledgePointList[i].questionLabelId;
                     this.secondKnowledgePointOptions.push(secondKnowledgePoint);
                 }
-                 
-               
             })
             .catch((err)=> {
                 this.$message.error('获取第二知识点错误');
                 
             })
         },
-        //获取教师用户信息
-        getTeacherUserInfo () {
+        //获取查询第二知识点
+        getSearchSecondKnowledgePointInfo(chapter,firstKnowledgePoint){
+            let params = new URLSearchParams();
+            params.append("chapter",chapter);
+            params.append("firstKnowledgePoint",firstKnowledgePoint);
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/querySecondKnowledgePointInfoByChapter',
+                data: params
+            })
+            .then((res)=> {
+                //给下拉框内容清空 并初始化
+                this.searchSecondKnowledgePointOptions=[];
+                this.secondKnowledgePointList=res.data;
+                if(this.secondKnowledgePointList.length>0){
+                    var secondKnowledgePoint=new Object();
+                    secondKnowledgePoint.secondKnowledgePoint=' ';
+                    secondKnowledgePoint.questionLabelId=0
+                    this.secondKnowledgePointList.unshift(secondKnowledgePoint);
+                }
+                //重新赋值
+                for(var i=0;i<this.secondKnowledgePointList.length;i++){
+                    var secondKnowledgePoint=new Object();
+                    secondKnowledgePoint.label=this.secondKnowledgePointList[i].secondKnowledgePoint;
+                    secondKnowledgePoint.value=this.secondKnowledgePointList[i].questionLabelId;
+                    this.searchSecondKnowledgePointOptions.push(secondKnowledgePoint);
+                }
+                
+            })
+            .catch((err)=> {
+                this.$message.error('获取第二知识点错误');
+                
+            })
+        },
+        //获取当前教师用户信息
+        getCurrentTeacherUserInfo () {
         let params = new URLSearchParams();
         this.$axios({
             method: 'post',
@@ -874,7 +1143,6 @@ export default {
             data: params
         })
             .then((res) => {
-               
                 this.choiceQuestionInfo.user.userId=res.data.userId;
                 this.choiceQuestionInfo.user.userName=res.data.userName;
             })
@@ -883,7 +1151,7 @@ export default {
 
             })
         },
-        //修改时获取第一知识点
+        //修改时获取第一知识点初始化
         getEditFirstKnowledgePointInfo(row){
             let params = new URLSearchParams();
             params.append("chapter",this.chapterOptions[this.chapterChoice].label);
@@ -911,7 +1179,7 @@ export default {
                         if(this.firstKnowledgePointOptions[i].label==row.questionLabels[0].firstKnowledgePoint){
                             this.firstKnowledgePointChoice=this.firstKnowledgePointOptions[i].value;
                         }
-                    }
+                }
 
                     this.getEditSecondKnowledgePointInfo(row);
             })
@@ -920,7 +1188,7 @@ export default {
                 
             })
         },
-        //修改时获取第二知识点
+        //修改时获取第二知识点初始化
         getEditSecondKnowledgePointInfo(row){
             
             let params = new URLSearchParams();
@@ -981,5 +1249,10 @@ export default {
 .pagination {
   display: flex;
   justify-content: center;
+}
+/* 页面上面的下拉选择框的css样式 */
+.handle-select{
+  width: 200px;
+  display: inline-block;
 }
 </style>
