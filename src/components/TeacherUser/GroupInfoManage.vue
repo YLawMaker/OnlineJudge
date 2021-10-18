@@ -83,18 +83,21 @@
         :before-close="handleClose"
         :close-on-click-modal="false"
       >
-        <el-form>
-          <el-form-item label="名称">
-            <el-input></el-input>
+        <el-form
+          ref="addGroup"
+          :model="addGroupData"
+          :rules="addRules"
+          class="addGroupForm"
+        >
+          <el-form-item label="名称" prop="groupName">
+            <el-input v-model="addGroupData.groupName"></el-input>
           </el-form-item>
           <el-form-item label="是否设置为私有">
             <el-radio v-model="radio" label="1">是</el-radio>
             <el-radio v-model="radio" label="0">否</el-radio>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="add('addExerciseLabel')"
-              >添加</el-button
-            >
+            <el-button type="primary" @click="add('addGroup')">添加</el-button>
             <el-button @click="handleClose">取消</el-button>
           </el-form-item>
         </el-form>
@@ -113,7 +116,15 @@ export default {
       currentPage: 1,
       pagesize: 9,
       radio: '1',
-      edittableDataVisible_add: false
+      edittableDataVisible_add: false,
+      addGroupData: {
+        groupName: ''
+      },
+      addRules: {
+        groupName: [
+          { required: true, message: '请输入分组名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度为1~20', trigger: 'blur' }]
+      },
     }
 
   },
@@ -152,6 +163,7 @@ export default {
     },
     handleClose (done) {
       this.edittableDataVisible_add = false
+      this.addGroupData = new Object();
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -176,7 +188,79 @@ export default {
         that.currentPage = pageNum;
         that.select_word = key
       })
-    }
+    },
+    add (addGroup) {
+      this.$refs[addGroup].validate((valid) => {
+        if (valid) {
+          let params = new URLSearchParams();
+          params.append('groupName', this.addGroupData.groupName);
+          this.$axios({
+            method: 'post',
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            url: '/group/addGroupInfo',
+            data: params
+          }).then((res) => {
+            if (res.data == '0') {
+              // console.log(res.data);
+              this.$message.error('分组创建失败');
+              this.edittableDataVisible_add = false;
+              this.getGroupInfo(this.currentPage, '');
+            } else {
+              this.$message.success('分组创建成功');
+              this.edittableDataVisible_add = false;
+              this.getGroupInfo(this.currentPage, '');
+              this.addGroupData = new Object()
+            }
+          })
+        } else {
+          this.$message.error('添加失败，请检查输入的内容后后重试');
+        }
+      })
+    },
+    deleteConfirm (row) {
+      this.$confirm('此操作将永久删除该分组, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then((action) => {
+        if (action === 'confirm') {
+          this.deleteGroup(row.groupId);
+        }
+      }).catch((resp) => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+        // console.log(resp);
+      });
+    },
+    deleteGroup (groupId) {
+      let params = new URLSearchParams();
+      params.append('groupId', groupId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/group/deleteGroupInfo',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.$message.success('分组删除成功');
+          this.getGroupInfo(this.currentPage, '');
+        } else if (res.data == false) {
+          this.$message.error('分组删除失败');
+          this.getGroupInfo(this.currentPage, '');
+        } else {
+          this.$message.error('发生了错误');
+          this.getGroupInfo(this.currentPage, '');
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
+    },
   }
 }
 </script>

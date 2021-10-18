@@ -18,8 +18,57 @@
       <el-table :data="groupUserList">
         <el-table-column prop="userAccount" label="Account"></el-table-column>
         <el-table-column prop="userName" label="Name"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="danger"
+              @click.native.prevent="deleteConfirm(scope.row)"
+              size="small"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
+      <div class="block">
+        <el-pagination
+          @current-change="handleCurrent"
+          :current-page.sync="currentPage"
+          :page-size="pagesize"
+          layout="total,prev, pager, next"
+          :total="this.groupUserList.length"
+          v-if="this.groupUserList.length != 0"
+        >
+        </el-pagination>
+      </div>
+      <el-dialog
+        title="添加用户"
+        :visible.sync="edittableDataVisible_add"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
+      >
+        <el-form
+          ref="addGroupUser"
+          :model="addGroupUserData"
+          class="addGroupUserForm"
+        >
+          <div>
+            将学生学号整列复制过来，然后要求他们用学号做UserAccount注册,请保证在一列显示
+          </div>
+          <el-form-item>
+            <el-input
+              type="textarea"
+              :rows="12"
+              v-model="addGroupUserData.groupUserList"
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="add('addGroupUser')"
+              >添加</el-button
+            >
+            <el-button @click="handleClose">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -31,7 +80,12 @@ export default {
       groupUserList: [],
       searchKeyFromInfoManage: '',
       pageFromInfoManage: '',
-
+      currentPage: 1,
+      pagesize: 8,
+      edittableDataVisible_add: false,
+      addGroupUserData: {
+        groupUserList: ''
+      },
     }
   },
   mounted: function () {
@@ -42,7 +96,23 @@ export default {
     // }
     this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage)
   },
+  computed: {
+    data () {
+      return this.groupUserList.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
+    }
+
+  },
   methods: {
+    handleCurrent (val) {
+      this.currentPage = val;
+    },
+    handleClose (done) {
+      this.edittableDataVisible_add = false
+      this.addGroupUserData = new Object();
+    },
+    addDialogvisiable () {
+      this.edittableDataVisible_add = true
+    },
     getGroupUserInfo (groupId, page, searchKey) {
       const that = this
       let params = new URLSearchParams();
@@ -62,6 +132,45 @@ export default {
     },
     goBack (pageFromInfoManage, searchKeyFromInfoManage) {
       this.$router.push({ name: 'GroupInfoManage', params: { page: pageFromInfoManage, key: searchKeyFromInfoManage } })
+    },
+    add (addGroupUser) {
+      let userList = this.addGroupUserData.groupUserList.split(/[(\r\n)\r\n]+/)
+      userList.forEach((item, index) => { // 删除空项
+        if (!item) {
+          userList.splice(index, 1);
+        }
+      })
+      userList = Array.from(new Set(userList)); // 去重
+      console.log(userList);
+      console.log(this.$route.query.groupIdFromInfoManage)
+      this.$refs[addGroupUser].validate((valid) => {
+        if (valid) {
+          let params = new URLSearchParams();
+          params.append('userGroupInfo', JSON.stringify([userList, this.$route.query.groupIdFromInfoManage]));
+          this.$axios({
+            method: 'post',
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            url: '/userGroup/addUserGroupInfo',
+            data: params
+          }).then((res) => {
+            if (res.data == '0') {
+              // console.log(res.data);
+              this.$message.error('用户添加失败');
+              this.edittableDataVisible_add = false;
+              this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage);
+            } else {
+              this.$message.success('用户添加成功');
+              this.edittableDataVisible_add = false;
+              this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage);
+              this.addGroupUserData = new Object()
+            }
+          })
+        } else {
+          this.$message.error('添加失败，请检查输入的内容后后重试');
+        }
+      })
     }
   }
 }
@@ -72,5 +181,11 @@ export default {
   text-align: right;
   margin-top: 10px;
   margin-right: 25px;
+}
+.block {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

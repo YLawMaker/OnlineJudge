@@ -275,7 +275,7 @@ export default {
         type: 'warning'
       }).then((action) => {
         if (action === 'confirm') {
-          this.deleteClass(row.exerciseLabelId);
+          this.deleteLabel(row.exerciseLabelId);
         }
       }).catch((resp) => {
         this.$message({
@@ -285,7 +285,7 @@ export default {
         console.log(resp);
       });
     },
-    deleteClass (exerciseLabelId) {
+    deleteLabel (exerciseLabelId) {
       let params = new URLSearchParams();
       params.append('exerciseLabelId', exerciseLabelId);
       this.$axios({
