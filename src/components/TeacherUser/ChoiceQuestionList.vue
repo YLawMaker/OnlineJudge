@@ -317,7 +317,7 @@ export default {
                 },
                 questionLabels:[] //下拉框选择(多选)
             },
-            //修改用下选择题信息
+            //修改用弹出框选择题信息
             eChoiceQuestionInfo:{
                 choiceQuestionId:'',
                 choiceQuestionDescription:'',
