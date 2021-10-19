@@ -31,12 +31,12 @@
 
         <div class="loginbutton">
           <span
-            style="margin-right: 3%; cursor: pointer"
-            el-dropdown-link
+            style="margin-right: 3%;font-size:16px;cursor:pointer;/*鼠标悬停变小手*/"
             @click="gotoUserInfo()"
             >{{ userName }}</span
           >
-          <el-button plain @click="userLogin()">登录 </el-button>
+          <el-button plain @click="userLogin()" v-if="userName==''" style="margin-top:-5px">登录 </el-button>
+          <span  v-if="userName!=''" @click="exitLogin()" style="float:right;font-size:16px;cursor:pointer;/*鼠标悬停变小手*/">退出登录</span>
         </div>
       </el-menu>
     </el-header>
@@ -99,7 +99,7 @@ export default {
           this.$message.error("请先登录用户");
           this.$router.push('/userLogin')
       }else{
-          this.$router.push({ path: '/examList', query: { userId: this.userId } });
+          this.$router.push('/examList');
       }
     },
     //跳转到用户登录界面
@@ -119,7 +119,7 @@ export default {
         data: params
       })
         .then((res) => {
-          if (res.data != 0) {
+          if (res.data != false) {
             this.userName = res.data.userName;
             this.userId = res.data.userId;
           }
@@ -132,6 +132,25 @@ export default {
     //跳转到用户信息界面
     gotoUserInfo () {
       this.$router.push({ path: '/userInfo', query: { userId: this.userId } })
+    },
+    exitLogin(){
+        let params = new URLSearchParams();
+        this.$axios({
+            method: 'post',
+            headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                        },
+            url: '/user/exitLogin',
+            data: params
+        })
+        .then((res)=> {
+            alert("退出成功");
+            this.userName='';
+        })
+        .catch((err)=> {
+            this.$message.error('删除选择题错误');
+            
+        })
     },
 
   }
@@ -154,6 +173,6 @@ export default {
 }
 .loginbutton {
   text-align: right;
-  padding: 7.5px 10px 0px 0px;
+  padding: 15px 10px 0px 0px;
 }
 </style>

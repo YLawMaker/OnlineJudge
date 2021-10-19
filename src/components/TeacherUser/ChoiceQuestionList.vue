@@ -91,7 +91,7 @@
           >
           <el-button
             type="danger"
-            @click="handleDelect(scope.row)"
+            @click="handleDelete(scope.row)"
             >删除</el-button
           >
         </template>
@@ -332,7 +332,18 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="choiceQuestionShowVisible = false">取 消</el-button>
+            <el-button @click="choiceQuestionShowVisible = false">确定</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 选择题删除弹出框 -->
+    <el-dialog title="删除选择题" :visible.sync="deleteChoiceQuestionVisible"  center width="400px">
+        <p style="text-align:center">
+            是否确定删除改选择题
+        </p>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="deleteChoiceQuestionVisible = false">取 消</el-button>
+            <el-button @click="deleteCohiceQuestionInfo()">确定删除</el-button>
         </div>
     </el-dialog>
   </div>
@@ -396,6 +407,8 @@ export default {
                 },
                 questionLabels:[] //下拉框选择(多选)
             },
+            //删除用选择题id
+            deleteChoiceQuestionId:'',
             //添加选择题的校验
             submitRules: {
                 choiceQuestionDescription: [
@@ -543,10 +556,10 @@ export default {
             choiceQuestionShowVisible:false,
             //修改选择题弹出框
             editChoiceQuestionVisible:false,
-            
+            //删除选择题弹出框视图
+            deleteChoiceQuestionVisible:false,
             pageSize: 4,
             currentPage: 1,
-            kongge:" ",
         }
     },
     
@@ -861,6 +874,35 @@ export default {
             }
             });
         },
+        ///删除选择题
+        deleteCohiceQuestionInfo(){
+            let params = new URLSearchParams();
+            params.append("choiceQuestionId",this.deleteChoiceQuestionId)
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/choiceQuestion/deleteChoiceQuestionInfoByChoiceQuestionId',
+                data: params
+            })
+            .then((res)=> {
+                if (res.data == true) {
+                     this.$message.success('选择题删除成功');
+                     this.searchChoiceQuestionInfo();
+                     this.deleteChoiceQuestionVisible=false;
+                } else if (res.data == false) {
+                    this.$message.error('选择题删除失败');
+                } else {
+                    this.$message.error('删除选择题错误');
+                }
+                
+            })
+            .catch((err)=> {
+                this.$message.error('删除选择题错误');
+                
+            })
+        },
          //控制添加弹出框 重新赋值为空
         handleAdd(){
             //选择框禁用
@@ -941,6 +983,11 @@ export default {
             }
             this.showChoiceQuestionInfo.questionLabels=row.questionLabels;
             this.choiceQuestionShowVisible=true;
+        },
+        //控制删除弹出框并赋值
+        handleDelete(row){
+            this.deleteChoiceQuestionVisible=true;
+            this.deleteChoiceQuestionId=row.choiceQuestionId;
         },
         //获取标签信息(获取chapter)
         getQuestionLabelInfo(){

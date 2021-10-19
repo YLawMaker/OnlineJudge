@@ -3,10 +3,10 @@
     <div class="showTeacherName">
       <div :class="{ teacherNameDiv1: !edit, teacherNameDiv2: edit }">
         <label>教师姓名：</label>
-        <span v-show="!edit">{{ teacher.teacherName }}</span>
+        <span v-show="!edit">{{ teacherUser.teacherUserName }}</span>
         <el-input
           v-show="edit"
-          v-model="teacher.teacherName"
+          v-model="teacherUser.teacherUserName"
           style="width: 300px"
           min
         ></el-input>
@@ -16,7 +16,7 @@
         <el-button
           type="primary"
           v-show="edit"
-          @click="(edit = !edit), saveTeacherNmae()"
+          @click="(edit = !edit), saveTeacherName()"
           >保存</el-button
         >
         <el-button type="primary" v-show="edit" @click="edit = !edit"
@@ -41,9 +41,9 @@
       center
     >
       <el-form :model="password" label-width="100px" :rules="passwordRules">
-        <el-form-item prop="teacherPassword" label="新密码" size="mini">
+        <el-form-item prop="teacherUserPassword" label="新密码" size="mini">
           <el-input
-            v-model="password.teacherPassword"
+            v-model="password.teacherUserPassword"
             placeholder="新密码"
             type="password"
           >
@@ -52,11 +52,11 @@
         <el-form-item
           size="mini"
           label="确认新密码"
-          prop="teacherPasswordAgain"
+          prop="teacherUserPasswordAgain"
         >
           <el-input
             placeholder="请确认新密码"
-            v-model="password.teacherPasswordAgain"
+            v-model="password.teacherUserPasswordAgain"
             type="password"
           >
           </el-input>
@@ -81,13 +81,13 @@ export default {
       modifyTeacherPaswordVisiable: false,
       edit: false,
       password: {
-        teacherPassword: '',
-        teacherPasswordAgain: '',
+        teacherUserPassword: '',
+        teacherUserPasswordAgain: '',
       },
 
-      teacher: {
-        teacherId: '',
-        teacherName: '',
+      teacherUser: {
+        teacherUserId: '',
+        teacherUserName: '',
 
       },
       passwordRules: {
@@ -104,16 +104,16 @@ export default {
     }
   },
   mounted: function () {
-    this.getTeacherInfo();
+    this.getTeacherUserInfo();
   },
   methods: {
     teacherModifyPassword () {
       alert(this.teacherPassword)
       alert(this.teacherPasswordagain)
     },
-    saveTeacherNmae () {
+    saveTeacherName () {
       let params = new URLSearchParams();
-      params.append('teacherName', this.teacher.teacherName);
+      params.append('teacherName', this.teacherUser.teacherName);
       this.$axios({
         method: 'post',
         headers: {
@@ -130,23 +130,25 @@ export default {
           console.log(err);
         })
     },
-    getTeacherInfo () {
+    getTeacherUserInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/teacher/queryTeacherInfoById',
+        url: '/user/queryUserInfo',
         data: params
       })
         .then((res) => {
-          this.teacher = res.data;
-
+          if (res.data != false) {
+            this.teacherUser.teacherUserName = res.data.userName;
+            this.teacherUser.teacherUserId = res.data.userId;
+          }
         })
         .catch((err) => {
-          //   this.$message.error('系统错误请稍后再尝试');
-          console.log(err);
+          this.$message.error('查询学生信息失败');
+
         })
     }
   }

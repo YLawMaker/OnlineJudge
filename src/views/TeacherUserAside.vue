@@ -13,9 +13,10 @@
           <template slot="title">题库</template>
           <el-menu-item index="/choiceQuestionList">选择题题库</el-menu-item>
         </el-submenu> 
+        <el-menu-item index="/faq" ><span >返回OJ</span></el-menu-item>
         <div class="teacherName-right" @click="gotoTeacherInfo()">
         <span el-dropdown-link>
-          {{ teacherUserName }}
+          {{ teacherUserName }}教师
         </span>
         </div>
     </el-menu>
