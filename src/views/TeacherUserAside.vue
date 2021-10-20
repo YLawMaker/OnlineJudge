@@ -12,6 +12,7 @@
         <el-submenu index="2">
           <template slot="title">题库</template>
           <el-menu-item index="/choiceQuestionList">选择题题库</el-menu-item>
+           <el-menu-item index="/completionQuestionList">填空题题库</el-menu-item>
         </el-submenu> 
         <el-menu-item index="/faq" ><span >返回OJ</span></el-menu-item>
         <div class="teacherName-right" @click="gotoTeacherInfo()">
