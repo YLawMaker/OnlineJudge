@@ -68,6 +68,15 @@
             <el-form-item prop="completionQuestionDescription" label="题目描述" size="mini">
                 <el-input v-model="aCompletionQuestionInfo.completionQuestionDescription" placeholder="题目描述" type="textarea" :autosize="true" style="resize:none;" >
                 </el-input>
+                <el-button @click="addCompletionQuestionAddSpace()">添加填空</el-button>
+                <el-button @click="addCompletionQuestionDeleteSpace()">删除填空</el-button>
+            </el-form-item>
+            <el-form-item prop="completionQuestionAnswers" label="题目答案" size="mini">
+                <div v-for="(item,index) in aCompletionQuestionInfo.completionQuestionAnswers" :key="index" style="width:400px;float:left">
+                    <p style="display:inline;">答案{{aCompletionQuestionInfo.completionQuestionAnswers[index].completionQuestionAnswerNumber}}:</p>
+                    <el-input v-model="aCompletionQuestionInfo.completionQuestionAnswers[index].completionQuestionAnswerContent" placeholder="题目答案"  :autosize="true" style="resize:none;width:300px" >
+                    </el-input>
+                </div>
             </el-form-item>
             <el-form-item  label="标签" size="mini" prop="questionLabels" >
                  <el-select v-model="addCompletionQuestionChapterChoice" placeholder="请选择"  @change="addCompletionQuestionChapterClick()">
@@ -129,6 +138,10 @@
 export default {
     data(){
         return{
+            user:{
+                userId:'',
+                userName:'',
+            },
             //详情用填空题信息
             showCompletionQuestionInfo:{
                 completionQuestionId:'',
@@ -142,6 +155,7 @@ export default {
                 completionQuestionAnswers:[],
                 questionLabels:[] //下拉框选择(多选)
             },
+
             //添加填空题信息
             aCompletionQuestionInfo:{
                 completionQuestionId:'',
@@ -217,8 +231,6 @@ export default {
             addCompletionQuestionSecondKnowledgeOption:[],
             completionQuestionInfoList:[],
             chapterList:[],
-
-
         }
     },
     mounted:function(){
@@ -226,11 +238,46 @@ export default {
         this.getCompletionQuestionInfo();
         //获取章节信息
         this.getQuestionLabelInfo();
+        //获取当前教师信息
+        this.getCurrentTeacherUserInfo();
     },
     methods:{
+        //添加填空题信息添加填空
+        addCompletionQuestionAddSpace(){
+            var completionQuestionAnswer=new Object;
+            completionQuestionAnswer.completionQuestionAnswerNumber=this.aCompletionQuestionInfo.completionQuestionAnswers.length+1;
+            completionQuestionAnswer.completionQuestionAnswerContent='';
+            this.aCompletionQuestionInfo.completionQuestionAnswers.push(completionQuestionAnswer)
+        },
+        //添加填空题信息删除填空
+        addCompletionQuestionDeleteSpace(){
+            this.aCompletionQuestionInfo.completionQuestionAnswers.splice(this.aCompletionQuestionInfo.completionQuestionAnswers.length-1,1);
+        },
         //添加填空题信息
         addCompletionQuestionInfo(){
-
+            let params = new URLSearchParams();
+            for(var i=0;i<this.aCompletionQuestionInfo.questionLabels.length;i++){
+                var questionLabel=new Object();
+                questionLabel.questionLabelId=this.aCompletionQuestionInfo.questionLabels[i];
+                this.aCompletionQuestionInfo.questionLabels[i]=questionLabel;
+            }
+            this.aCompletionQuestionInfo.user=this.user;
+            params.append("completionQuestionInfo",JSON.stringify(this.aCompletionQuestionInfo))
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/completionQuestion/addCompletionQuestionInfo',
+                data: params
+            })  
+            .then((res)=> {
+                
+            })
+            .catch((err)=> {
+                this.$message.error('添加填空题错误');
+                
+            })
         },
         //获取填空题信息
         getCompletionQuestionInfo(){
@@ -274,7 +321,6 @@ export default {
         //添加填空题点击章节信息
         addCompletionQuestionChapterClick(){
             let params = new URLSearchParams();
-            console.log(this.addCompletionQuestionChapterChoice)
             params.append("chapter",this.chapterList[this.addCompletionQuestionChapterChoice]);
             this.$axios({
                 method: 'post',
@@ -312,6 +358,25 @@ export default {
             .catch((err)=> {
                 this.$message.error('添加填空题获取第二知识点错误');
                 
+            })
+        },
+        //获取当前教师用户信息
+        getCurrentTeacherUserInfo () {
+        let params = new URLSearchParams();
+        this.$axios({
+            method: 'post',
+            headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+            },
+            url: '/user/queryUserInfo',
+            data: params
+        })
+            .then((res) => {
+                this.user=res.data;
+            })
+            .catch((err) => {
+            this.$message.error('系统错误请稍后再尝试');
+
             })
         },
         //控制详情弹出框显示
