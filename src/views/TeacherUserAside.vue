@@ -1,38 +1,35 @@
 <template>
   <div>
- <el-container>
- 
-  
-    <el-header style="">
-      <el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-        <el-submenu index="1">
-          <template slot="title">考试</template>
-          <el-menu-item index="/addExam">添加考试</el-menu-item>
-        </el-submenu>
-        <el-submenu index="2">
-          <template slot="title">题库</template>
-          <el-menu-item index="/choiceQuestionList">选择题题库</el-menu-item>
-           <el-menu-item index="/completionQuestionList">填空题题库</el-menu-item>
-        </el-submenu> 
-        <el-menu-item index="/faq" ><span >返回OJ</span></el-menu-item>
-        <div class="teacherName-right" @click="gotoTeacherInfo()">
-        <span el-dropdown-link>
-          {{ teacherUserName }}教师
-        </span>
-        </div>
-    </el-menu>
-      
-    </el-header>
-    <el-main>
-      <router-view>
-      </router-view>
-    </el-main>
-    <el-footer>
-      Footer
-    </el-footer>
-  
-</el-container>
-   </div>
+    <el-container>
+      <el-header style="">
+        <el-menu
+          :default-active="$route.path"
+          class="el-menu-demo"
+          mode="horizontal"
+          @select="handleSelect"
+        >
+          <el-submenu index="1">
+            <template slot="title">考试</template>
+            <el-menu-item index="/addExam">添加考试</el-menu-item>
+          </el-submenu>
+          <el-submenu index="2">
+            <template slot="title">题库</template>
+            <el-menu-item index="/choiceQuestionList">选择题题库</el-menu-item>
+            <el-menu-item index="/completionQuestionList"
+              >填空题题库</el-menu-item
+            >
+          </el-submenu>
+          <el-menu-item index="/faq"><span>返回OJ</span></el-menu-item>
+          <div class="teacherName-right" @click="gotoTeacherInfo()">
+            <span el-dropdown-link> {{ teacherUserName }}教师 </span>
+          </div>
+        </el-menu>
+      </el-header>
+      <el-main>
+        <router-view> </router-view>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script>
@@ -44,16 +41,16 @@ export default {
     }
   },
   computed: {
-    
+
   },
   mounted: function () {
     this.getTeacherUserInfo();
   },
   methods: {
     //跳转界面
-      handleSelect(key, keyPath) {
-        this.$router.push(key);
-      },
+    handleSelect (key, keyPath) {
+      this.$router.push(key);
+    },
     //跳转到教师信息
     gotoTeacherInfo () {
       this.$router.push('/teacherInfo');
@@ -70,7 +67,7 @@ export default {
         data: params
       })
         .then((res) => {
-    
+
           this.teacherUserName = res.data.userName;
           // console.log(this.teacher);
         })
@@ -85,9 +82,6 @@ export default {
 </script>
 
 <style scoped>
-
-
-
 .collapse-btn {
   float: left;
   padding: 0 21px;
@@ -113,8 +107,7 @@ export default {
   display: flex;
   margin-right: 20px;
 }
-.el-submenu{
-  width:100px;
+.el-submenu {
+  width: 100px;
 }
-
 </style>

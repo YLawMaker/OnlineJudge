@@ -47,8 +47,7 @@
             </router-link>
           </template>
         </el-table-column>
-        <el-table-column prop="isPrivate" label="是否私有"></el-table-column>
-        <el-table-column label="创建者"></el-table-column>
+        <el-table-column prop="user.userName" label="创建者"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
@@ -92,10 +91,6 @@
           <el-form-item label="名称" prop="groupName">
             <el-input v-model="addGroupData.groupName"></el-input>
           </el-form-item>
-          <el-form-item label="是否设置为私有">
-            <el-radio v-model="radio" label="1">是</el-radio>
-            <el-radio v-model="radio" label="0">否</el-radio>
-          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="add('addGroup')">添加</el-button>
             <el-button @click="handleClose">取消</el-button>
@@ -115,7 +110,7 @@ export default {
       select_word: '',
       currentPage: 1,
       pagesize: 9,
-      radio: '1',
+      teacherUserId: '',
       edittableDataVisible_add: false,
       addGroupData: {
         groupName: ''
@@ -183,6 +178,7 @@ export default {
         },
         url: '/group/queryGroupInfo',
       }).then(function (resp) {
+        // console.log(resp.data);
         that.groupList = resp.data;
         that.searchData = resp.data;
         that.currentPage = pageNum;
@@ -194,6 +190,7 @@ export default {
         if (valid) {
           let params = new URLSearchParams();
           params.append('groupName', this.addGroupData.groupName);
+          // params.append('userId', this.teacherUserId);
           this.$axios({
             method: 'post',
             headers: {
@@ -261,6 +258,27 @@ export default {
         console.log(res);
       })
     },
+    //获取教师用户信息
+    getTeacherUserInfo () {
+      let params = new URLSearchParams();
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/user/queryUserInfo',
+        data: params
+      })
+        .then((res) => {
+
+          this.teacherUserId = res.data.userId;
+          // console.log(this.teacher);
+        })
+        .catch((err) => {
+          this.$message.error('系统错误请稍后再尝试');
+
+        })
+    }
   }
 }
 </script>
