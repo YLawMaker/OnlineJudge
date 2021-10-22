@@ -79,6 +79,11 @@ const routes = [
         component: () => import('@/components/TeacherUser/ChoiceQuestionList.vue')
       },
       {
+        path: '/completionQuestionList',
+        name: 'CompletionQuestionList',
+        component: () => import('@/components/TeacherUser/CompletionQuestionList.vue')
+      },
+      {
         path: '/testManage',
         name: 'TestManage',
         component: () => import('@/components/TeacherUser/TestManage.vue')
@@ -92,6 +97,16 @@ const routes = [
         path: '/groupUserManage',
         name: 'GroupUserManage',
         component: () => import('@/components/TeacherUser/GroupUserManage.vue')
+      },
+      {
+        path: '/candidateScore',
+        name: 'CandidateScore',
+        component: () => import('@/components/TeacherUser/CandidateScore.vue')
+      },
+      {
+        path: '/examAnalyse',
+        name: 'ExamAnalyse',
+        component: () => import('@/components/TeacherUser/ExamAnalyse.vue')
       },
     ]
   },

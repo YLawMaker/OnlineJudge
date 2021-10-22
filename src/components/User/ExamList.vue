@@ -54,13 +54,7 @@ export default {
         }
     },
    
-    mounted: function () {
-        this.userId=this.$route.query.userId;
-        var page=this.getContextData("currentPage");
-        if(page==null){
-            this.setContextData("currentPage",1);
-        }
-      
+    mounted: function () { 
         this.getExamInfo();
     },
     methods:{
@@ -69,26 +63,6 @@ export default {
           //查询之后返回第一页
           this.setContextData("currentPage",1);
           this.getExamInfo();
-        },
-          //给sessionStorage存值
-        setContextData: function(key, value) { 
-          if(typeof value == "string"){
-              sessionStorage.setItem(key, value);
-          }else{
-              sessionStorage.setItem(key, JSON.stringify(value));
-          }
-        },
-          // 从sessionStorage取值
-        getContextData: function(key){
-          const str = sessionStorage.getItem(key);
-          if( typeof str == "string" ){
-              try{
-              return JSON.parse(str);
-              }catch(e) {
-              return str;
-              }
-          }
-          return;
         },
         //去到考试详情界面
         gotoExamDetail(examId){
@@ -103,12 +77,10 @@ export default {
         handleCurrent (val) {
             this.currentPage = val;
             this.pageExamInfo=this.examInfo.slice((val-1)*this.pageSize,val*this.pageSize)
-            this.setContextData("currentPage",this.currentPage);
         },
         //获取考试信息
         getExamInfo () {
             let params = new URLSearchParams();
-            params.append("userId",this.userId);
             this.$axios({
                 method: 'post',
                 headers: {
@@ -119,8 +91,9 @@ export default {
             })
             .then((res) => {
               this.examInfo = res.data;
+              console.log(res.data);
               this.pageExamInfo=this.examInfo.slice(0,4)
-              this.currentPage=this.getContextData("currentPage");
+              this.currentPage=1;
             })
             .catch((err) => {
               this.$message.error('查询考试信息失败') ;
