@@ -15,7 +15,8 @@
       >
     </div>
     <div>
-      <el-table :data="groupUserList">
+      <el-table :data="data">
+        <el-table-column type="index" label="序号" width="80"></el-table-column>
         <el-table-column prop="userAccount" label="Account"></el-table-column>
         <el-table-column prop="userName" label="Name"></el-table-column>
         <el-table-column label="操作">
@@ -81,7 +82,8 @@ export default {
       searchKeyFromInfoManage: '',
       pageFromInfoManage: '',
       currentPage: 1,
-      pagesize: 8,
+      pagesize: 9,
+      groupId: '',
       edittableDataVisible_add: false,
       addGroupUserData: {
         groupUserList: ''
@@ -125,6 +127,8 @@ export default {
         url: '/userGroup/queryUserGroupInfoByGroupId',
         data: params
       }).then(function (resp) {
+        // console.log(resp.data);
+        that.groupId = groupId
         that.groupUserList = resp.data
         that.pageFromInfoManage = page
         that.searchKeyFromInfoManage = searchKey
@@ -141,8 +145,8 @@ export default {
         }
       })
       userList = Array.from(new Set(userList)); // 去重
-      console.log(userList);
-      console.log(this.$route.query.groupIdFromInfoManage)
+      // console.log(userList);
+      // console.log(this.$route.query.groupIdFromInfoManage)
       this.$refs[addGroupUser].validate((valid) => {
         if (valid) {
           let params = new URLSearchParams();
@@ -171,7 +175,50 @@ export default {
           this.$message.error('添加失败，请检查输入的内容后后重试');
         }
       })
-    }
+    },
+    deleteConfirm (row) {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then((action) => {
+        if (action === 'confirm') {
+          this.deleteGroup(row.userId);
+        }
+      }).catch((resp) => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+        // console.log(resp);
+      });
+    },
+    deleteGroup (userId) {
+      let params = new URLSearchParams();
+      params.append('groupId', this.groupId);
+      params.append('userId', userId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/userGroup/deleteUserGroupInfoByGroupIdAndUserId',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.$message.success('用户删除成功');
+          this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage);
+        } else if (res.data == false) {
+          this.$message.error('用户删除失败');
+          this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage);
+        } else {
+          this.$message.error('发生了错误');
+          this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage);
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
+    },
   }
 }
 </script>

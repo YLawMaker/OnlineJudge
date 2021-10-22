@@ -84,6 +84,16 @@ const routes = [
         name: 'GroupUserManage',
         component: () => import('@/components/TeacherUser/GroupUserManage.vue')
       },
+      {
+        path: '/candidateScore',
+        name: 'CandidateScore',
+        component: () => import('@/components/TeacherUser/CandidateScore.vue')
+      },
+      {
+        path: '/examAnalyse',
+        name: 'ExamAnalyse',
+        component: () => import('@/components/TeacherUser/ExamAnalyse.vue')
+      },
     ]
   },
 
