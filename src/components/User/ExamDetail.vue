@@ -9,12 +9,10 @@
                 :unique-opened="true"
                 text-color="#000000"
                 :collapse-transition="true"
-                style="margin-left:30%;margin-right:30%;"
+                style="margin-left:45%;margin-right:55%;"
             >
-                <el-menu-item @click="gotoExamList()">Exam  List</el-menu-item>
                 
-                <el-menu-item index="/examDetail">Problem</el-menu-item>
-                <el-menu-item index="/examRankList">RankList</el-menu-item>
+                <el-menu-item index="/examDetail">Problems</el-menu-item>
 
                 <!-- <div class="loginbutton">
                 <span
@@ -28,7 +26,7 @@
             </el-menu>
          </el-header>
         <el-main class="content">
-            <h1 style="text-align:center">{{examName}}</h1>
+            <h1 style="text-align:center">{{this.examInfo.examName}}</h1>
             <table class="table table-striped">
                 <tbody>
                     <tr>   
@@ -72,36 +70,51 @@ export default {
                     isPrivate:'',
                 }
             ],
-            examId:8,
-            userId:1,
-            examName:'测试考试'
+            userId:'',
         }
     },
     mounted: function(){
         this.examInfo.examId=this.$route.query.examId;
-       // alert(this.examInfo.examId);
+        this.getExamInfo();
+        this.examInfo.examName=this.$route.query.examName;
+        this.userId=this.$route.query.userId;
     },
     methods: {
         gotoChoice(){
             this.$router.push({path:'/examChoice',query:{
                 userId:this.userId,
-                examId:this.examId,
+                examId:this.examInfo.examId,
+                examName:this.examInfo.examName,
                 }})
         },
         gotoProgram(){
             this.$router.push({ path:'/examProgramming' })
         },
-        gotoExamList(){
-            if(this.userId==""){
-                this.$message.error("请先登录用户");
-                this.$router.push('/userLogin')
-            }else{
-                this.$router.push({ path: '/examList', query: { userId: this.userId } });
-            }
-        },
         gotoCompletion(){
             this.$router.push({path:'/examCompletion'})
-        }
+        },
+        //获取考试信息
+        getExamInfo () {
+            let params = new URLSearchParams();
+            params.append("examId",this.examInfo.examId);
+            this.$axios({
+                method: 'post',
+                headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+                },
+                url: '/exam/queryExamInfoByExamId',
+                data: params
+            })  
+            .then((res) => {
+              this.examInfo = res.data;
+              console.log(res.data);
+              this.pageExamInfo=this.examInfo.slice(0,4);
+              this.currentPage=1;
+            })
+            .catch((err) => {
+              this.$message.error('查询考试信息失败') ;
+            })
+        },
     }
 }
 </script>

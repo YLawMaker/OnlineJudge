@@ -8,7 +8,7 @@
       <el-timeline >
         <el-timeline-item  v-for="exam in pageExamInfo" :key="exam.examId" :timestamp="exam.examStartTime" placement="top">
           <el-card >
-            <h4 @click="gotoExamDetail(exam.examId)">{{exam.examName}}</h4>
+            <h4 @click="gotoExamDetail(exam.examId,exam.examName)">{{exam.examName}}</h4>
             <p style="width:300px;float:left">开始时间{{exam.examStartTime}}</p>
             <p style="width:300px;float:left">结束时间{{exam.examEndTime}}</p>
           </el-card>
@@ -50,10 +50,9 @@ export default {
             pageExamInfo:[],
             pageSize: 4,
             currentPage: 1,
-            userId:''
+            userId: '',
         }
     },
-   
     mounted: function () { 
         this.getExamInfo();
     },
@@ -70,7 +69,7 @@ export default {
                 this.$message.error("请先登录用户");
                 this.$router.push('/userLogin')
             }else{
-                this.$router.push({ path: '/examDetail', query: { userId: this.userId ,examId:this.examId} });
+                this.$router.push({ path: '/examDetail', query: { userId: this.userId , examId: examId} });
             }
         },
         //换页时调用
@@ -81,6 +80,7 @@ export default {
         //获取考试信息
         getExamInfo () {
             let params = new URLSearchParams();
+            params.append("userId",this.userId=1);
             this.$axios({
                 method: 'post',
                 headers: {
@@ -88,11 +88,11 @@ export default {
                 },
                 url: '/exam/queryExamInfoByUserId',
                 data: params
-            })
+            })  
             .then((res) => {
               this.examInfo = res.data;
               console.log(res.data);
-              this.pageExamInfo=this.examInfo.slice(0,4)
+              this.pageExamInfo=this.examInfo.slice(0,4);
               this.currentPage=1;
             })
             .catch((err) => {

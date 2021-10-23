@@ -99,7 +99,7 @@ export default {
           this.$message.error("请先登录用户");
           this.$router.push('/userLogin')
       }else{
-          this.$router.push('/examList');
+          this.$router.push({ path: '/examList', query: { userId: this.userId } })
       }
     },
     //跳转到用户登录界面
