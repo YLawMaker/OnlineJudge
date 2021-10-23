@@ -64,7 +64,7 @@
 
     <!-- 添加填空题弹出框 -->
     <el-dialog title="添加选择题" :visible.sync="addCompletionQuestionInfoVisible"  center>
-        <el-form :model="aCompletionQuestionInfo" label-width="80px"  ref="aCompletionQuestionInfo">
+        <el-form :model="aCompletionQuestionInfo" label-width="80px"  ref="aCompletionQuestionInfo" :rules="addCompletionQuestionSubmitRules">
             <el-form-item prop="completionQuestionDescription" label="题目描述" size="mini">
                 <el-input v-model="aCompletionQuestionInfo.completionQuestionDescription" placeholder="题目描述" type="textarea" :autosize="true" style="resize:none;" >
                 </el-input>
@@ -87,7 +87,7 @@
                     :value="index">
                     </el-option>
                 </el-select>
-                <el-select v-model="addCompletionQuestionFirstKnowledgeChoice" placeholder="请选择"  @change="addCompletionQuestionFirstPointClick()" style="margin-left:20px">
+                <el-select v-model="addCompletionQuestionFirstKnowledgeChoice" placeholder="请选择" :disabled="addCompletionQuestionFirstKnowledgeUse" @change="addCompletionQuestionFirstPointClick()" style="margin-left:20px">
                     <el-option
                     v-for="(item,index) in addCompletionQuestionFirstKnowledgeOption"
                     :key="index"
@@ -95,7 +95,7 @@
                     :value="index">
                     </el-option>
                 </el-select>
-                <el-select v-model="aCompletionQuestionInfo.questionLabels" multiple placeholder="请选择"  style="margin-left:20px;width:400px">
+                <el-select v-model="aCompletionQuestionInfo.questionLabels" multiple placeholder="请选择"  :disabled="addCompletionQuestionSecondKnowledgeUse" style="margin-left:20px;width:400px" >
                     <el-option
                     v-for="item in addCompletionQuestionSecondKnowledgeOption"
                     :key="item.questionLabelId"
@@ -130,7 +130,51 @@
             <el-button type="primary" @click="addCompletionQuestionInfo('aCompletionQuestionInfo')">确 定</el-button>
         </div>
     </el-dialog>
-
+    <!-- 填空题详情弹出框 -->
+    <el-dialog title="选择题详情" :visible.sync="showCompletionQuestionInfoVisible"  center>                
+                                                                                                              <!-- 上下分离 -->
+        <el-form :model="showCompletionQuestionInfo" label-width="80px"  ref="showCompletionQuestionInfo" :label-position="'top'">
+            <el-form-item prop="completionQuestionDescription" label="题目描述" size="mini">
+                <el-input v-model="showCompletionQuestionInfo.completionQuestionDescription" placeholder="题目描述" type="textarea" :autosize="true" style="resize:none;" :disabled="true" >
+                </el-input>
+            </el-form-item>
+            <el-form-item prop="completionQuestionAnswers" label="题目答案" size="mini" >
+                <div v-for="(item,index) in showCompletionQuestionInfo.completionQuestionAnswers" :key="index" style="width:400px;float:left;" class="e1">
+                    <p style="display:inline;">答案{{showCompletionQuestionInfo.completionQuestionAnswers[index].completionQuestionAnswerNumber}}:</p>
+                    <el-input v-model="showCompletionQuestionInfo.completionQuestionAnswers[index].completionQuestionAnswerContent" placeholder="题目答案"  :autosize="true" style="resize:none;width:300px;" :disabled="true">
+                    </el-input>
+                </div>
+            </el-form-item>
+            <el-form-item prop="chapter" label="所属章节" size="mini">                                                              <!-- 初始化页面时不让他初始化没有对应的值 -->
+                <el-input v-model="showCompletionQuestionInfo.questionLabels[0].chapter" placeholder="所属章节" type="textarea" :autosize="true"  :disabled="true" v-if="showCompletionQuestionInfo.questionLabels.length>0">
+                </el-input>
+            </el-form-item>
+            <el-form-item prop="firstKnowledgePoint" label="第一知识点" size="mini">
+                <el-input v-model="showCompletionQuestionInfo.questionLabels[0].firstKnowledgePoint" placeholder="第一知识点" type="textarea" :autosize="true"  :disabled="true" v-if="showCompletionQuestionInfo.questionLabels.length>0">
+                </el-input>
+            </el-form-item>
+            <el-form-item prop="secondKnowledgePoint" label="第二知识点" size="mini"> 
+                <p v-for="(item,index) in showCompletionQuestionInfo.questionLabels" :key="index" style="margin-left:10px;float:left;margin-top:0px;color:black;font-size:12px;margin-bottom: 0px;">
+                    {{item.secondKnowledgePoint}}
+                </p>
+            </el-form-item>
+            <el-form-item >
+                <el-form inline>
+                    <el-form-item  label="是否私有" size="mini"> 
+                        <el-input v-model="showCompletionQuestionInfo.isPrivate" placeholder="是否私有" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item  label="题目难度" size="mini"> 
+                        <el-input v-model="showCompletionQuestionInfo.completionQuestionDifficulty" placeholder="题目难度" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
+                        </el-input>
+                    </el-form-item>
+                </el-form>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="showCompletionQuestionInfoVisible = false">确定</el-button>
+        </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -138,6 +182,7 @@
 export default {
     data(){
         return{
+            //登录用户信息
             user:{
                 userId:'',
                 userName:'',
@@ -155,7 +200,6 @@ export default {
                 completionQuestionAnswers:[],
                 questionLabels:[] //下拉框选择(多选)
             },
-
             //添加填空题信息
             aCompletionQuestionInfo:{
                 completionQuestionId:'',
@@ -168,6 +212,27 @@ export default {
                 },
                 completionQuestionAnswers:[],
                 questionLabels:[] //下拉框选择(多选)
+            },
+            //添加填空题提交规则
+            addCompletionQuestionSubmitRules: {
+                completionQuestionDescription: [
+                    { required: true, message: '请输入填空题内容', trigger: 'blur' },
+                    { min: 1, max: 300, message: '长度在 1 到 300 个字符', trigger: 'blur' }
+                ],
+                completionQuestionAnswers: [
+                    { required: true, message: '请输入填空题答案', trigger: 'blur' },
+                ],
+                questionLabels: [
+                    { required: true, message: '请选择标签', trigger: 'blur' },
+                ],
+                completionQuestionDifficulty: [
+                    { required: true, message: '请选择难度', trigger: 'blur' },
+                
+                ],
+                isPrivate: [
+                    { required: true, message: '请选择是否私有', trigger: 'blur' },
+                    
+                ],
             },
             //下拉选择是否公有或私有
             isPrivateOption:[
@@ -225,12 +290,16 @@ export default {
             ],
             //添加填空题弹出框显示
             addCompletionQuestionInfoVisible:false,
-            addCompletionQuestionChapterChoice:'',
-            addCompletionQuestionFirstKnowledgeOption:[],
-            addCompletionQuestionFirstKnowledgeChoice:'',
-            addCompletionQuestionSecondKnowledgeOption:[],
+            addCompletionQuestionChapterChoice:'',//添加填空题时章节选择
+            addCompletionQuestionFirstKnowledgeOption:[],//添加填空题第一知识点内容
+            addCompletionQuestionFirstKnowledgeUse:true,//添加填空题时第一知识点能否使用
+            addCompletionQuestionFirstKnowledgeChoice:'',//添加填空题时第一知识点选择
+            addCompletionQuestionSecondKnowledgeOption:[],//添加填空题时第二知识点内容
+            addCompletionQuestionSecondKnowledgeUse:true,//添加填空题时第二知识点能否使用
+            //填空题详情弹出框显示
+            showCompletionQuestionInfoVisible:false,
             completionQuestionInfoList:[],
-            chapterList:[],
+            chapterList:[],//章节内容
         }
     },
     mounted:function(){
@@ -254,30 +323,39 @@ export default {
             this.aCompletionQuestionInfo.completionQuestionAnswers.splice(this.aCompletionQuestionInfo.completionQuestionAnswers.length-1,1);
         },
         //添加填空题信息
-        addCompletionQuestionInfo(){
-            let params = new URLSearchParams();
-            for(var i=0;i<this.aCompletionQuestionInfo.questionLabels.length;i++){
-                var questionLabel=new Object();
-                questionLabel.questionLabelId=this.aCompletionQuestionInfo.questionLabels[i];
-                this.aCompletionQuestionInfo.questionLabels[i]=questionLabel;
-            }
-            this.aCompletionQuestionInfo.user=this.user;
-            params.append("completionQuestionInfo",JSON.stringify(this.aCompletionQuestionInfo))
-            this.$axios({
-                method: 'post',
-                headers: {
-                            "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                url: '/completionQuestion/addCompletionQuestionInfo',
-                data: params
-            })  
-            .then((res)=> {
-                
-            })
-            .catch((err)=> {
-                this.$message.error('添加填空题错误');
-                
-            })
+        addCompletionQuestionInfo(aCompletionQuestionInfo){
+            this.$refs[aCompletionQuestionInfo].validate((valid) => {  //开启校验 不管标题和分数是否通过都要判断表单里的数据
+                if (valid) {   // 如果校验通过，请求接口，允许提交表单
+                    
+                    let params = new URLSearchParams();
+                    for(var i=0;i<this.aCompletionQuestionInfo.questionLabels.length;i++){
+                        var questionLabel=new Object();
+                        questionLabel.questionLabelId=this.aCompletionQuestionInfo.questionLabels[i];
+                        this.aCompletionQuestionInfo.questionLabels[i]=questionLabel;
+                    }
+                    this.aCompletionQuestionInfo.user=this.user;
+                    params.append("completionQuestionInfo",JSON.stringify(this.aCompletionQuestionInfo))
+                    this.$axios({
+                        method: 'post',
+                        headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                        url: '/completionQuestion/addCompletionQuestionInfo',
+                        data: params
+                    })  
+                    .then((res)=> {
+                        this.$message.success('添加填空题成功');
+                        this.addCompletionQuestionInfoVisible=false;
+                        this.getCompletionQuestionInfo();
+                    })
+                    .catch((err)=> {
+                        this.$message.error('添加填空题错误');
+                    })
+                //校验不通过
+                }else{
+                    //界面会显示
+                }
+            });
         },
         //获取填空题信息
         getCompletionQuestionInfo(){
@@ -320,6 +398,11 @@ export default {
         },
         //添加填空题点击章节信息
         addCompletionQuestionChapterClick(){
+            //解除第一知识点的禁用,赋值第一知识点选择为空 第二知识点为空并禁用
+            this.addCompletionQuestionFirstKnowledgeUse=false;
+            this.addCompletionQuestionFirstKnowledgeChoice='';
+            this.addCompletionQuestionSecondKnowledgeUse=true;
+            this.aCompletionQuestionInfo.questionLabels='';
             let params = new URLSearchParams();
             params.append("chapter",this.chapterList[this.addCompletionQuestionChapterChoice]);
             this.$axios({
@@ -331,16 +414,17 @@ export default {
                 data: params
             })
             .then((res)=> {
-                
                 this.addCompletionQuestionFirstKnowledgeOption=res.data;
             })
             .catch((err)=> {
                 this.$message.error('添加填空题获取第一知识点错误');
-                
             })
         },
         //添加填空题点击第一知识点
         addCompletionQuestionFirstPointClick(){
+            //第二知识点的禁用解除 赋值第二知识点选择为空
+            this.addCompletionQuestionSecondKnowledgeUse=false;
+            this.aCompletionQuestionInfo.questionLabels='';
              let params = new URLSearchParams();
             params.append("chapter",this.chapterList[this.addCompletionQuestionChapterChoice]);
             params.append("firstKnowledgePoint",this.addCompletionQuestionFirstKnowledgeOption[this.addCompletionQuestionFirstKnowledgeChoice]);
@@ -381,7 +465,17 @@ export default {
         },
         //控制详情弹出框显示
         handleShow(row){
-
+            //详情弹出框显示 赋值  不能直接赋值row row类似一个指针直接指向row了
+            this.showCompletionQuestionInfoVisible=true;
+            this.showCompletionQuestionInfo.completionQuestionDescription=row.completionQuestionDescription;
+            this.showCompletionQuestionInfo.completionQuestionDifficulty=row.completionQuestionDifficulty;
+            this.showCompletionQuestionInfo.completionQuestionAnswers=row.completionQuestionAnswers;
+            this.showCompletionQuestionInfo.questionLabels=row.questionLabels;
+            if(row.isPrivate==true){
+                this.showCompletionQuestionInfo.isPrivate="私有";
+            }else{
+                this.showCompletionQuestionInfo.isPrivate="公有";
+            } 
         },
         //控制修改弹出框显示
         handleEdit(row){
@@ -401,5 +495,20 @@ export default {
 </script>
 
 <style>
-
+/* 详情弹出框的input 禁用样式 */
+.el-textarea.is-disabled .el-textarea__inner {
+  background-color: white;
+  border-color: white;
+  color: black;
+  cursor: default;
+  /* 下拉框禁止*/
+  resize: none;
+  padding: 0;
+}
+.e1 .el-input .el-input__inner{
+    background-color: white;
+  border-color: white;
+  color: black;
+  cursor: default;
+}
 </style>
