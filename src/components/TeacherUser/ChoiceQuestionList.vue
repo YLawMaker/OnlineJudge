@@ -339,7 +339,7 @@
     <!-- 选择题删除弹出框 -->
     <el-dialog title="删除选择题" :visible.sync="deleteChoiceQuestionVisible"  center width="400px">
         <p style="text-align:center">
-            是否确定删除改选择题
+            是否确定删除该选择题
         </p>
         <div slot="footer" class="dialog-footer">
             <el-button @click="deleteChoiceQuestionVisible = false">取 消</el-button>
@@ -576,7 +576,7 @@ export default {
     },
     computed: {
         data () {
-        return this.choiceQuestionList.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
+            return this.choiceQuestionList.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
         }
     },
     
@@ -1236,7 +1236,6 @@ export default {
         },
         //修改时获取第二知识点初始化
         getEditSecondKnowledgePointInfo(row){
-            
             let params = new URLSearchParams();
             params.append("chapter",this.chapterOptions[this.chapterChoice].label);
             params.append("firstKnowledgePoint",this.firstKnowledgePointOptions[this.firstKnowledgePointChoice].label);

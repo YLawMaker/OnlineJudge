@@ -175,10 +175,104 @@
             <el-button @click="showCompletionQuestionInfoVisible = false">确定</el-button>
         </div>
     </el-dialog>
+    <!-- 修改填空题弹出框 -->
+    <el-dialog title="添加选择题" :visible.sync="editCompletionQuestionInfoVisible"  center>
+        <el-form :model="eCompletionQuestionInfo" label-width="80px"  ref="eCompletionQuestionInfo" :rules="editCompletionQuestionSubmitRules">
+            <el-form-item prop="completionQuestionDescription" label="题目描述" size="mini">
+                <el-input v-model="eCompletionQuestionInfo.completionQuestionDescription" placeholder="题目描述" type="textarea" :autosize="true" style="resize:none;" >
+                </el-input>
+                <el-button @click="editCompletionQuestionAddSpace()">添加填空</el-button>
+                <el-button @click="editCompletionQuestionDeleteSpace()">删除填空</el-button>
+            </el-form-item>
+            <el-form-item prop="completionQuestionAnswers" label="题目答案" size="mini">
+                <div v-for="(item,index) in eCompletionQuestionInfo.completionQuestionAnswers" :key="index" style="width:400px;float:left">
+                    <p style="display:inline;">答案{{eCompletionQuestionInfo.completionQuestionAnswers[index].completionQuestionAnswerNumber}}:</p>
+                    <el-input v-model="eCompletionQuestionInfo.completionQuestionAnswers[index].completionQuestionAnswerContent" placeholder="题目答案"  :autosize="true" style="resize:none;width:300px" >
+                    </el-input>
+                </div>
+            </el-form-item>
+            <el-form-item  label="标签" size="mini" prop="questionLabels" >
+                 <el-select v-model="editCompletionQuestionChapterChoice" placeholder="请选择"  @change="editCompletionQuestionChapterClick()">
+                    <el-option
+                    v-for="(item,index) in chapterList"
+                    :key="index"
+                    :label="item"
+                    :value="index">
+                    </el-option>
+                </el-select>
+                <el-select v-model="editCompletionQuestionFirstKnowledgeChoice" placeholder="请选择" :disabled="editCompletionQuestionFirstKnowledgeUse" @change="editCompletionQuestionFirstPointClick()" style="margin-left:20px">
+                    <el-option
+                    v-for="(item,index) in editCompletionQuestionFirstKnowledgeOption"
+                    :key="index"
+                    :label="item"
+                    :value="index">
+                    </el-option>
+                </el-select>
+                <el-select v-model="eCompletionQuestionInfo.questionLabels" multiple placeholder="请选择"  :disabled="editCompletionQuestionSecondKnowledgeUse" value-key="questionLabelId" style="margin-left:20px;width:400px" >
+                    <el-option
+                    v-for="item in editCompletionQuestionSecondKnowledgeOption"
+                    :key="item.questionLabelId"
+                    :label="item.secondKnowledgePoint"
+                    :value="item.questionLabelId">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+             <el-form-item prop="completionQuestionDifficulty" label="题目难度" size="mini">
+               <el-select v-model="eCompletionQuestionInfo.completionQuestionDifficulty" placeholder="请选择" >
+                    <el-option
+                    v-for="item in difficultyOption"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item prop="isPrivate" label="是否私有" size="mini">
+               <el-select v-model="eCompletionQuestionInfo.isPrivate" placeholder="请选择" >
+                    <el-option
+                    v-for="item in isPrivateOption"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="editCompletionQuestionInfoVisible = false">取 消</el-button>
+            <el-button type="primary" @click="editCompletionQuestionInfo('eCompletionQuestionInfo')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-- 填空题删除弹出框 -->
+    <el-dialog title="删除选择题" :visible.sync="deleteCompletionQuestionVisible"  center width="400px">
+        <p style="text-align:center">
+            是否确定删除该填空题
+        </p>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="deleteCompletionQuestionVisible = false">取 消</el-button>
+            <el-button @click="deleteCompletionQuestionInfo()">确定删除</el-button>
+        </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+
+const validatorAccountNumber = (rule, value, callback) => {
+    if(value.length>0){
+        for(var i=0;i<value.length;i++){
+            if(value[i].completionQuestionAnswerContent==''){
+                new callback(new Error('请输入答案'))
+            }
+        }
+        callback();
+    }else{
+        new callback(new Error('至少输入一个答案'))
+    }
+    
+  
+};
+
 export default {
     data(){
         return{
@@ -213,6 +307,19 @@ export default {
                 completionQuestionAnswers:[],
                 questionLabels:[] //下拉框选择(多选)
             },
+            //修改填空题信息
+            eCompletionQuestionInfo:{
+                completionQuestionId:'',
+                completionQuestionDifficulty:'',
+                completionQuestionDescription:'',
+                isPrivate:'',
+                user:{
+                    userId:'',
+                    userName:'',
+                },
+                completionQuestionAnswers:[],
+                questionLabels:[] //下拉框选择(多选)
+            },
             //添加填空题提交规则
             addCompletionQuestionSubmitRules: {
                 completionQuestionDescription: [
@@ -220,7 +327,28 @@ export default {
                     { min: 1, max: 300, message: '长度在 1 到 300 个字符', trigger: 'blur' }
                 ],
                 completionQuestionAnswers: [
-                    { required: true, message: '请输入填空题答案', trigger: 'blur' },
+                    { required: true, validator: validatorAccountNumber, trigger: 'blur' },
+                ],
+                questionLabels: [
+                    { required: true, message: '请选择标签', trigger: 'blur' },
+                ],
+                completionQuestionDifficulty: [
+                    { required: true, message: '请选择难度', trigger: 'blur' },
+                
+                ],
+                isPrivate: [
+                    { required: true, message: '请选择是否私有', trigger: 'blur' },
+                    
+                ],
+            },
+            //修改填空题提交规则
+            editCompletionQuestionSubmitRules: {
+                completionQuestionDescription: [
+                    { required: true, message: '请输入填空题内容', trigger: 'blur' },
+                    { min: 1, max: 300, message: '长度在 1 到 300 个字符', trigger: 'blur' }
+                ],
+                completionQuestionAnswers: [
+                    { required: true, validator: validatorAccountNumber, trigger: 'blur' },
                 ],
                 questionLabels: [
                     { required: true, message: '请选择标签', trigger: 'blur' },
@@ -298,6 +426,17 @@ export default {
             addCompletionQuestionSecondKnowledgeUse:true,//添加填空题时第二知识点能否使用
             //填空题详情弹出框显示
             showCompletionQuestionInfoVisible:false,
+            //填空题修改弹出框显示
+            editCompletionQuestionInfoVisible:false,
+            editCompletionQuestionChapterChoice:'',//修改填空题时章节选择
+            editCompletionQuestionFirstKnowledgeOption:[],//修改填空题第一知识点内容
+            editCompletionQuestionFirstKnowledgeUse:false,//修改填空题时第一知识点能否使用
+            editCompletionQuestionFirstKnowledgeChoice:'',//修改填空题时第一知识点选择
+            editCompletionQuestionSecondKnowledgeOption:[],//修改填空题时第二知识点内容
+            editCompletionQuestionSecondKnowledgeUse:false,//修改填空题时第二知识点能否使用
+            //删除填空题弹出框显示
+            deleteCompletionQuestionVisible:false,
+            deleteCompletionQuestionId:'',//要删除的填空题编号
             completionQuestionInfoList:[],
             chapterList:[],//章节内容
         }
@@ -311,6 +450,7 @@ export default {
         this.getCurrentTeacherUserInfo();
     },
     methods:{
+
         //添加填空题信息添加填空
         addCompletionQuestionAddSpace(){
             var completionQuestionAnswer=new Object;
@@ -322,11 +462,62 @@ export default {
         addCompletionQuestionDeleteSpace(){
             this.aCompletionQuestionInfo.completionQuestionAnswers.splice(this.aCompletionQuestionInfo.completionQuestionAnswers.length-1,1);
         },
+        //修改填空题信息添加填空
+        editCompletionQuestionAddSpace(){
+            var completionQuestionAnswer=new Object;
+            completionQuestionAnswer.completionQuestionAnswerNumber=this.eCompletionQuestionInfo.completionQuestionAnswers.length+1;
+            completionQuestionAnswer.completionQuestionAnswerContent='';
+            this.eCompletionQuestionInfo.completionQuestionAnswers.push(completionQuestionAnswer)
+        },
+        //修改填空题信息删除填空
+        editCompletionQuestionDeleteSpace(){
+            this.eCompletionQuestionInfo.completionQuestionAnswers.splice(this.eCompletionQuestionInfo.completionQuestionAnswers.length-1,1);
+        },
+        //修改填空题信息
+        editCompletionQuestionInfo(eCompletionQuestionInfo){
+            this.$refs[eCompletionQuestionInfo].validate((valid) => {  //开启校验
+                if (valid) {   // 如果校验通过，请求接口，允许提交表单
+                    let params = new URLSearchParams();
+                    for(var i=0;i<this.eCompletionQuestionInfo.questionLabels.length;i++){
+                        var questionLabel=new Object();
+                        questionLabel.questionLabelId=this.eCompletionQuestionInfo.questionLabels[i];
+                        this.eCompletionQuestionInfo.questionLabels[i]=questionLabel;
+                    }
+                    this.eCompletionQuestionInfo.user=this.user;
+                    params.append("completionQuestionInfo",JSON.stringify(this.eCompletionQuestionInfo))
+                    this.$axios({
+                        method: 'post',
+                        headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                        url: '/completionQuestion/modifyCompletionQuestionInfo',
+                        data: params
+                    })  
+                    .then((res)=> {
+                        if(res.data==true){
+                            this.$message.success('修改填空题成功');
+                             this.editCompletionQuestionInfoVisible=false;
+                            this.getCompletionQuestionInfo();
+                        }else if(res.data==false){
+                            this.$message.error('修改填空题失败');
+                        }else{
+                            this.$message.error('系统错误');
+                        }
+                       
+                    })
+                    .catch((err)=> {
+                        this.$message.error('修改填空题错误');
+                    })
+                //校验不通过
+                }else{
+                    //界面会显示
+                }
+            });
+        },
         //添加填空题信息
         addCompletionQuestionInfo(aCompletionQuestionInfo){
             this.$refs[aCompletionQuestionInfo].validate((valid) => {  //开启校验 不管标题和分数是否通过都要判断表单里的数据
                 if (valid) {   // 如果校验通过，请求接口，允许提交表单
-                    
                     let params = new URLSearchParams();
                     for(var i=0;i<this.aCompletionQuestionInfo.questionLabels.length;i++){
                         var questionLabel=new Object();
@@ -344,9 +535,15 @@ export default {
                         data: params
                     })  
                     .then((res)=> {
-                        this.$message.success('添加填空题成功');
-                        this.addCompletionQuestionInfoVisible=false;
-                        this.getCompletionQuestionInfo();
+                        if(res.data==true){
+                            this.$message.success('添加填空题成功');
+                            this.addCompletionQuestionInfoVisible=false;
+                            this.getCompletionQuestionInfo();
+                        }else if(res.data==false){
+                            this.$message.error('添加填空题失败');
+                        }else{
+                            this.$message.error('系统错误');
+                        }
                     })
                     .catch((err)=> {
                         this.$message.error('添加填空题错误');
@@ -356,6 +553,34 @@ export default {
                     //界面会显示
                 }
             });
+        },
+        //删除填空题信息
+        deleteCompletionQuestionInfo(){
+            let params = new URLSearchParams();
+            params.append("completionQuestionId",this.deleteCompletionQuestionId)
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/completionQuestion/deleteCompletionQuestionInfoByCompletionQuestionId',
+                data: params
+            })  
+            .then((res)=> {
+                if(res.data==true){
+                    this.$message.success('删除填空题成功');
+                        this.deleteCompletionQuestionVisible=false;
+                        this.getCompletionQuestionInfo();
+                }else if(res.data==false){
+                    this.$message.error('删除填空题失败');
+                }else{
+                    this.$message.error('系统错误');
+                }
+                
+            })
+            .catch((err)=> {
+                this.$message.error('删除填空题错误');
+            })
         },
         //获取填空题信息
         getCompletionQuestionInfo(){
@@ -420,12 +645,36 @@ export default {
                 this.$message.error('添加填空题获取第一知识点错误');
             })
         },
+        //修改填空题点击章节信息
+        editCompletionQuestionChapterClick(){
+            //解除第一知识点的禁用,赋值第一知识点选择为空 第二知识点为空并禁用
+            this.editCompletionQuestionFirstKnowledgeUse=false;
+            this.editCompletionQuestionFirstKnowledgeChoice='';
+            this.editCompletionQuestionSecondKnowledgeUse=true;
+            this.eCompletionQuestionInfo.questionLabels='';
+            let params = new URLSearchParams();
+            params.append("chapter",this.chapterList[this.editCompletionQuestionChapterChoice]);
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/queryFirstKnowledgePointInfoByChapter',
+                data: params
+            })
+            .then((res)=> {
+                this.editCompletionQuestionFirstKnowledgeOption=res.data;
+            })
+            .catch((err)=> {
+                this.$message.error('添加填空题获取第一知识点错误');
+            })
+        },
         //添加填空题点击第一知识点
         addCompletionQuestionFirstPointClick(){
             //第二知识点的禁用解除 赋值第二知识点选择为空
             this.addCompletionQuestionSecondKnowledgeUse=false;
             this.aCompletionQuestionInfo.questionLabels='';
-             let params = new URLSearchParams();
+            let params = new URLSearchParams();
             params.append("chapter",this.chapterList[this.addCompletionQuestionChapterChoice]);
             params.append("firstKnowledgePoint",this.addCompletionQuestionFirstKnowledgeOption[this.addCompletionQuestionFirstKnowledgeChoice]);
             this.$axios({
@@ -442,6 +691,30 @@ export default {
             .catch((err)=> {
                 this.$message.error('添加填空题获取第二知识点错误');
                 
+            })
+        },
+        //修改填空题点击第一知识点
+        editCompletionQuestionFirstPointClick(){
+            //第二知识点的禁用解除 赋值第二知识点选择为空
+            this.editCompletionQuestionSecondKnowledgeUse=false;
+            this.eCompletionQuestionInfo.questionLabels='';
+            let params = new URLSearchParams();
+            params.append("chapter",this.chapterList[this.editCompletionQuestionChapterChoice]);
+            params.append("firstKnowledgePoint",this.editCompletionQuestionFirstKnowledgeOption[this.editCompletionQuestionFirstKnowledgeChoice]);
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/querySecondKnowledgePointInfoByChapter',
+                data: params
+            })
+            .then((res)=> {
+                this.editCompletionQuestionSecondKnowledgeOption=res.data;
+                console.log(res.data)
+            })
+            .catch((err)=> {
+                this.$message.error('添加填空题获取第二知识点错误');  
             })
         },
         //获取当前教师用户信息
@@ -479,16 +752,92 @@ export default {
         },
         //控制修改弹出框显示
         handleEdit(row){
+            //先清空数据
+            this.eCompletionQuestionInfo.questionLabels=[];
+            //详情弹出框显示 赋值  不能直接赋值row row类似一个指针直接指向row了
+            this.editCompletionQuestionInfoVisible=true;
+            this.eCompletionQuestionInfo.completionQuestionId=row.completionQuestionId;
+            this.eCompletionQuestionInfo.completionQuestionDescription=row.completionQuestionDescription;
+            this.eCompletionQuestionInfo.completionQuestionDifficulty=row.completionQuestionDifficulty;
+            this.eCompletionQuestionInfo.completionQuestionAnswers=row.completionQuestionAnswers;
+            for(var i=0;i<row.questionLabels.length;i++){
+                this.eCompletionQuestionInfo.questionLabels.push(row.questionLabels[i].questionLabelId)
+            }
+            this.eCompletionQuestionInfo.isPrivate=row.isPrivate;
 
+            this.editCompletionQuestionChapterChoice=row.questionLabels[0].chapter;
+            this.editCompletionQuestionFirstKnowledgeChoice=row.questionLabels[0].firstKnowledgePoint;
+            for(var i=0;i<this.chapterList.length;i++){
+                if(this.chapterList[i]==row.questionLabels[0].chapter){
+                    this.editCompletionQuestionChapterChoice=i;
+                }
+            }
+            this.editCompletionQuestionGetFirstKnowledgeInfo(row);
         },
         //删除弹出框显示
         handleDelete(row){
-
+            //先清空
+            this.deleteCompletionQuestionId='';
+            //再赋值
+            this.deleteCompletionQuestionVisible=true;
+            this.deleteCompletionQuestionId=row.completionQuestionId;
         },
-        
         //添加弹出框显示
         handleAdd(){
+            this.addCompletionQuestionChapterChoice='';
+            this.addCompletionQuestionFirstKnowledgeChoice='';
+            this.aCompletionQuestionInfo.completionQuestionDifficulty='';
+            this.aCompletionQuestionInfo.completionQuestionDescription='';
+            this.aCompletionQuestionInfo.isPrivate='';
+            this.aCompletionQuestionInfo.completionQuestionAnswers=[];
+            this.aCompletionQuestionInfo.questionLabels=[];
             this.addCompletionQuestionInfoVisible=true;
+        },
+        //修改填空题信息时获取第一知识点
+        editCompletionQuestionGetFirstKnowledgeInfo(row){
+            let params = new URLSearchParams();
+            params.append("chapter",this.chapterList[this.editCompletionQuestionChapterChoice]);
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/queryFirstKnowledgePointInfoByChapter',
+                data: params
+            })
+            .then((res)=> {
+                this.editCompletionQuestionFirstKnowledgeOption=res.data;
+                for(var i=0;i<this.editCompletionQuestionFirstKnowledgeOption.length;i++){
+                if(this.editCompletionQuestionFirstKnowledgeOption[i]==row.questionLabels[0].firstKnowledgePoint){
+                    this.editCompletionQuestionFirstKnowledgeChoice=i;
+                }
+            }
+                this.editCompletionQuestionGetSecondKnowledgeInfo();
+            })
+            .catch((err)=> {
+                this.$message.error('修改填空题获取第一知识点错误');
+            })
+        },
+        //修改填空题信息时获取第二知识点
+        editCompletionQuestionGetSecondKnowledgeInfo(){
+            let params = new URLSearchParams();
+            params.append("chapter",this.chapterList[this.editCompletionQuestionChapterChoice]);
+            params.append("firstKnowledgePoint",this.editCompletionQuestionFirstKnowledgeOption[this.editCompletionQuestionFirstKnowledgeChoice]);
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/querySecondKnowledgePointInfoByChapter',
+                data: params
+            })
+            .then((res)=> {
+                this.editCompletionQuestionSecondKnowledgeOption=res.data;
+            })
+            .catch((err)=> {
+                this.$message.error('修改填空题获取第二知识点错误');
+                
+            })
         }
     }
 }
@@ -505,6 +854,7 @@ export default {
   resize: none;
   padding: 0;
 }
+/*这两个都是详情弹出框禁用样式 */
 .e1 .el-input .el-input__inner{
     background-color: white;
   border-color: white;
