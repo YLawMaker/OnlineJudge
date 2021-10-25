@@ -10,7 +10,7 @@
         >
           <el-submenu index="1">
             <template slot="title">考试</template>
-            <el-menu-item index="/addExam">添加考试</el-menu-item>
+            <el-menu-item index="/addExam">考试管理</el-menu-item>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">题库</template>
@@ -18,6 +18,10 @@
             <el-menu-item index="/completionQuestionList"
               >填空题题库</el-menu-item
             >
+          </el-submenu>
+          <el-submenu index="3">
+            <template slot="title">分组</template>
+            <el-menu-item index="/groupInfoManage">分组管理</el-menu-item>
           </el-submenu>
           <el-menu-item index="/faq"><span>返回OJ</span></el-menu-item>
           <div class="teacherName-right" @click="gotoTeacherInfo()">
