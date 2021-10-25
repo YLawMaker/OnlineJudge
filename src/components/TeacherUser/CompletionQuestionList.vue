@@ -7,8 +7,47 @@
             @click="handleAdd()"
             >添加选择题
             </el-button>
+
+            <span class="span-label">章节</span>
+            <el-select  placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%" v-model="searchChapterChoice" @change="searchChapterChange()">
+                <el-option
+                v-for="(item,index) in searchChapterOptions"
+                :key="index"
+                :label="item"
+                :value="index">
+                </el-option>
+            </el-select>
+            <span class="span-label">第一知识点</span>
+            <el-select  placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%" v-model="searchFirstKnowledgeChoice" :disabled="searchFirstKnowledgePointVisiable" @change="searchFirstPointChange()" >
+                <el-option
+                v-for="(item,index) in searchFirstKnowledgePointOptions"
+                :key="index"
+                :label="item"
+                :value="index">
+                </el-option>
+            </el-select>
+            <span class="span-label">第二知识点</span>
+            <el-select  placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%" v-model="searchSecondKnowledgeChoice" :disabled="searchSecondKnowledgePointVisiable">
+                <el-option
+                v-for="item in searchSecondKnowledgePointOptions"
+                :key="item.questionLabelId"
+                :label="item.secondKnowledgePoint"
+                :value="item.questionLabelId">
+                </el-option>
+            </el-select>
+            <span class="span-label">教师用户姓名</span>
+            <el-select  placeholder="请选择" size="mini" class="handle-select" style="margin-left:1%" v-model="searchTeacherUserId">
+                <el-option
+                v-for="item in teacherUserList"
+                :key="item.userId"
+                :label="item.userName"
+                :value="item.userId">
+                </el-option>
+            </el-select>
+
+            <el-button type="primary" size="mini" @click="searchCompletionQuestionInfo()" style="margin-left:2%">查询</el-button>
       </div>
-     <el-table :data="completionQuestionInfoList" style="width: 100%;font-size:12px" class="tableclass" stripe  :header-cell-style="{'text-align':'center'}" :row-style="{height:'20px'}" :cell-style="{padding:'0px'}" >
+     <el-table :data="data" style="width: 100%;font-size:12px" class="tableclass" stripe  :header-cell-style="{'text-align':'center'}" :row-style="{height:'20px'}" :cell-style="{padding:'0px'}" >
       <el-table-column prop="completionQuestionId" label="填空题编号" align="center" width="100px"> </el-table-column>
       <el-table-column prop="user.userName" label="创建人" align="center"> </el-table-column>
       <el-table-column prop="completionQuestionDescription" label="选择题描述"  :show-overflow-tooltip="true" align="center"> </el-table-column>
@@ -60,7 +99,17 @@
       </el-table-column>
      </el-table>
 
-
+    <div class="pagination">
+      <el-pagination
+        layout="total,prev,pager,next"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :total="completionQuestionInfoList.length"
+        @current-change="handleCurrent"
+        v-if="completionQuestionInfoList.length!=0"
+      >
+      </el-pagination>
+    </div>
 
     <!-- 添加填空题弹出框 -->
     <el-dialog title="添加选择题" :visible.sync="addCompletionQuestionInfoVisible"  center>
@@ -131,7 +180,8 @@
         </div>
     </el-dialog>
     <!-- 填空题详情弹出框 -->
-    <el-dialog title="选择题详情" :visible.sync="showCompletionQuestionInfoVisible"  center>                
+    <div class="e2">
+        <el-dialog title="选择题详情" :visible.sync="showCompletionQuestionInfoVisible"  center>                
                                                                                                               <!-- 上下分离 -->
         <el-form :model="showCompletionQuestionInfo" label-width="80px"  ref="showCompletionQuestionInfo" :label-position="'top'">
             <el-form-item prop="completionQuestionDescription" label="题目描述" size="mini">
@@ -175,6 +225,7 @@
             <el-button @click="showCompletionQuestionInfoVisible = false">确定</el-button>
         </div>
     </el-dialog>
+    </div>
     <!-- 修改填空题弹出框 -->
     <el-dialog title="添加选择题" :visible.sync="editCompletionQuestionInfoVisible"  center>
         <el-form :model="eCompletionQuestionInfo" label-width="80px"  ref="eCompletionQuestionInfo" :rules="editCompletionQuestionSubmitRules">
@@ -257,7 +308,7 @@
 </template>
 
 <script>
-
+//答案输入的校验
 const validatorAccountNumber = (rule, value, callback) => {
     if(value.length>0){
         for(var i=0;i<value.length;i++){
@@ -269,10 +320,7 @@ const validatorAccountNumber = (rule, value, callback) => {
     }else{
         new callback(new Error('至少输入一个答案'))
     }
-    
-  
 };
-
 export default {
     data(){
         return{
@@ -437,8 +485,27 @@ export default {
             //删除填空题弹出框显示
             deleteCompletionQuestionVisible:false,
             deleteCompletionQuestionId:'',//要删除的填空题编号
+
+            teacherUserList:[],//教师用户列表
+            searchChapterOptions:[],//查询用章节信息
+            searchFirstKnowledgePointOptions:[],//查询用第一知识点
+            searchSecondKnowledgePointOptions:[],//查询用第二知识点
+            searchChapterChoice:'',//查询时的章节选择
+            searchFirstKnowledgeChoice:'',//查询时的第一知识点选择
+            searchSecondKnowledgeChoice:'',//查询时的第二知识点选择
+            searchTeacherUserId:'',//查询时的教师用户名称选择
+            searchFirstKnowledgePointVisiable:true,//查询时第一知识点下拉框能否使用 true为禁用
+            searchSecondKnowledgePointVisiable:true,//查询时第二知识点下拉框能否使用 true为禁用
+            
             completionQuestionInfoList:[],
             chapterList:[],//章节内容
+            pageSize: 4,
+            currentPage: 1,
+        }
+    },
+    computed: {
+        data () {
+            return this.completionQuestionInfoList.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
         }
     },
     mounted:function(){
@@ -448,9 +515,188 @@ export default {
         this.getQuestionLabelInfo();
         //获取当前教师信息
         this.getCurrentTeacherUserInfo();
+        //获取查询选择题标签信息
+        this.getSearchQuestionLabelInfo();
+        //获取全部教师信息 
+        this.getTeacherUserInfo();
     },
     methods:{
+        //查询填空题信息
+        searchCompletionQuestionInfo(){
+            let params=new URLSearchParams();
+            if(this.searchTeacherUserId==''){
+                params.append("userId",0);
+            }else{
+                params.append("userId",this.searchTeacherUserId);
+            }
+            if(this.searchChapterChoice==''&&this.searchChapterChoice!='0'||this.searchChapterChoice==' '){
+                params.append("chapter",'');
+            }else{
+                params.append("chapter",this.searchChapterOptions[this.searchChapterChoice]);   
+            }
+            if(this.searchFirstKnowledgeChoice==''&&this.searchFirstKnowledgeChoice!='0'||this.searchFirstKnowledgeChoice==' '){
+                params.append("firstKnowledge",'');
+            }else{
+                params.append("firstKnowledge",this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice]);
+            }
+            if(this.searchSecondKnowledgeChoice==''||this.searchSecondKnowledgeChoice==' '){
+                params.append("questionLabelId",0);
+            }else{
+                params.append("questionLabelId",this.searchSecondKnowledgeChoice);
+            }
+            this.$axios({
+                method: 'post',
+                headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+                },
+                url: '/completionQuestion/queryCompletionQuestionInfoBySearchInfo',
+                data: params
+            })
+            .then((res) => {
+                this.currentPage=1;
+                this.completionQuestionInfoList=res.data;
+            })
+            .catch((err) => {
+            this.$message.error('查询填空题信息错误');
 
+            })
+        },
+        //获取全部教师信息 
+        getTeacherUserInfo(){
+            let params = new URLSearchParams();
+            this.$axios({
+                method: 'post',
+                headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+                },
+                url: '/user/queryTeacherUserInfo',
+                data: params
+            })
+            .then((res) => {
+                var teacherUser=new Object;
+                teacherUser.userId='';
+                teacherUser.userName='';
+                this.teacherUserList=res.data;
+                this.teacherUserList.unshift(teacherUser);
+            })
+            .catch((err) => {
+            this.$message.error('系统错误请稍后再尝试');
+
+            })
+        },
+         //查询时点击第一知识点
+        searchFirstPointChange(){
+            //查询时第二知识点可以使用  第二知识点选择为空
+            if(this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice]!=' '){
+                this.searchSecondKnowledgePointVisiable=false;
+                this.searchSecondKnowledgeChoice='';
+                this.getSearchSecondKnowledgePointInfo(this.searchChapterOptions[this.searchChapterChoice],this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice])
+            }else{
+                this.searchSecondKnowledgePointVisiable=true;
+                this.searchSecondKnowledgeChoice='';
+            }
+        },
+        //查询章节变化时
+        searchChapterChange(){
+        //不为空时 查询时第一知识点可以使用 第二知识点禁用 第一知识点和第二知识点选择为空
+            if(this.searchChapterOptions[this.searchChapterChoice]!=' '){
+                this.searchFirstKnowledgePointVisiable=false;
+                this.searchSecondKnowledgePointVisiable=true;
+                this.searchSecondKnowledgeChoice='';
+                this.searchFirstKnowledgeChoice='';
+                //获取查询第一知识点的数据
+                this.getSearchFirstKnowledgePointInfo(this.searchChapterOptions[this.searchChapterChoice]);
+            }else{
+                this.searchFirstKnowledgePointVisiable=true;
+                this.searchSecondKnowledgePointVisiable=true;
+                this.searchSecondKnowledgeChoice='';
+                this.searchFirstKnowledgeChoice='';
+            }   
+        },
+         //获取查询第一知识点信息
+        getSearchFirstKnowledgePointInfo(chapter){
+            let params = new URLSearchParams(chapter);
+            params.append("chapter",chapter);
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/queryFirstKnowledgePointInfoByChapter',
+                data: params
+            })
+            .then((res)=> {
+                //给下拉框内容清空 并初始化
+                this.searchFirstKnowledgePointOptions=[];
+                this.searchFirstKnowledgePointOptions=res.data;
+                if(this.searchFirstKnowledgePointOptions.length>0){
+                    var firstKnowledgePoint=new Object();
+                    firstKnowledgePoint=' ';
+                    this.searchFirstKnowledgePointOptions.unshift(firstKnowledgePoint);
+                }
+            })
+            .catch((err)=> {
+                this.$message.error('获取查询第一知识点错误');
+                
+            })
+        },
+         //获取查询第二知识点
+        getSearchSecondKnowledgePointInfo(chapter,firstKnowledgePoint){
+            let params = new URLSearchParams();
+            params.append("chapter",chapter);
+            params.append("firstKnowledgePoint",firstKnowledgePoint);
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/querySecondKnowledgePointInfoByChapter',
+                data: params
+            })
+            .then((res)=> {
+                //给下拉框内容清空 并初始化
+                this.searchSecondKnowledgePointOptions=[];
+                this.searchSecondKnowledgePointOptions=res.data;
+                if(this.searchSecondKnowledgePointOptions.length>0){
+                    var secondKnowledgePoint=new Object();
+                    secondKnowledgePoint.secondKnowledgePoint=' ';
+                    secondKnowledgePoint.questionLabelId=0
+                    this.searchSecondKnowledgePointOptions.unshift(secondKnowledgePoint);
+                }
+            })
+            .catch((err)=> {
+                this.$message.error('获取查询第二知识点错误');
+                
+            })
+        },
+        //获取查询标签信息(获取chapter)
+        getSearchQuestionLabelInfo(){
+            let params = new URLSearchParams();
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/questionLabel/queryChapterInfo',
+                data: params
+            })
+            .then((res)=> {
+                //初始化
+                this.searchChapterOptions=res.data;
+                if(this.searchChapterOptions.length>0){
+                    var chapter=new Object();
+                    chapter=' ';
+                    this.searchChapterOptions.unshift(chapter);
+                }
+            })
+            .catch((err)=> {
+                this.$message.error('获取查询章节信息错误'); 
+            })
+        },
+        //跳转页面调用
+        handleCurrent (val) {
+            this.currentPage = val;
+        },
         //添加填空题信息添加填空
         addCompletionQuestionAddSpace(){
             var completionQuestionAnswer=new Object;
@@ -845,7 +1091,7 @@ export default {
 
 <style>
 /* 详情弹出框的input 禁用样式 */
-.el-textarea.is-disabled .el-textarea__inner {
+.e2 .el-textarea.is-disabled .el-textarea__inner {
   background-color: white;
   border-color: white;
   color: black;
@@ -854,11 +1100,16 @@ export default {
   resize: none;
   padding: 0;
 }
-/*这两个都是详情弹出框禁用样式 */
+/*详情内的答案的禁用样式 */
 .e1 .el-input .el-input__inner{
-    background-color: white;
+  background-color: white;
   border-color: white;
   color: black;
   cursor: default;
+}
+/* 分页的css样式 */
+.pagination {
+  display: flex;
+  justify-content: center;
 }
 </style>
