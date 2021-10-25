@@ -93,6 +93,15 @@ const routes = [
         name: 'GroupUserManage',
         component: () => import('@/components/TeacherUser/GroupUserManage.vue')
       },
+
+    ]
+  },
+  {
+    path: '/examInfoHeader',
+    name: 'ExamInfoHeader',
+    redirect: 'candidateScore',
+    component: () => import('../views/ExamInfoHeader.vue'),
+    children: [
       {
         path: '/candidateScore',
         name: 'CandidateScore',
@@ -105,7 +114,6 @@ const routes = [
       },
     ]
   },
-
 
 
 

@@ -21,6 +21,18 @@
     </div>
     <el-table :data="data" style="width: 100%" stripe>
       <el-table-column prop="examName" label="考试名称" width="180">
+        <template slot-scope="scope">
+          <router-link
+            :to="{
+              path: 'ExamInfoHeader',
+              query: {
+                examIdfromManage: scope.row.examId,
+              },
+            }"
+          >
+            {{ scope.row.examName }}
+          </router-link>
+        </template>
       </el-table-column>
       <el-table-column prop="examStartTime" label="开始时间" width="180">
       </el-table-column>
@@ -29,6 +41,8 @@
       <el-table-column prop="examStatus" label="考试状态" width="180">
       </el-table-column>
       <el-table-column prop="examLanguage" label="代码语言" width="80">
+      </el-table-column>
+      <el-table-column prop="group.groupName" label="考试分组" width="80">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -70,6 +84,7 @@
       title="添加考试"
       :visible.sync="edittableDataVisible_add"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="addExam"
@@ -100,7 +115,7 @@
           >
           </el-date-picker>
         </el-form-item>
-       
+
         <el-form-item label="语言类型" prop="examLanguage">
           <el-select v-model="exam_add.examLanguage" placeholder="请选择">
             <el-option
@@ -108,6 +123,17 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="考试分组" prop="groupId">
+          <el-select v-model="exam_add.groupId" placeholder="请选择">
+            <el-option
+              v-for="item in groupList"
+              :key="item.groupId"
+              :label="item.groupName"
+              :value="item.groupId"
             >
             </el-option>
           </el-select>
@@ -122,6 +148,7 @@
       title="修改考试信息"
       :visible.sync="edittableDataVisible_modify"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form :model="exam_modify" ref="exam_modify">
         <el-form-item label="考试名称" prop="examName">
@@ -147,7 +174,7 @@
           >
           </el-date-picker>
         </el-form-item>
-        
+
         <el-form-item label="语言类型" prop="examLanguage">
           <el-select v-model="exam_modify.examLanguage" placeholder="请选择">
             <el-option
@@ -155,6 +182,17 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="考试分组" prop="groupId">
+          <el-select v-model="exam_modify.groupId" placeholder="请选择">
+            <el-option
+              v-for="item in groupList"
+              :key="item.groupId"
+              :label="item.groupName"
+              :value="item.groupId"
             >
             </el-option>
           </el-select>
@@ -183,7 +221,8 @@ export default {
         examEndTime: '',
         teacherId: '',
         examStatus: '',
-        examLanguage: ''
+        examLanguage: '',
+        groupId: ''
       },
       exam_modify: {
         examId: '',
@@ -192,9 +231,10 @@ export default {
         examEndTime: '',
         teacherId: '',
         examStatus: '',
-        examLanguage: ''
+        examLanguage: '',
+        groupId: ''
       },
-      
+      groupList: [],
       language: [{ value: 'C', label: 'C' }, { value: 'C++', label: 'C++' }, { value: 'Java', label: 'Java' }],
       addExamData: {},
       addRules: {},
@@ -207,9 +247,17 @@ export default {
       searchData: []
     }
   },
+  created: function () {
+
+    // console.log("created");
+  },
   mounted: function () {
-    // this.getTeacherInfo();
-    this.getExamInfo();
+    this.$nextTick(() => {
+      this.getUserInfo();
+      this.getGroupInfo();
+    });
+
+    // console.log("mounted");
   },
   computed: {
     data () {
@@ -245,13 +293,14 @@ export default {
       this.exam_add = new Object();
     },
     modifyExamDialog (row) {
+      // console.log(row);
       this.edittableDataVisible_modify = true
       this.exam_modify.examId = row.examId
       this.exam_modify.examName = row.examName
       this.exam_modify.examStartTime = row.examStartTime
       this.exam_modify.examEndTime = row.examEndTime
       this.exam_modify.examLanguage = row.examLanguage
-      // alert(this.exam_modify.classesId)
+      this.exam_modify.groupId = row.group.groupName
     },
     modifyExamInfo () {
       let params = new URLSearchParams();
@@ -260,8 +309,7 @@ export default {
       params.append('examEndTime', this.exam_modify.examEndTime);
       params.append('examName', this.exam_modify.examName);
       params.append('examLanguage', this.exam_modify.examLanguage);
-      // alert(this.exam_modify.classesId)
-      // console.log(this.exam_modify);
+      params.append('groupId', this.exam_modify.groupId);
       this.$axios({
         method: 'post',
         headers: {
@@ -288,40 +336,59 @@ export default {
         console.log(res);
       })
     },
-    
-    //获取教师用户信息
-    // getUserInfo () {
-    //   let params = new URLSearchParams();
-    //   this.$axios({
-    //     method: 'post',
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded"
-    //     },
-    //     url: '/user/queryUserInfo',
-    //     data: params
-    //   })
-    //     .then((res) => {
-    //       this.teacher = res.data;;
-    //     })
-    //     .catch((err) => {
-    //       // this.$message.error('系统错误请稍后再尝试');
-    //       this.$router.push({ path: '/managerLogin' })
-    //     })
-    // },
-    getExamInfo () {
+    getGroupInfo () {
       const that = this
-      let params = new URLSearchParams();
-      // params.append('teacherId', this.teacher.teacherId)
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/exam/queryExamInfo',
+        url: '/group/queryGroupInfo',
+      }).then(function (resp) {
+        // console.log(resp.data);
+        that.groupList = resp.data;
+        // console.log(that.groupList);
+      })
+    },
+    // 获取教师用户信息
+    getUserInfo () {
+      const that = this
+      let params = new URLSearchParams();
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/user/queryUserInfo',
         data: params
       })
         .then((res) => {
-
+          // console.log(res.data);
+          that.teacher = res.data;
+          this.getExamInfo();
+          // console.log(that.teacher);
+        })
+        .catch((err) => {
+          // this.$message.error('系统错误请稍后再尝试');
+          this.$router.push({ path: '/managerLogin' })
+        })
+    },
+    getExamInfo () {
+      const that = this
+      let params = new URLSearchParams();
+      // console.log("教师ID:" + that.teacher.userId);
+      // console.log("教师姓名:" + that.teacher.userName);
+      params.append('userId', this.teacher.teacherId)
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/exam/userQueryExamInfo',
+        data: params
+      })
+        .then((res) => {
+          // console.log(res.data);
           that.examList = res.data;
           that.searchData = res.data;
           for (var key in res.data) {
@@ -342,8 +409,9 @@ export default {
           params.append('examStartTime', this.exam_add.examStartTime);
           params.append('examEndTime', this.exam_add.examEndTime);
           params.append('teacherId', this.exam_add.teacherId);
-          params.append('examType', 'Pending');
+          params.append('examStatus', 'Pending');
           params.append('examLanguage', this.exam_add.examLanguage);
+          params.append('groupId', this.exam_add.groupId);
           this.$axios({
             method: 'post',
             headers: {
@@ -425,10 +493,21 @@ export default {
 </script>
 
 <style>
+.topBar_Teacher {
+  margin-top: 10px;
+}
+.addButton_Exam {
+  float: right;
+  margin-right: 25px;
+}
 .block {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+a {
+  /* text-decoration: none; */
+  color: #606266;
 }
 </style>

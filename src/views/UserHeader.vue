@@ -20,7 +20,8 @@
         <el-submenu index="2">
           <template slot="title">Online Exercise</template>
           <el-menu-item @click="goToExerciseList()">ExerciseList</el-menu-item>
-          <el-menu-item @click="goToExerciseRealTimeStatus()">Realtime Judge Status</el-menu-item
+          <el-menu-item @click="goToExerciseRealTimeStatus()"
+            >Realtime Judge Status</el-menu-item
           >
           <el-menu-item @click="gotoUserRankList()">UserRankList</el-menu-item>
         </el-submenu>
@@ -31,24 +32,36 @@
 
         <div class="loginbutton">
           <span
-            style="margin-right: 3%;font-size:16px;cursor:pointer;/*鼠标悬停变小手*/"
+            style="
+              margin-right: 3%;
+              font-size: 16px;
+              cursor: pointer; /*鼠标悬停变小手*/
+            "
             @click="gotoUserInfo()"
             >{{ userName }}</span
           >
-          <el-button plain @click="userLogin()" v-if="userName==''" style="margin-top:-5px">登录 </el-button>
-          <span  v-if="userName!=''" @click="exitLogin()" style="float:right;font-size:16px;cursor:pointer;/*鼠标悬停变小手*/">退出登录</span>
+          <el-button
+            plain
+            @click="userLogin()"
+            v-if="userName == ''"
+            style="margin-top: -5px"
+            >登录
+          </el-button>
+          <span
+            v-if="userName != ''"
+            @click="exitLogin()"
+            style="
+              float: right;
+              font-size: 16px;
+              cursor: pointer; /*鼠标悬停变小手*/
+            "
+            >退出登录</span
+          >
         </div>
       </el-menu>
     </el-header>
     <el-main>
-
-
-          <router-view >
-          </router-view>
-
-
-
-
+      <router-view> </router-view>
     </el-main>
   </el-container>
 </template>
@@ -59,37 +72,37 @@ export default {
     return {
       userName: '',
       userId: '',
-      classesId: '',
+      userIdentity: '',
     }
   },
   mounted: function () {
-    sessionStorage.setItem("isPublish","false");
+    sessionStorage.setItem("isPublish", "false");
     this.getUserInfo();
   },
- 
+
   methods: {
     //跳转到用户排行榜 保存返回值
-    gotoUserRankList(){
-      if(this.$route.path!="/userRankList"){
-        sessionStorage.setItem("isPublish","true");
+    gotoUserRankList () {
+      if (this.$route.path != "/userRankList") {
+        sessionStorage.setItem("isPublish", "true");
         this.$router.push('/userRankList')
       }
     },
 
     //跳转到习题实时状态界面 保存返回值用
-    goToExerciseRealTimeStatus(){
-      if(this.$route.path!="/exerciseRealTimeStatus"){
-        sessionStorage.setItem("isPublish","true");
+    goToExerciseRealTimeStatus () {
+      if (this.$route.path != "/exerciseRealTimeStatus") {
+        sessionStorage.setItem("isPublish", "true");
         this.$router.push('/exerciseRealTimeStatus')
       }
     },
     //跳转到习题列表界面 保存返回值用
-    goToExerciseList(){
+    goToExerciseList () {
 
-      if(this.$route.path!="/exerciseList"){
-        sessionStorage.setItem("isPublish","true");
+      if (this.$route.path != "/exerciseList") {
+        sessionStorage.setItem("isPublish", "true");
         this.$router.push('/exerciseList')
-      }  
+      }
     },
 
 
@@ -102,13 +115,23 @@ export default {
           this.$router.push({ path: '/examList', query: { userId: this.userId } })
       }
     },
+    goToExamList () {
+      if (this.userId == "") {
+        this.$message.error("请先登录用户");
+        this.$router.push('/userLogin')
+      } else if (this.userIdentity == "student") {
+        this.$router.push('/examList');
+      } else if (this.userIdentity == "teacher") {
+        this.$router.push('/addExam');
+      }
+    },
     //跳转到用户登录界面
-    userLogin(){
-      sessionStorage.setItem("isPublish","true");
+    userLogin () {
+      sessionStorage.setItem("isPublish", "true");
       this.$router.push('/userLogin')
     },
     //获取用户信息
-    getUserInfo() {
+    getUserInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: 'post',
@@ -122,6 +145,7 @@ export default {
           if (res.data != false) {
             this.userName = res.data.userName;
             this.userId = res.data.userId;
+            this.userIdentity = res.data.userIdentity
           }
         })
         .catch((err) => {
@@ -133,23 +157,23 @@ export default {
     gotoUserInfo () {
       this.$router.push({ path: '/userInfo', query: { userId: this.userId } })
     },
-    exitLogin(){
-        let params = new URLSearchParams();
-        this.$axios({
-            method: 'post',
-            headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                        },
-            url: '/user/exitLogin',
-            data: params
+    exitLogin () {
+      let params = new URLSearchParams();
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/user/exitLogin',
+        data: params
+      })
+        .then((res) => {
+          alert("退出成功");
+          this.userName = '';
         })
-        .then((res)=> {
-            alert("退出成功");
-            this.userName='';
-        })
-        .catch((err)=> {
-            this.$message.error('删除选择题错误');
-            
+        .catch((err) => {
+          this.$message.error('删除选择题错误');
+
         })
     },
 

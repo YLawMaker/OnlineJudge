@@ -40,8 +40,7 @@
             </router-link>
           </template>
         </el-table-column>
-        <el-table-column prop="isPrivate" label="是否私有"></el-table-column>
-        <el-table-column label="创建者"></el-table-column>
+        <el-table-column prop="user.userName" label="创建者"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
@@ -144,6 +143,7 @@ export default {
         },
         url: '/group/queryGroupInfo',
       }).then(function (resp) {
+        // console.log(resp.data);
         that.groupList = resp.data;
         that.searchData = resp.data;
       })

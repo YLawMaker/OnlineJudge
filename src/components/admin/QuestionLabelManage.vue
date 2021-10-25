@@ -210,6 +210,9 @@ export default {
       this.edittableData.secondKnowledgePoint = row.secondKnowledgePoint
       // console.log(row.secondPoint);
     },
+    handleCurrent (val) {
+      this.currentPage = val;
+    },
     handleClose (done) {
       this.edittableDataVisible_add = false
       this.edittableDataVisible_modify = false
