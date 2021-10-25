@@ -119,7 +119,7 @@
             </el-form-item>
                 <!-- 选择正确选项上方的错误提醒 -->
                 <p style="float:right;margin-right:35px;width:100px;color:red;font-size: 12px;" v-if="isChoiceErrorVisible">请选择正确选项</p>
-            <el-form-item  label="考题选项" size="mini" class="e1" :required="true">
+            <el-form-item  label="考题选项" size="mini"  :required="true">
                 <el-table  :data="choice" style="width: 100%" class="tableclass">
                     <el-table-column prop="name" label="选项"> </el-table-column>
                     <el-table-column prop="input" label="选项内容" width="600px" align="center"  >
@@ -203,7 +203,7 @@
             </el-form-item>
                 <!-- 选择正确选项上方的错误提醒 -->
                 <p style="float:right;margin-right:35px;width:100px;color:red;font-size: 12px;" v-if="isChoiceErrorVisible">请选择正确选项</p>
-            <el-form-item  label="考题选项" size="mini" class="e1" :required="true">
+            <el-form-item  label="考题选项" size="mini"  :required="true">
                 <el-table  :data="choice" style="width: 100%" class="tableclass">
                     <el-table-column prop="name" label="选项"> </el-table-column>
                     <el-table-column prop="input" label="选项内容" width="600px" align="center"  >
@@ -279,67 +279,70 @@
     </el-dialog>
 
     <!-- 选择题详情弹出框 -->
-    <el-dialog title="选择题详情" :visible.sync="choiceQuestionShowVisible"  center>
-        <el-form :model="showChoiceQuestionInfo" ref="showChoiceQuestionInfo" label-width="100px" :label-position="'top'" >
-            <el-form-item prop="choiceQuestionDescription" label="题目描述" size="mini">
-                <el-input v-model="showChoiceQuestionInfo.choiceQuestionDescription" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true" >
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="choiceQuestionStemA" label="题目A选项" size="mini">
-                <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemA" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="choiceQuestionStemB" label="题目B选项" size="mini">
-                <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemB" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="choiceQuestionStemC" label="题目C选项" size="mini">
-                <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemC" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="choiceQuestionStemD" label="题目D选项" size="mini">
-                <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemD" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="chapter" label="所属章节" size="mini">                                                              <!-- 初始化页面时不让他初始化没有对应的值 -->
-                <el-input v-model="showChoiceQuestionInfo.questionLabels[0].chapter" placeholder="所属章节" type="textarea" :autosize="true"  :disabled="true" v-if="choiceQuestionInfo.questionLabels.length>0">
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="firstKnowledgePoint" label="第一知识点" size="mini">
-                <el-input v-model="showChoiceQuestionInfo.questionLabels[0].firstKnowledgePoint" placeholder="第一知识点" type="textarea" :autosize="true"  :disabled="true" v-if="choiceQuestionInfo.questionLabels.length>0">
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="secondKnowledgePoint" label="第二知识点" size="mini"> 
-                <p v-for="(item,index) in showChoiceQuestionInfo.questionLabels" :key="index" style="margin-left:10px;float:left;margin-top:0px;color:black;font-size:12px;margin-bottom: 0px;">
-                    {{item.secondKnowledgePoint}}
-                </p>
-            </el-form-item>
-            <el-form-item >
-                <el-form inline>
-                    <el-form-item  label="是否私有" size="mini"> 
-                        <el-input v-model="showChoiceQuestionInfo.isPrivate" placeholder="是否私有" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item  label="题目难度" size="mini"> 
-                        <el-input v-model="showChoiceQuestionInfo.choiceQuestionDifficulty" placeholder="题目难度" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item  label="题目正确选项" size="mini"> 
-                        <el-input v-model="showChoiceQuestionInfo.choiceQuestionCorrectOption" placeholder="题目正确选项" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
-                        </el-input>
-                    </el-form-item>
-                </el-form>
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="choiceQuestionShowVisible = false">确定</el-button>
-        </div>
-    </el-dialog>
+    <div class="e1">
+        <el-dialog title="选择题详情" :visible.sync="choiceQuestionShowVisible"  center>
+            <el-form :model="showChoiceQuestionInfo" ref="showChoiceQuestionInfo" label-width="100px" :label-position="'top'" >
+                <el-form-item prop="choiceQuestionDescription" label="题目描述" size="mini">
+                    <el-input v-model="showChoiceQuestionInfo.choiceQuestionDescription" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true" >
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="choiceQuestionStemA" label="题目A选项" size="mini">
+                    <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemA" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="choiceQuestionStemB" label="题目B选项" size="mini">
+                    <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemB" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="choiceQuestionStemC" label="题目C选项" size="mini">
+                    <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemC" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="choiceQuestionStemD" label="题目D选项" size="mini">
+                    <el-input v-model="showChoiceQuestionInfo.choiceQuestionStemD" placeholder="题目描述" type="textarea" :autosize="true"  :disabled="true">
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="chapter" label="所属章节" size="mini">                                                              <!-- 初始化页面时不让他初始化没有对应的值 -->
+                    <el-input v-model="showChoiceQuestionInfo.questionLabels[0].chapter" placeholder="所属章节" type="textarea" :autosize="true"  :disabled="true" v-if="showChoiceQuestionInfo.questionLabels.length>0">
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="firstKnowledgePoint" label="第一知识点" size="mini">
+                    <el-input v-model="showChoiceQuestionInfo.questionLabels[0].firstKnowledgePoint" placeholder="第一知识点" type="textarea" :autosize="true"  :disabled="true" v-if="showChoiceQuestionInfo.questionLabels.length>0">
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="secondKnowledgePoint" label="第二知识点" size="mini"> 
+                    <p v-for="(item,index) in showChoiceQuestionInfo.questionLabels" :key="index" style="margin-left:10px;float:left;margin-top:0px;color:black;font-size:12px;margin-bottom: 0px;">
+                        {{item.secondKnowledgePoint}}
+                    </p>
+                </el-form-item>
+                <el-form-item >
+                    <el-form inline>
+                        <el-form-item  label="是否私有" size="mini"> 
+                            <el-input v-model="showChoiceQuestionInfo.isPrivate" placeholder="是否私有" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item  label="题目难度" size="mini"> 
+                            <el-input v-model="showChoiceQuestionInfo.choiceQuestionDifficulty" placeholder="题目难度" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item  label="题目正确选项" size="mini"> 
+                            <el-input v-model="showChoiceQuestionInfo.choiceQuestionCorrectOption" placeholder="题目正确选项" type="textarea"  :disabled="true" style="width:50px;height:23px;margin-left:5px">
+                            </el-input>
+                        </el-form-item>
+                    </el-form>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="choiceQuestionShowVisible = false">确定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+    
 
     <!-- 选择题删除弹出框 -->
     <el-dialog title="删除选择题" :visible.sync="deleteChoiceQuestionVisible"  center width="400px">
         <p style="text-align:center">
-            是否确定删除改选择题
+            是否确定删除该选择题
         </p>
         <div slot="footer" class="dialog-footer">
             <el-button @click="deleteChoiceQuestionVisible = false">取 消</el-button>
@@ -576,7 +579,7 @@ export default {
     },
     computed: {
         data () {
-        return this.choiceQuestionList.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
+            return this.choiceQuestionList.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
         }
     },
     
@@ -756,7 +759,7 @@ export default {
                         .then((res)=> {
                             this.addChoiceQuestionVisible=false;
                             if(res.data==true){
-                                this.searchChoiceQuestionInfo();
+                                this.getChoiceQuestionInfo();
                                 this.$message.success('添加成功');
                             }else{
                                 this.$message.error('添加失败');
@@ -839,7 +842,7 @@ export default {
                         .then((res)=> {
                             this.editChoiceQuestionVisible=false;
                             if(res.data==true){
-                                this.searchChoiceQuestionInfo();
+                                this.getChoiceQuestionInfo();
                                 this.$message.success('修改成功');
                             }else{
                                 this.$message.error('修改失败');
@@ -888,7 +891,7 @@ export default {
             .then((res)=> {
                 if (res.data == true) {
                      this.$message.success('选择题删除成功');
-                     this.searchChoiceQuestionInfo();
+                     this.getChoiceQuestionInfo();
                      this.deleteChoiceQuestionVisible=false;
                 } else if (res.data == false) {
                     this.$message.error('选择题删除失败');
@@ -1236,7 +1239,6 @@ export default {
         },
         //修改时获取第二知识点初始化
         getEditSecondKnowledgePointInfo(row){
-            
             let params = new URLSearchParams();
             params.append("chapter",this.chapterOptions[this.chapterChoice].label);
             params.append("firstKnowledgePoint",this.firstKnowledgePointOptions[this.firstKnowledgePointChoice].label);
@@ -1268,6 +1270,25 @@ export default {
                 
             })
         },
+        //获取填空题信息
+        getChoiceQuestionInfo(){
+            let params = new URLSearchParams();
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/choiceQuestion/queryChoiceQuestionInfo',
+                data: params
+            })  
+            .then((res)=> {
+                this.choiceQuestionList=res.data;
+            })
+            .catch((err)=> {
+                this.$message.error('查询填空题错误');
+                
+            })
+        },
   }
     
 }
@@ -1282,7 +1303,7 @@ export default {
    border: red 1px;
   border-style:  solid;
 }
-.el-textarea.is-disabled .el-textarea__inner {
+.e1 .el-textarea.is-disabled .el-textarea__inner {
   background-color: white;
   border-color: white;
   color: black;
