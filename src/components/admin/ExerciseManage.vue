@@ -568,13 +568,10 @@ export default {
         that.select_word = key
       })
     },
-<<<<<<< HEAD
     //修改习题信息
     modifyExerciseInfoDialog (edittableData) {
       this.$refs[edittableData].validate((valid) => {
         if (valid) {
-=======
-    modifyExerciseInfoDialog () {
       let params = new URLSearchParams();
       params.append('exerciseId', this.edittableData.exerciseId);
       params.append('exerciseTitle', this.edittableData.exerciseTitle);
@@ -608,7 +605,6 @@ export default {
           this.getExercise(this.currentPage, '');
         } else {
           this.$message.error('发生了错误');
->>>>>>> 35bb2d3d17c2c8d5b69e46c249b4b69d4dfe04d3
           this.edittableDataVisible_modify = false;
           let params = new URLSearchParams();
           params.append('exerciseId', this.edittableData.exerciseId);
@@ -650,6 +646,8 @@ export default {
           }).catch((res) => {
             console.log(res);
           })
+        }
+      })
         }
       })
     },
