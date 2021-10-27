@@ -571,7 +571,7 @@ export default {
         //获取查询选择题标签信息
         this.getSearchQuestionLabelInfo();
         //获取选择题信息
-        this.searchChoiceQuestionInfo();
+        this.getChoiceQuestionInfo();
         //获取当前教师用户信息
         this.getCurrentTeacherUserInfo();
         //获取全部教师信息
@@ -1270,7 +1270,7 @@ export default {
                 
             })
         },
-        //获取填空题信息
+        //获取选择题信息
         getChoiceQuestionInfo(){
             let params = new URLSearchParams();
             this.$axios({
@@ -1285,7 +1285,7 @@ export default {
                 this.choiceQuestionList=res.data;
             })
             .catch((err)=> {
-                this.$message.error('查询填空题错误');
+                this.$message.error('查询选择题错误');
                 
             })
         },

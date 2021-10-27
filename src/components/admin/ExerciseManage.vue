@@ -80,20 +80,18 @@
         :show-overflow-tooltip="true"
       >
       </el-table-column>
-      <el-table-column prop="labels[0].firstPoint" label="第一知识点">
-      </el-table-column>
       <el-table-column
-        label="第二知识点"
-        min-width="100%"
+        label="知识点"
+        width="180"
         :show-overflow-tooltip="true"
       >
         <template slot-scope="scope">
           <div
             v-for="item in scope.row.labels"
             :key="item.labelId"
-            style="margin-top: 0px; margin-bottom: 0px; display: inline"
+            style="margin-top: 0px; margin-bottom: 0px;"
           >
-            {{ item.secondPoint }}
+            {{item.secondPoint}}
           </div>
         </template>
       </el-table-column>
@@ -358,23 +356,13 @@
             :disabled="edit"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="firstPoint" label="第一知识点" size="mini">
-          <el-input
-            v-model="edittableData.labels[0].firstPoint"
-            placeholder="第一知识点"
-            type="textarea"
-            :autosize="true"
-            :disabled="true"
-            v-if="edittableData.labels.length > 0"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="secondPoint" label="第二知识点" size="mini">
+        
+        <el-form-item prop="Point" label="知识点" >
           <p
             v-for="(item, index) in edittableData.labels"
             :key="index"
             style="
-              margin-left: 10px;
+              margin-left: 20px;
               float: left;
               margin-top: 0px;
               color: black;
@@ -382,7 +370,8 @@
               margin-bottom: 0px;
             "
           >
-            {{ item.secondPoint }}
+
+            {{item.firstPoint+"/"+item.secondPoint}}
           </p>
         </el-form-item>
       </el-form>
@@ -572,82 +561,41 @@ export default {
     modifyExerciseInfoDialog (edittableData) {
       this.$refs[edittableData].validate((valid) => {
         if (valid) {
-      let params = new URLSearchParams();
-      params.append('exerciseId', this.edittableData.exerciseId);
-      params.append('exerciseTitle', this.edittableData.exerciseTitle);
-      params.append('exerciseDescription', this.edittableData.exerciseDescription);
-      params.append('exerciseInput', this.edittableData.exerciseInput);
-      params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
-      params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
-      params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
-      for (var i = 0; i < this.edittableData.labels.length; i++) {
-        var label = new Object;
-        label.labelId = this.edittableData.labels[i][1];
-        console.log(label.labelId)
-        this.labels.push(label);
-      }
-      params.append('labels', JSON.stringify(this.labels))
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/exercise/modifyExerciseInfo',
-        data: params
-      }).then((res) => {
-        if (res.data == true) {
-          this.$message.success('习题信息修改成功');
-          this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage, '');
-        } else if (res.data == false) {
-          this.$message.error('习题信息修改失败');
-          this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage, '');
-        } else {
-          this.$message.error('发生了错误');
-          this.edittableDataVisible_modify = false;
-          let params = new URLSearchParams();
-          params.append('exerciseId', this.edittableData.exerciseId);
-          params.append('exerciseTitle', this.edittableData.exerciseTitle);
-          params.append('exerciseDescription', this.edittableData.exerciseDescription);
-          params.append('exerciseInput', this.edittableData.exerciseInput);
-          params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
-          params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
-          params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
-          this.labels=[];
-          for(var i=0;i<this.edittableData.labels.length;i++){
-                var label=new Object;
-                label.labelId=this.edittableData.labels[i][1];
-                this.labels.push(label);
-              }
-
-          params.append('labels',JSON.stringify(this.labels))
-          this.$axios({
-            method: 'post',
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            url: '/exercise/modifyExerciseInfo',
-            data: params
-          }).then((res) => {
-            if (res.data == true) {
-              this.$message.success('习题信息修改成功');
-            
-              this.getExercise(this.currentPage, '');
-            } else if (res.data == false) {
-              this.$message.error('习题信息修改失败');
-          
-              this.getExercise(this.currentPage, '');
-            } else {
-              this.$message.error('发生了错误');
-            
-              this.getExercise(this.currentPage, '');
+            this.edittableDataVisible_modify = false;
+            let params = new URLSearchParams();
+            params.append('exerciseId', this.edittableData.exerciseId);
+            params.append('exerciseTitle', this.edittableData.exerciseTitle);
+            params.append('exerciseDescription', this.edittableData.exerciseDescription);
+            params.append('exerciseInput', this.edittableData.exerciseInput);
+            params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
+            params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
+            params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
+            this.labels=[];
+            for (var i = 0; i < this.edittableData.labels.length; i++) {
+              var label = new Object;
+              label.labelId = this.edittableData.labels[i][1];
+              this.labels.push(label);
             }
-          }).catch((res) => {
-            console.log(res);
-          })
-        }
-      })
+            params.append('labels', JSON.stringify(this.labels))
+            this.$axios({
+              method: 'post',
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+              },
+              url: '/exercise/modifyExerciseInfo',
+              data: params
+            }).then((res) => {
+              if (res.data == true) {
+                this.$message.success('习题信息修改成功');
+                this.getExercise(this.currentPage, '');
+              } else if (res.data == false) {
+                this.$message.error('习题信息修改失败');
+                this.getExercise(this.currentPage, '');
+              } else {
+                this.$message.error('发生了错误');
+                this.getExercise(this.currentPage, '');
+              }
+            })
         }
       })
     },
@@ -850,7 +798,7 @@ a {
 }
 .block {
   position: absolute;
-  bottom: 0;
+ 
   left: 50%;
   transform: translate(-50%, -50%);
 }
