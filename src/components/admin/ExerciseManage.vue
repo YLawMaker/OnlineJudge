@@ -136,6 +136,7 @@
       >
       </el-pagination>
     </div>
+    <!-- 修改习题 -->
     <el-dialog
       title="修改习题信息"
       :visible.sync="edittableDataVisible_modify"
@@ -144,8 +145,9 @@
     >
       <el-form
         :model="edittableData"
-        :rules="edittableDataRules"
+        :rules="addRules"
         ref="edittableData"
+        
       >
         <el-form-item label="题目编号" prop="exerciseId">
           <el-input
@@ -205,12 +207,13 @@
       </el-form>
       <span slot="footer">
         <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="modifyExerciseInfoDialog()"
+        <el-button type="primary" @click="modifyExerciseInfoDialog('edittableData')"
           >确 定</el-button
         >
       </span>
       <!-- 添加 -->
     </el-dialog>
+    <!-- 添加习题 -->
     <el-dialog
       title="添加习题"
       :visible.sync="edittableDataVisible_add"
@@ -536,45 +539,52 @@ export default {
         that.select_word = key
       })
     },
-    modifyExerciseInfoDialog () {
-      let params = new URLSearchParams();
-      params.append('exerciseId', this.edittableData.exerciseId);
-      params.append('exerciseTitle', this.edittableData.exerciseTitle);
-      params.append('exerciseDescription', this.edittableData.exerciseDescription);
-      params.append('exerciseInput', this.edittableData.exerciseInput);
-      params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
-      params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
-      params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
-      for(var i=0;i<this.edittableData.labels.length;i++){
-            var label=new Object;
-            label.labelId=this.edittableData.labels[i][1];
-            console.log(label.labelId)
-            this.labels.push(label);
-          }
+    //修改习题信息
+    modifyExerciseInfoDialog (edittableData) {
+      this.$refs[edittableData].validate((valid) => {
+        if (valid) {
+          this.edittableDataVisible_modify = false;
+          let params = new URLSearchParams();
+          params.append('exerciseId', this.edittableData.exerciseId);
+          params.append('exerciseTitle', this.edittableData.exerciseTitle);
+          params.append('exerciseDescription', this.edittableData.exerciseDescription);
+          params.append('exerciseInput', this.edittableData.exerciseInput);
+          params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
+          params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
+          params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
+          this.labels=[];
+          for(var i=0;i<this.edittableData.labels.length;i++){
+                var label=new Object;
+                label.labelId=this.edittableData.labels[i][1];
+                this.labels.push(label);
+              }
+
           params.append('labels',JSON.stringify(this.labels))
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/exercise/modifyExerciseInfo',
-        data: params
-      }).then((res) => {
-        if (res.data == true) {
-          this.$message.success('习题信息修改成功');
-          this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage, '');
-        } else if (res.data == false) {
-          this.$message.error('习题信息修改失败');
-          this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage, '');
-        } else {
-          this.$message.error('发生了错误');
-          this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage, '');
+          this.$axios({
+            method: 'post',
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            url: '/exercise/modifyExerciseInfo',
+            data: params
+          }).then((res) => {
+            if (res.data == true) {
+              this.$message.success('习题信息修改成功');
+            
+              this.getExercise(this.currentPage, '');
+            } else if (res.data == false) {
+              this.$message.error('习题信息修改失败');
+          
+              this.getExercise(this.currentPage, '');
+            } else {
+              this.$message.error('发生了错误');
+            
+              this.getExercise(this.currentPage, '');
+            }
+          }).catch((res) => {
+            console.log(res);
+          })
         }
-      }).catch((res) => {
-        console.log(res);
       })
     },
     deleteConfirm (row) {
@@ -594,6 +604,7 @@ export default {
         console.log(resp);
       });
     },
+    //删除习题信息
     deleteExercise (exerciseId) {
       let params = new URLSearchParams();
       params.append('exerciseId', exerciseId);
