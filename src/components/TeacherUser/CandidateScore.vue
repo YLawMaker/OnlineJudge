@@ -137,8 +137,12 @@ export default {
         data: params
       }).then(function (resp) {
         that.examHistory = resp.data;
+
         // console.log(resp.data);
         // console.log(that.examHistory);
+        for (var i = 0; i < that.examHistory.length; i++) {
+          that.examHistory[i].examTotals = that.examHistory[i].examChoiceQuestionTotals + that.examHistory[i].examCompletionQuestionTotals + that.examHistory[i].examProgrammingTotals
+        }
       })
     },
     getUserScoreHistory (userId) {

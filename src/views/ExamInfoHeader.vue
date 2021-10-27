@@ -18,7 +18,7 @@
             </el-button></el-menu-item
           >
 
-          <el-menu-item index="/faq"><span>试卷一览</span></el-menu-item>
+          <el-menu-item index="/ExamInfo"><span>试卷一览</span></el-menu-item>
           <el-menu-item index="/ChoiceQuestionManage"
             ><span>选择题</span></el-menu-item
           >

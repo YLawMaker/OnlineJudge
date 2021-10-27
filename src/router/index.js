@@ -130,6 +130,11 @@ const routes = [
         name: 'programmingAnswerManage',
         component: () => import('@/components/TeacherUser/programmingAnswerManage.vue')
       },
+      {
+        path: '/examInfo',
+        name: 'ExamInfo',
+        component: () => import('@/components/TeacherUser/ExamInfo.vue')
+      },
     ]
   },
 
