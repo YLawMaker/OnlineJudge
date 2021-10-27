@@ -21,7 +21,7 @@
     </div>
     <div>
       <el-table
-        :data="data"
+        :data="data_group"
         style="width: 100%"
         :row-style="{ height: '20px' }"
         stripe
@@ -131,7 +131,7 @@ export default {
     }
   },
   computed: {
-    data () {
+    data_group () {
       return this.searchData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
     }
 

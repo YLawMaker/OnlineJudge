@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="topBar_answer">
-      <el-button size="small" type="primary" @click.native.prevent="goBack()">
+      <!-- <el-button size="small" type="primary" @click.native.prevent="goBack()">
         返回
-      </el-button>
+      </el-button> -->
       <el-button
         size="small"
         type="primary"
@@ -75,8 +75,6 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="examProgrammingScore" label="分数" width="50">
-      </el-table-column>
       <el-table-column label="操作"
         ><template slot-scope="scope">
           <el-button
@@ -113,9 +111,12 @@
     <el-dialog
       title="添加编程题"
       :visible.sync="edittableDataVisible_add"
+      v-if="edittableDataVisible_add"
       :before-close="handleClose"
+      :close-on-click-modal="false"
+      width="850px"
     >
-      <el-form
+      <!-- <el-form
         ref="addProgramming"
         :model="addProgrammingData"
         :rules="addRules"
@@ -171,7 +172,50 @@
           >
           <el-button @click="handleClose">取消</el-button>
         </el-form-item>
-      </el-form>
+      </el-form> -->
+
+      <el-input
+        v-model="select_word"
+        size="mini"
+        class="search_input"
+        placeholder="请输入习题标题"
+        style="width: 200px"
+        clearable
+      ></el-input>
+      <el-table
+        :data="data_dialog"
+        @selection-change="handleSelectionChange"
+        :row-key="getRowKey"
+      >
+        <el-table-column label="标题" prop="name" :show-overflow-tooltip="true">
+        </el-table-column>
+        <el-table-column
+          label="描述"
+          prop="address"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column type="selection" :reserve-selection="true">
+        </el-table-column>
+      </el-table>
+      <div class="block_addDialog">
+        <el-pagination
+          @current-change="handleCurrent"
+          :current-page.sync="currentPage_dialog"
+          :page-size="pagesize_dialog"
+          layout="total,prev, pager, next"
+          :total="this.tableData.length"
+          v-if="this.tableData.length != 0"
+        >
+        </el-pagination>
+      </div>
+      <el-button
+        class="addProgrammingDialog_button"
+        size="small"
+        type="primary"
+        @click="addProgramming_dialog()"
+        >添加</el-button
+      >
     </el-dialog>
     <el-dialog
       title="修改编程题"
@@ -350,24 +394,85 @@ export default {
       edit: true,
       addRules: {},
       programmingList: [],
-      examIdFromAddExam: '',
+      searchData: [],
+      examIdFromExamManage: 0,
       edittableDataVisible_add: false,
       edittableDataVisible_modify: false,
       edittableDataVisible_info: false,
       currentPage: 1,
       pagesize: 8,
+      currentPage_dialog: 1,
+      pagesize_dialog: 5,
+      select_word: '',
+      multipleSelection: [],
+      tableData: [{
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+        abc: 1
+      }, {
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+        abc: 2
+      }, {
+        date: '2016-05-04',
+        name: '王虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+        abc: 3
+      }, {
+        date: '2016-05-01',
+        name: '小虎',
+        address: '上海市普陀区金沙江路 1518 弄111111111111111111111111111111111111111111111111111111111111111111111',
+        abc: 4
+      }, {
+        date: '2016-05-08',
+        name: '虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+        abc: 5
+      }, {
+        date: '2016-05-06',
+        name: '王虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+        abc: 6
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄',
+        abc: 7
+      }],
     }
   },
   mounted: function () {
-    // alert(this.$route.query.examId)
-    this.examIdFromAddExam = this.$route.query.examId;
-    this.getprogramming(this.$route.query.examId);
+    //添加编程题的dialog数据初始化
+    this.searchData = this.tableData;
+
+    this.examIdFromExamManage = this.$route.query.examIdfromManage;
+    // this.getprogramming(this.examIdFromExamManage);
   },
   computed: {
     data () {
       return this.programmingList.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
+    },
+    data_dialog () {
+      return this.searchData.slice((this.currentPage_dialog - 1) * this.pagesize_dialog, this.currentPage_dialog * this.pagesize_dialog);
     }
+  },
+  watch: {
+    select_word: function () {
+      if (this.select_word == '') {
+        this.searchData = this.tableData;
+      } else {
+        this.searchData = [];
+        for (let item of this.tableData) {
+          if (item.name.includes(this.select_word)) {
+            this.currentPage = 1;
+            this.searchData.push(item);
 
+          }
+        }
+      }
+    },
   },
   methods: {
     handleClose (done) {
@@ -378,6 +483,13 @@ export default {
     },
     handleCurrent (val) {
       this.currentPage = val;
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val;
+      // console.log(this.multipleSelection);
+    },
+    getRowKey (row) {
+      return row.abc
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -439,8 +551,6 @@ export default {
         console.log(res);
       })
     },
-    goBack () { this.$router.push({ name: 'AddExam' }) },
-
     getprogramming (examId) {
       const that = this
       let params = new URLSearchParams();
@@ -458,6 +568,10 @@ export default {
         that.programmingList = resp.data
         // console.log(that.programmingList);
       })
+    },
+    addProgramming_dialog () {
+      console.log(this.multipleSelection.map(item => item.abc));
+      // alert(this.multipleSelection.name)
     },
     addProgramming (addProgramming) {
       var that = this;
@@ -545,10 +659,10 @@ export default {
 </script>
 <style>
 .el-tooltip__popper {
-  max-width: 50%;
-  background: white !important;
+  max-width: 30%;
+  background: black !important;
   color: white !important;
-  opacity: 0 !important; /*背景色透明度*/
+  opacity: 50 !important; /*背景色透明度*/
   white-space: pre-line !important;
 }
 .el-textarea.is-disabled .el-textarea__inner {
@@ -572,5 +686,18 @@ a {
   bottom: 0;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.block_addDialog {
+  position: absolute;
+  bottom: 7px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.addProgrammingDialog_button {
+  margin: 25px 25px 25px 25px;
+  float: right;
+}
+.el-dialog {
+  overflow: auto;
 }
 </style>
