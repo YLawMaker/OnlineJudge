@@ -9,13 +9,18 @@
     </el-input>
     <button @click="wwChange()">456</button>
     <div v-if="ww" class="label">
-      <div v-for="(i,o) in options" :key="o" style="float:left">
-        <span style="margin-right:500px">
+      <div v-for="(i,firstPointIndex) in options" :key="firstPointIndex">
+        <div style="margin-left:5px">
+          <span >
           {{i.label}}
-        </span>
-          <span v-for="(w,e) in options[o].children" :key="e" style="color:blue;cursor:pointer;">
-              {{w.label}}
           </span>
+        </div>
+        <div style="margin-left:4px">
+          <span v-for="(item,secondPointIndex) in options[firstPointIndex].children" :key="secondPointIndex" @click="choiceLable(firstPointIndex,secondPointIndex)" :class="{'choice':item.choice,'noChoice':!item.choice}">
+              {{item.label}}
+          </span>
+        </div>
+          
       </div>
       
     </div>
@@ -112,7 +117,9 @@ export default {
   computed: {
     data () {
       return this.selectExercise.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
-    }
+    },
+   
+   
   },
     
   mounted: function () {
@@ -136,9 +143,13 @@ export default {
   
 
   methods: {
-      wwChange(){
-        this.ww=!this.ww;
-      },
+    wwChange(){
+      this.ww=!this.ww;
+    },
+    choiceLable(firstPointIndex,secondPointIndex){
+      this.options[firstPointIndex].children[secondPointIndex].choice=!this.options[firstPointIndex].children[secondPointIndex].choice;
+      
+    },
     //给sessionStorage存值
     setContextData: function(key, value) { 
       if(typeof value == "string"){
@@ -238,6 +249,7 @@ export default {
             var secondPoint = new Object;
             secondPoint.label = res.data[o].secondPoint;
             secondPoint.value = res.data[o].labelId;
+            secondPoint.choice=false;
             this.options[i].children.push(secondPoint);
           }
         })
@@ -264,11 +276,29 @@ export default {
   margin-left: 5%;
 }
 .label{
-   width:500px;
-   height:500px;
+  width:500px;
+  height:500px;
   position:absolute;
-  top:120px;background:white;
+  top:120px;
+  background:white;
   z-index:999;
-  border-radius: 30px
+  border: 1px solid;
+  left:800px;
+}
+.noChoice{
+  color: rgba(60,60,67,.6);
+  cursor:pointer;
+  border:1px solid;
+  border-radius:5px;
+  background-color:rgba(0,10,32,.05);
+   padding-left: 1px;
+}
+.choice{
+  color: white;
+  cursor:pointer;
+  border:1px solid;
+  border-radius:5px;
+  background-color:blue;
+  padding-left: 1px;
 }
 </style>
