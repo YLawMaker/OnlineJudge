@@ -55,6 +55,7 @@ export default {
     },
     mounted: function () { 
         this.getExamInfo();
+        this.userId=this.$route.query.userId;
     },
     methods:{
       //查询考试信息
@@ -80,7 +81,7 @@ export default {
         //获取考试信息
         getExamInfo () {
             let params = new URLSearchParams();
-            params.append("userId",this.userId=1);
+            params.append("userId",this.userId);
             this.$axios({
                 method: 'post',
                 headers: {
