@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="topBar_answer">
+    <div class="topBar_programming">
       <!-- <el-button size="small" type="primary" @click.native.prevent="goBack()">
         返回
       </el-button> -->
@@ -91,7 +91,7 @@
         v-model="select_word"
         size="mini"
         class="search_input"
-        placeholder="请输入标题关键字"
+        placeholder="请输入习题编号"
         style="width: 200px"
         clearable
       ></el-input>
@@ -102,14 +102,15 @@
         :row-key="getRowKey"
       >
         <el-table-column
-          label="标题"
-          prop="exerciseTitle"
+          label="编号"
+          prop="exerciseId"
           :show-overflow-tooltip="true"
+          width="80"
         >
         </el-table-column>
         <el-table-column
-          label="描述"
-          prop="exerciseDescription"
+          label="标题"
+          prop="exerciseTitle"
           :show-overflow-tooltip="true"
         >
         </el-table-column>
@@ -162,7 +163,7 @@ export default {
       currentPage: 1,
       pagesize: 8,
       currentPage_dialog: 1,
-      pagesize_dialog: 5,
+      pagesize_dialog: 7,
       select_word: '',
       multipleSelection: [],
       tableData: [],
@@ -176,6 +177,7 @@ export default {
   },
   computed: {
     data () {
+
       return this.programmingList.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
     },
     data_dialog () {
@@ -186,16 +188,24 @@ export default {
     select_word: function () {
       if (this.select_word == '') {
         this.searchData = this.tableData;
-      } else {
+      } else if (/^\d+$/.test(this.select_word) == true) {
         this.searchData = [];
         for (let item of this.tableData) {
-          if (item.exerciseTitle.includes(this.select_word)) {
+          if (item.exerciseId.toString().includes(this.select_word)) {
             this.currentPage = 1;
             this.searchData.push(item);
-
           }
         }
       }
+      // else {
+      //   this.searchData = [];
+      //   for (let item of this.tableData) {
+      //     if (item.exerciseTitle.includes(this.select_word)) {
+      //       this.currentPage = 1;
+      //       this.searchData.push(item);
+      //     }
+      //   }
+      // }
     },
   },
   methods: {
@@ -279,7 +289,48 @@ export default {
       })
     },
     deleteConfirm (row) {
-      alert(row.exerciseTitle)
+      this.$confirm('此操作将永久删除该分组, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then((action) => {
+        if (action === 'confirm') {
+          this.deleteProgramming(row.exerciseId);
+        }
+      }).catch((resp) => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+        // console.log(resp);
+      });
+    },
+    deleteProgramming (exerciseId) {
+      let params = new URLSearchParams();
+      params.append('examId', this.examIdFromExamManage);
+      params.append('questionId', exerciseId);
+      params.append('examQuestionType', "programmingQuestion")
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/deleteExamQuestion',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.$message.success('题目删除成功');
+          this.getprogramming(this.examIdFromExamManage);
+        } else if (res.data == false) {
+          this.$message.error('题目删除失败');
+          this.getprogramming(this.examIdFromExamManage);
+        } else {
+          this.$message.error('系统发生了错误');
+          this.getprogramming(this.examIdFromExamManage);
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
     }
   }
 }

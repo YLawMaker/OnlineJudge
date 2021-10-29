@@ -1,7 +1,8 @@
 <template>
   <div>
     <div>选择题</div>
-    <div>芜湖</div>
+    <div>填空题</div>
+    <div>编程题</div>
   </div>
 </template>
 

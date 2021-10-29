@@ -29,9 +29,11 @@
           <template slot="title">Online Teaching</template>
           <el-menu-item @click="goToExamList()">Exams</el-menu-item>
         </el-submenu>
-        <el-submenu index="4" v-if="this.userIdentity=='teacher'">
+        <el-submenu index="4" v-if="this.userIdentity == 'teacher'">
           <template slot="title">Teacher</template>
-          <el-menu-item @click="goToTeacherManager()">TeacherManager</el-menu-item>
+          <el-menu-item @click="goToTeacherManager()"
+            >TeacherManager</el-menu-item
+          >
         </el-submenu>
         <div class="loginbutton">
           <span
@@ -84,8 +86,8 @@ export default {
   },
 
   methods: {
-    goToTeacherManager(){
-       this.$router.push('/addExam');
+    goToTeacherManager () {
+      this.$router.push('/addExam');
     },
     //跳转到用户排行榜 保存返回值
     gotoUserRankList () {
@@ -113,12 +115,12 @@ export default {
 
 
     //跳转到考试列表界面
-    goToExamList(){
-      if(this.userId==""){
-          this.$message.error("请先登录用户");
-          this.$router.push('/userLogin')
-      }else{
-          this.$router.push({ path: '/examList', query: { userId: this.userId } })
+    goToExamList () {
+      if (this.userId == "") {
+        this.$message.error("请先登录用户");
+        this.$router.push('/userLogin')
+      } else {
+        this.$router.push({ path: '/examList', query: { userId: this.userId } })
       }
     },
     goToExamList () {
@@ -176,7 +178,7 @@ export default {
         .then((res) => {
           alert("退出成功");
           this.userName = '';
-          this.userIdentity='';
+          this.userIdentity = '';
         })
         .catch((err) => {
           this.$message.error('删除选择题错误');

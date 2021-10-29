@@ -135,6 +135,16 @@ const routes = [
         name: 'ExamInfo',
         component: () => import('@/components/TeacherUser/ExamInfo.vue')
       },
+      {
+        path: '/examChoiceQuestonManage',
+        name: 'ExamChoiceQuestonManage',
+        component: () => import('@/components/TeacherUser/ExamChoiceQuestonManage.vue')
+      },
+      {
+        path: '/examCompletionQuestionManage',
+        name: 'ExamCompletionQuestionManage',
+        component: () => import('@/components/TeacherUser/ExamCompletionQuestionManage.vue')
+      },
     ]
   },
 

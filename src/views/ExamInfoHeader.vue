@@ -19,10 +19,10 @@
           >
 
           <el-menu-item index="/ExamInfo"><span>试卷一览</span></el-menu-item>
-          <el-menu-item index="/ChoiceQuestionManage"
+          <el-menu-item index="/ExamChoiceQuestonManage"
             ><span>选择题</span></el-menu-item
           >
-          <el-menu-item index="/CompletionQuestionManage"
+          <el-menu-item index="/ExamCompletionQuestionManage"
             ><span>填空题</span></el-menu-item
           >
           <el-menu-item index="/ProgrammingManage"
@@ -31,7 +31,9 @@
           <el-menu-item index="/CandidateScore"
             ><span>考生成绩</span></el-menu-item
           >
-          <el-menu-item index="/faq"><span>成绩分析</span></el-menu-item>
+          <el-menu-item index="/ExamAnalyse"
+            ><span>考试分析</span></el-menu-item
+          >
         </el-menu>
       </el-header>
       <el-main>
