@@ -1,23 +1,6 @@
 <template>
   <div>
     <div class="topBar_programming">
-      <!-- <el-button size="small" type="primary" @click.native.prevent="goBack()">
-        返回
-      </el-button> -->
-      <!-- <el-input
-        v-model="select_word"
-        size="mini"
-        class="search_input"
-        placeholder="请输入编程题编号"
-        style="width: 200px"
-        clearable
-      ></el-input>
-      <el-button
-        size="small"
-        type="primary"
-        @click.native.prevent="programmingPreview()"
-        >预览</el-button
-      > -->
       <el-button
         size="small"
         type="primary"
@@ -96,7 +79,6 @@
         clearable
       ></el-input>
       <el-table
-        ref="addProgrammingTable"
         :data="data_dialog"
         @selection-change="handleSelectionChange"
         :row-key="getRowKey"
@@ -132,7 +114,7 @@
         class="addProgrammingDialog_button"
         size="small"
         type="primary"
-        @click="addProgramming_dialog()"
+        @click="addProgramming_dialog('')"
         >添加</el-button
       >
     </el-dialog>
@@ -258,10 +240,40 @@ export default {
       })
     },
     addProgramming_dialog () {
-      if (this.programmingIdList.length == 0) {
-        this.programmingIdList = this.multipleSelection.map(item => item.exerciseId)
+      //将添加界面选中的题目的信息格式转换成对象
+      // console.log(this.multipleSelection);
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        var emptyObject = {};
+        emptyObject.examId = Number(this.examIdFromExamManage);
+        emptyObject.questionId = this.multipleSelection[i].exerciseId;
+        emptyObject.examQuestion = "programmingQuestion"
+        this.programmingIdList.push(emptyObject)
       }
-      console.log("选中的编程题的ID为:" + this.multipleSelection.map(item => item.exerciseId));
+      // console.log(this.programmingIdList);
+      let params = new URLSearchParams();
+      params.append('addExamQuestions', JSON.stringify(this.programmingIdList));
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/addExamQuestions',
+        data: params
+      }).then((res) => {
+        if (res.data == false) {
+          this.$message.error('添加失败');
+          this.edittableDataVisible_add = false;
+          this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
+        } else {
+          this.$message.success('添加成功');
+          this.edittableDataVisible_add = false;
+          this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
     },
     getExercise () {
       const that = this
@@ -321,12 +333,15 @@ export default {
         if (res.data == true) {
           this.$message.success('题目删除成功');
           this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
         } else if (res.data == false) {
           this.$message.error('题目删除失败');
           this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
         } else {
           this.$message.error('系统发生了错误');
           this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
         }
       }).catch((res) => {
         console.log(res);

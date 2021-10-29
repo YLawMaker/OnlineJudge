@@ -42,11 +42,18 @@
         </el-table-column>
       </el-table>
       <br />
-      <el-table>
+      <el-table :data="examExerciseScore">
         <el-table-column label="各程序设计题平均分" align="center">
-          <el-table-column label="编号" width="100"></el-table-column>
-          <el-table-column label="题目"></el-table-column>
-          <el-table-column label="平均分"></el-table-column>
+          <el-table-column
+            label="序号"
+            type="index"
+            width="100"
+          ></el-table-column>
+          <el-table-column label="题目" prop="exerciseTitle"></el-table-column>
+          <el-table-column
+            label="平均分"
+            prop="avgExamProgrammingScore"
+          ></el-table-column>
         </el-table-column>
       </el-table>
     </div>
@@ -71,6 +78,7 @@ export default {
         above89: 0
       }],
       candidateScore: [],
+      examExerciseScore: [],
       should: 10,
       actual: 9,
       examId: 0,
@@ -79,6 +87,7 @@ export default {
   mounted: function () {
     this.examId = this.$route.query.examIdfromManage
     this.anaylseScoreAndSection()
+    this.getExamExerciseScore()
   },
   methods: {
     anaylseScoreAndSection () {
@@ -124,6 +133,22 @@ export default {
         }
       })
     },
+    getExamExerciseScore () {
+      const that = this
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/queryExamProgrammingResultScoreByExamId',
+        data: params
+      }).then(function (resp) {
+        that.examExerciseScore = resp.data
+        console.log(that.examExerciseScore);
+      })
+    }
   }
 }
 </script>
