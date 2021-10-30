@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div class="topBar_answer">
-      <el-button size="small" type="primary" @click.native.prevent="goBack()">
-        返回
-      </el-button>
+    <div class="topBar_programming">
       <el-button
         size="small"
         type="primary"
@@ -115,74 +112,52 @@
       :visible.sync="edittableDataVisible_add"
       :before-close="handleClose"
     >
-      <el-form
-        ref="addProgramming"
-        :model="addProgrammingData"
-        :rules="addRules"
-        class="addProgrammingForm"
+      <el-input
+        v-model="select_word"
+        size="mini"
+        class="search_input"
+        placeholder="请输入习题编号"
+        style="width: 200px"
+        clearable
+      ></el-input>
+      <el-table
+        :data="data_dialog"
+        @selection-change="handleSelectionChange"
+        :row-key="getRowKey"
       >
-        <el-form-item label="题目" prop="examProgrammingTitle">
-          <el-input
-            v-model="addProgrammingData.examProgrammingTitle"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="题目描述" prop="examProgrammingDescription">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addProgrammingData.examProgrammingDescription"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输入" prop="examProgrammingInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addProgrammingData.examProgrammingInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输出" prop="examProgrammingOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addProgrammingData.examProgrammingOutput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输入" prop="examProgrammingSampleInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addProgrammingData.examProgrammingSampleInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输出" prop="examProgrammingSampleOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addProgrammingData.examProgrammingSampleOutput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="分数" prop="examProgrammingScore">
-          <el-input v-model="addProgrammingData.examProgrammingScore">
-          </el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="addProgramming('addProgramming')"
-            >添加</el-button
-          >
-          <el-button @click="handleClose">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <el-dialog
-      title="修改编程题"
-      :visible.sync="edittableDataVisible_modify"
-      :before-close="handleClose"
-    >
-      <el-form
-        ref="modifyProgramming"
-        :model="modifyProgrammingData"
-        :rules="addRules"
-        class="modifyProgrammingForm"
+        <el-table-column
+          label="编号"
+          prop="exerciseId"
+          :show-overflow-tooltip="true"
+          width="80"
+        >
+        </el-table-column>
+        <el-table-column
+          label="标题"
+          prop="exerciseTitle"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column type="selection" :reserve-selection="true">
+        </el-table-column>
+      </el-table>
+      <div class="block_addDialog">
+        <el-pagination
+          @current-change="handleCurrent_dialog"
+          :current-page.sync="currentPage_dialog"
+          :page-size="pagesize_dialog"
+          layout="total,prev, pager, next"
+          :total="this.searchData.length"
+          v-if="this.searchData.length != 0"
+        >
+        </el-pagination>
+      </div>
+      <el-button
+        class="addProgrammingDialog_button"
+        size="small"
+        type="primary"
+        @click="addProgramming_dialog('')"
+        >添加</el-button
       >
         <el-form-item label="题目" prop="examProgrammingTitle">
           <el-input
@@ -439,9 +414,43 @@ export default {
         console.log(res);
       })
     },
-    goBack () { this.$router.push({ name: 'AddExam' }) },
-
-    getprogramming (examId) {
+    addProgramming_dialog () {
+      //将添加界面选中的题目的信息格式转换成对象
+      // console.log(this.multipleSelection);
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        var emptyObject = {};
+        emptyObject.examId = Number(this.examIdFromExamManage);
+        emptyObject.questionId = this.multipleSelection[i].exerciseId;
+        emptyObject.examQuestion = "programmingQuestion"
+        this.programmingIdList.push(emptyObject)
+      }
+      // console.log(this.programmingIdList);
+      let params = new URLSearchParams();
+      params.append('addExamQuestions', JSON.stringify(this.programmingIdList));
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/addExamQuestions',
+        data: params
+      }).then((res) => {
+        if (res.data == false) {
+          this.$message.error('添加失败');
+          this.edittableDataVisible_add = false;
+          this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
+        } else {
+          this.$message.success('添加成功');
+          this.edittableDataVisible_add = false;
+          this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+    getExercise () {
       const that = this
       let params = new URLSearchParams();
       // console.log(examId);
@@ -527,14 +536,17 @@ export default {
         data: params
       }).then((res) => {
         if (res.data == true) {
-          this.$message.success('删除成功');
-          this.getprogramming(this.examIdFromAddExam);
+          this.$message.success('题目删除成功');
+          this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
         } else if (res.data == false) {
-          this.$message.error('删除失败');
-          this.getprogramming(this.examIdFromAddExam);
+          this.$message.error('题目删除失败');
+          this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
         } else {
-          this.$message.error('发生了错误');
-          this.getprogramming(this.examIdFromAddExam);
+          this.$message.error('系统发生了错误');
+          this.getprogramming(this.examIdFromExamManage);
+          this.getExercise();
         }
       }).catch((res) => {
         console.log(res);
