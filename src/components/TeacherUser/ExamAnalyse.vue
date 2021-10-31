@@ -146,7 +146,7 @@ export default {
         data: params
       }).then(function (resp) {
         that.examExerciseScore = resp.data
-        console.log(that.examExerciseScore);
+        // console.log(that.examExerciseScore);
       })
     }
   }
