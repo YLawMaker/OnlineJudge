@@ -2,24 +2,43 @@
   <div>
     <div></div>
     <div>
-      <el-table>
-        <el-table-column label="各部分得分" align="center">
-          <el-table-column label="题型" width="100"></el-table-column>
-          <el-table-column label="选择题"></el-table-column>
-          <el-table-column label="填空题"></el-table-column>
-          <el-table-column label="程序设计题"></el-table-column>
-          <el-table-column label="总分"></el-table-column>
+      <el-table :data="averageScore">
+        <el-table-column label="各题型平均分" align="center">
+          <el-table-column
+            label="选择题"
+            prop="averageChoice"
+          ></el-table-column>
+          <el-table-column
+            label="填空题"
+            prop="averageCompletion"
+          ></el-table-column>
+          <el-table-column
+            label="程序设计题"
+            prop="averageProgramming"
+          ></el-table-column>
+          <el-table-column
+            label="考试平均分"
+            prop="averageTotal"
+          ></el-table-column>
         </el-table-column>
       </el-table>
       <br />
-      <el-table>
+      <el-table :data="numberInEachSection">
         <el-table-column label="各分段人数" align="center">
-          <el-table-column label="分数段" width="100"></el-table-column>
-          <el-table-column label="60以下"></el-table-column>
-          <el-table-column label="60~69"></el-table-column>
-          <el-table-column label="70~79"></el-table-column>
-          <el-table-column label="80~89"></el-table-column>
-          <el-table-column label="90及以上"></el-table-column>
+          <el-table-column label="60以下" prop="below60"></el-table-column>
+          <el-table-column
+            label="60~69"
+            prop="between60and69"
+          ></el-table-column>
+          <el-table-column
+            label="70~79"
+            prop="between70and79"
+          ></el-table-column>
+          <el-table-column
+            label="80~89"
+            prop="between80and89"
+          ></el-table-column>
+          <el-table-column label="90及以上" prop="above89"></el-table-column>
         </el-table-column>
       </el-table>
       <br />

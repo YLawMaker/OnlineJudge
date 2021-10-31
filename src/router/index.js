@@ -3,6 +3,12 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
+
 const routes = [
   {
     path: '/userLogin',
@@ -59,16 +65,6 @@ const routes = [
         component: () => import('@/components/TeacherUser/TeacherInfo.vue')
       },
       {
-        path: '/programmingManage',
-        name: 'programmingManage',
-        component: () => import('@/components/TeacherUser/programmingManage.vue')
-      },
-      {
-        path: '/programmingAnswerManage',
-        name: 'programmingAnswerManage',
-        component: () => import('@/components/TeacherUser/programmingAnswerManage.vue')
-      },
-      {
         path: '/choiceQuestionList',
         name: 'ChoiceQuestionList',
         component: () => import('@/components/TeacherUser/ChoiceQuestionList.vue')
@@ -106,6 +102,21 @@ const routes = [
         path: '/candidateScore',
         name: 'CandidateScore',
         component: () => import('@/components/TeacherUser/CandidateScore.vue')
+      },
+      {
+        path: '/examChoiceQuestonManage',
+        name: 'ExamChoiceQuestonManage',
+        component: () => import('@/components/TeacherUser/ExamChoiceQuestonManage.vue')
+      },
+      {
+        path: '/examCompletionQuestionManage',
+        name: 'ExamCompletionQuestionManage',
+        component: () => import('@/components/TeacherUser/ExamCompletionQuestionManage.vue')
+      },
+      {
+        path: '/programmingManage',
+        name: 'programmingManage',
+        component: () => import('@/components/TeacherUser/programmingManage.vue')
       },
       {
         path: '/examAnalyse',
