@@ -94,12 +94,10 @@ export default {
       currentPage: 1,
       pagesize: 9,
       edittableDataVisible_info: false,
-      userName: '',
-      examId: 0
+      userName: ''
     }
   },
   mounted: function () {
-    this.examId = this.$route.query.examIdfromManage
     this.getCandidateScore()
   },
   computed: {
@@ -126,8 +124,7 @@ export default {
     getCandidateScore () {
       const that = this
       let params = new URLSearchParams();
-      params.append('examId', this.examId);
-      // console.log(this.examId);
+      params.append('examId', 1);
       this.$axios({
         method: 'post',
         headers: {
@@ -137,12 +134,7 @@ export default {
         data: params
       }).then(function (resp) {
         that.examHistory = resp.data;
-
-        // console.log(resp.data);
         // console.log(that.examHistory);
-        for (var i = 0; i < that.examHistory.length; i++) {
-          that.examHistory[i].examTotals = that.examHistory[i].examChoiceQuestionTotals + that.examHistory[i].examCompletionQuestionTotals + that.examHistory[i].examProgrammingTotals
-        }
       })
     },
     getUserScoreHistory (userId) {

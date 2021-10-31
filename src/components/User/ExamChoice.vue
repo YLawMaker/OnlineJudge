@@ -3,9 +3,9 @@
     <div class="paper-header">
       <el-form label-position="top" label-width="100px" style="padding-top:0px; ">
         <el-row>
-          <el-col :span="4" :offset="1">
+          <el-col :span="4" :offset="5">
             <el-form-item label="试卷">
-              XXX考试{{this.examName}}
+              {{this.examName}}
             </el-form-item>
           </el-col>
           <el-col :span="4">
@@ -16,7 +16,7 @@
           
           <el-col :span="4">
             <el-form-item label="考试时长">
-              90分
+              {{this.examTime}}分钟
             </el-form-item>
           </el-col>
           <el-col :span="4">
@@ -24,7 +24,6 @@
               <span class="downTime">{{hour? hourString+':'+minuteString+':'+secondString : minuteString+':'+secondString}}</span>
             </el-form-item>
           </el-col>
-          
         </el-row>
       </el-form>
     </div>
@@ -65,9 +64,11 @@
             <div class="clearfix"></div>
           </div>
         </form>
-        <button type="button" class="sumb" >提交</button>
       </div>
     </div>
+        <div class="paper-footer">
+          <el-button type="success" class="sumb" @click="submit()" >提交选择题部分</el-button>
+        </div>
 </div>
 </template>
 <script>
@@ -105,9 +106,19 @@ export default {
             })
             
       this.examName=this.$route.query.examName;
-      
+      this.examId=this.$route.query.examId;
+      this.userId=this.$route.query.userId;
+      this.examEndTime=this.$route.query.examEndTime;
+      this.examStartTime=this.$route.query.examStartTime;
       this.getExamChoiceInfo();
-      let remainTime=90*60;
+      //let remainTime=90*60;
+      var date=new Date();
+      var now=date.getTime();
+      var enddate=new Date(this.examEndTime);
+      var startdate=new Date(this.examStartTime);
+      var end=enddate.getTime(),start=startdate.getTime();
+      this.examTime=(end-start)/1000/60;
+      let remainTime=(end-now)/1000;
         if (remainTime> 0) {
           this.hour = Math.floor((remainTime / 3600) % 24)
           this.minute = Math.floor((remainTime / 60) % 60)
@@ -131,6 +142,8 @@ export default {
           picked_radio:'',
         },
         examName:'',
+        examTime:'',
+        examId:'',
         userName:'',
         userId:'',
         //倒计小时
@@ -142,44 +155,7 @@ export default {
         //计时器
         promiseTimer: '',
         abcd: ['A', 'B', 'C', 'D'],
-        questions: [
-          {
-            id: 1,
-            picked_radio: '',
-            tiMu: '1*8=?',
-            xuanXiang: ['2', '6', '8', '10']
-          },
-          {
-            id: 2,
-            picked_radio: '',
-            tiMu: '2*5=?',
-            xuanXiang: ['2', '6', '8', '10']
-          },
-          {
-            id: 3,
-            picked_radio: '',
-            tiMu: '下面哪些城市属于河南？',
-            xuanXiang: ['郑州', '开封', '阜阳', '信阳']
-          },
-          {
-            id: 4,
-            picked_radio: '',
-            tiMu: '纽约是下面哪个国家的城市?',
-            xuanXiang: ['中国', '日本', '韩国', '美国']
-          },
-          {
-            id: 5,
-            ppicked_radio: '',
-            tiMu: '2*8=?',
-            xuanXiang: ['16', '6', '8', '10']
-          },
-          {
-            id: 6,
-            picked_radio: '',
-            tiMu: '下面哪些属于植物?',
-            xuanXiang: ['狗', '棉花', '猫', '水']
-          }
-        ]
+        
     }
   },
   methods: {
@@ -218,13 +194,13 @@ export default {
       },
       getExamChoiceInfo(){
             let params=new URLSearchParams();
-            params.append('userId',this.userId);
+            params.append('examId',this.examId);
             this.$axios({
                 method: 'post',
                 headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                             },
-                url: '/choiceQuestion/queryChoiceQuestionInfo',
+                url: '/examQuestion/queryExamQuestionChoiceByExamId',
                 data: params
             })
             .then((res)=> {
@@ -235,6 +211,15 @@ export default {
             .catch((err)=> {
                 this.$message.error('选择题信息读取失败');
             })
+        },
+        submit(){
+          var i=0,ac=0;
+          for(i=0;i<this.examChocie.length;i++){
+            if(this.examChocie[i].picked_radio==this.examChocie[i].choiceQuestionCorrectOption){
+              ac++;
+            }
+          }
+          alert(ac);
         },
   }
 }
@@ -257,9 +242,9 @@ export default {
 
    .paper-content {
     position: absolute;
-    left: 305px;
+    left: 150px;
     top: 60px;
-    right: 0px;
+    right: 150px;
     bottom: 45px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -272,5 +257,19 @@ export default {
     color: rgb(230, 93, 110);
     font-size: 16px;
     font-weight: bold;
+  }
+   .paper-footer {
+    position: absolute;
+    padding: 5px 10px;
+    left: 150px;
+    right: 150px;
+    bottom: 0px;
+    height: 45px;
+    overflow: hidden;
+    box-sizing: border-box;
+    background-color: #f7f7f7;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+    text-align: center;
   }
 </style>

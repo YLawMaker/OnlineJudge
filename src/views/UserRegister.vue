@@ -146,7 +146,7 @@ export default {
                       headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                       },
-                      url: '/user/isUserInfoExist',
+                      url: '/user/isuserInfoExist',
                       data: params
                     }).then((res) => {
                       if (res.data == true) {
@@ -163,7 +163,7 @@ export default {
                           headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                           },
-                          url: '/user/addUserInfo',
+                          url: '/user/adduserInfo',
                           data: params
                         }).then((res) => {
                           if (res.data == '0') {

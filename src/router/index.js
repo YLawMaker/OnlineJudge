@@ -3,23 +3,6 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-//解决编程式路由往同一地址跳转时会报错的情况
-const originalPush = VueRouter.prototype.push;
-const originalReplace = VueRouter.prototype.replace;
-//push
-VueRouter.prototype.push = function push (location, onResolve, onReject) {
-  if (onResolve || onReject)
-    return originalPush.call(this, location, onResolve, onReject);
-  return originalPush.call(this, location).catch(err => err);
-};
-//replace
-VueRouter.prototype.replace = function push (location, onResolve, onReject) {
-  if (onResolve || onReject)
-    return originalReplace.call(this, location, onResolve, onReject);
-  return originalReplace.call(this, location).catch(err => err);
-};
-
-
 const routes = [
   {
     path: '/userLogin',
@@ -75,7 +58,16 @@ const routes = [
         name: 'TeacherInfo',
         component: () => import('@/components/TeacherUser/TeacherInfo.vue')
       },
-
+      {
+        path: '/programmingManage',
+        name: 'programmingManage',
+        component: () => import('@/components/TeacherUser/programmingManage.vue')
+      },
+      {
+        path: '/programmingAnswerManage',
+        name: 'programmingAnswerManage',
+        component: () => import('@/components/TeacherUser/programmingAnswerManage.vue')
+      },
       {
         path: '/choiceQuestionList',
         name: 'ChoiceQuestionList',
@@ -119,31 +111,6 @@ const routes = [
         path: '/examAnalyse',
         name: 'ExamAnalyse',
         component: () => import('@/components/TeacherUser/ExamAnalyse.vue')
-      },
-      {
-        path: '/programmingManage',
-        name: 'programmingManage',
-        component: () => import('@/components/TeacherUser/programmingManage.vue')
-      },
-      {
-        path: '/programmingAnswerManage',
-        name: 'programmingAnswerManage',
-        component: () => import('@/components/TeacherUser/programmingAnswerManage.vue')
-      },
-      {
-        path: '/examInfo',
-        name: 'ExamInfo',
-        component: () => import('@/components/TeacherUser/ExamInfo.vue')
-      },
-      {
-        path: '/examChoiceQuestonManage',
-        name: 'ExamChoiceQuestonManage',
-        component: () => import('@/components/TeacherUser/ExamChoiceQuestonManage.vue')
-      },
-      {
-        path: '/examCompletionQuestionManage',
-        name: 'ExamCompletionQuestionManage',
-        component: () => import('@/components/TeacherUser/ExamCompletionQuestionManage.vue')
       },
     ]
   },

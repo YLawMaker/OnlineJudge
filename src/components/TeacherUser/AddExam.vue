@@ -27,7 +27,6 @@
               path: 'ExamInfoHeader',
               query: {
                 examIdfromManage: scope.row.examId,
-                examManageCurrentPage: currentPage,
               },
             }"
           >
@@ -53,6 +52,16 @@
             >修改</el-button
           >
           <el-button
+            type="primary"
+            @click.native.prevent="choiceManage(scope.row)"
+            >选择题</el-button
+          >
+          <el-button
+            type="primary"
+            @click.native.prevent="programmingManage(scope.row)"
+            >编程题</el-button
+          >
+          <el-button
             type="danger"
             @click.native.prevent="deleteConfirm(scope.row)"
             >删除</el-button
@@ -76,14 +85,12 @@
       :visible.sync="edittableDataVisible_add"
       :before-close="handleClose"
       :close-on-click-modal="false"
-      width="850px"
     >
       <el-form
         ref="addExam"
         :model="exam_add"
         :rules="addRules"
         class="addExamForm"
-        label-width="120px"
       >
         <el-form-item label="考试名称" prop="examName">
           <el-input v-model="exam_add.examName"></el-input>
@@ -131,34 +138,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-row>
-          <el-col :span="8"
-            ><el-form-item
-              label="选择题分值(每题)"
-              prop="examChoiceQuestionScore"
-            >
-              <el-input
-                v-model="exam_add.examChoiceQuestionScore"
-              ></el-input> </el-form-item
-          ></el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="填空题分值(每题)"
-              prop="examCompletionQuestionScore"
-            >
-              <el-input
-                v-model="exam_add.examCompletionQuestionScore"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="编程题分值(每题)" prop="examProgrammingScore">
-              <el-input v-model="exam_add.examProgrammingScore"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-form-item class="addDialogButton">
+        <el-form-item>
           <el-button type="primary" @click="addExam('addExam')">添加</el-button>
           <el-button @click="handleClose">取消</el-button>
         </el-form-item>
@@ -242,10 +222,7 @@ export default {
         teacherId: '',
         examStatus: '',
         examLanguage: '',
-        groupId: '',
-        examChoiceQuestionScore: 0,
-        examCompletionQuestionScore: 0,
-        examProgrammingScore: 0
+        groupId: ''
       },
       exam_modify: {
         examId: '',
@@ -255,10 +232,7 @@ export default {
         teacherId: '',
         examStatus: '',
         examLanguage: '',
-        groupId: '',
-        examChoiceQuestionScore: 0,
-        examCompletionQuestionScore: 0,
-        examProgrammingScore: 0
+        groupId: ''
       },
       groupList: [],
       language: [{ value: 'C', label: 'C' }, { value: 'C++', label: 'C++' }, { value: 'Java', label: 'Java' }],
@@ -279,12 +253,6 @@ export default {
   },
   mounted: function () {
     this.$nextTick(() => {
-      if (this.$route.params.currentPage == null) {
-        this.currentPage = 1;
-      } else {
-        this.currentPage = this.$route.params.currentPage;
-      }
-      // console.log(typeof (this.currentPage));
       this.getUserInfo();
       this.getGroupInfo();
     });
@@ -444,9 +412,6 @@ export default {
           params.append('examStatus', 'Pending');
           params.append('examLanguage', this.exam_add.examLanguage);
           params.append('groupId', this.exam_add.groupId);
-          params.append('examChoiceQuestionScore', this.exam_add.examChoiceQuestionScore);
-          params.append('examCompletionQuestionScore', this.exam_add.examCompletionQuestionScore);
-          params.append('examProgrammingScore', this.exam_add.examProgrammingScore);
           this.$axios({
             method: 'post',
             headers: {
@@ -535,10 +500,6 @@ export default {
   float: right;
   margin-right: 25px;
 }
-.addDialogButton {
-  float: right;
-  /* margin-bottom: 25px; */
-}
 .block {
   position: absolute;
   bottom: 0;
@@ -548,11 +509,5 @@ export default {
 a {
   /* text-decoration: none; */
   color: #606266;
-}
-.el-form-item__label {
-  text-align: left;
-}
-.el-dialog {
-  overflow: auto;
 }
 </style>
