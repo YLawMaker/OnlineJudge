@@ -137,6 +137,7 @@ export default {
       const that = this
       let params = new URLSearchParams();
       params.append('examId', this.examId);
+      // console.log(this.examId);
       this.$axios({
         method: 'post',
         headers: {
@@ -146,7 +147,11 @@ export default {
         data: params
       }).then(function (resp) {
         that.examExerciseScore = resp.data
-        // console.log(that.examExerciseScore);
+        that.examExerciseScore.forEach(function (item) {
+          if (item.avgExamProgrammingScore == null) {
+            item.avgExamProgrammingScore = 0;
+          }
+        })
       })
     }
   }

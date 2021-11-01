@@ -249,10 +249,8 @@ export default {
       examId: 0,
       currentPage: 1,
       pageSize: 8,
-      choiceQuestionStatus: [{ choiceQuestionId: 1, status: 1 },
-      { choiceQuestionId: 4, status: 1 }, { choiceQuestionId: 20, status: 1 },
-      { choiceQuestionId: 23, status: 1 }, { choiceQuestionId: 24, status: 0 },
-      { choiceQuestionId: 25, status: 0 }, { choiceQuestionId: 26, status: 0 },]
+      choiceQuestionInExam: [],
+      choiceQuestionStatus: []
     }
   },
   mounted: function () {
@@ -267,6 +265,8 @@ export default {
     this.getCurrentTeacherUserInfo();
     //获取全部教师信息
     this.getTeacherUserInfo();
+    //获取考试已添加的选择题
+    this.getExamQuestionChoiceByExamId(this.examId);
   },
   computed: {
     data () {
@@ -278,14 +278,52 @@ export default {
       this.currentPage = val;
     },
     cilckAddButtonEvent (choiceQuestionId, i) {
-      console.log("已添加习题编号为" + choiceQuestionId);
-      console.log("索引为" + i);
-      this.choiceQuestionStatus[i].status = 1
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      params.append('questionId', choiceQuestionId);
+      params.append('examQuestionType', "choiceQuestion");
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/addExamQuestion',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.choiceQuestionStatus[i].status = 1
+        } else if (res.data == false) {
+          this.$message.error('题目添加失败');
+        } else {
+          this.$message.error('系统发生了错误');
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
     },
     cilckDeleteButtonEvent (choiceQuestionId, i) {
-      console.log("已删除习题编号为" + choiceQuestionId);
-      console.log("索引为" + i);
-      this.choiceQuestionStatus[i].status = 0
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      params.append('questionId', choiceQuestionId);
+      params.append('examQuestionType', "choiceQuestion");
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/deleteExamQuestion',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.choiceQuestionStatus[i].status = 0
+        } else if (res.data == false) {
+          this.$message.error('题目删除失败');
+        } else {
+          this.$message.error('系统发生了错误');
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
     },
     //获取选择题信息
     getChoiceQuestionInfo () {
@@ -574,6 +612,41 @@ export default {
 
         })
     },
+    //获取当前考试添加过的选择题
+    getExamQuestionChoiceByExamId (examId) {
+      const that = this
+      let params = new URLSearchParams();
+      params.append('examId', examId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/queryExamQuestionChoiceByExamId',
+        data: params
+      }).then(function (resp) {
+        that.choiceQuestionInExam = resp.data;
+        // console.log(resp.data);
+        // console.log(that.choiceQuestionList);
+        // console.log(that.choiceQuestionInExam);
+        //可以优化，时间复杂度过高
+        for (var i = 0; i < that.choiceQuestionList.length; i++) {
+          var questionstatus = {};
+          questionstatus.choiceQuestionId = that.choiceQuestionList[i].choiceQuestionId;
+          questionstatus.status = 0;
+          that.choiceQuestionStatus.push(questionstatus)
+        }
+
+        for (var i = 0; i < that.choiceQuestionList.length; i++) {
+          for (var j = 0; j < that.choiceQuestionInExam.length; j++) {
+            // console.log(that.choiceQuestionList[i].choiceQuestionId + "  " + that.choiceQuestionInExam[j].choiceQuestionId);
+            if (that.choiceQuestionList[i].choiceQuestionId == that.choiceQuestionInExam[j].choiceQuestion.choiceQuestionId) {
+              that.choiceQuestionStatus[i].status = 1
+            }
+          }
+        }
+      })
+    }
   }
 }
 </script>

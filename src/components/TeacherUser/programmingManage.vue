@@ -14,32 +14,36 @@
       :row-style="{ height: '20px' }"
       stripe
     >
-      <el-table-column prop="exerciseTitle" label="标题" width="180">
+      <el-table-column prop="exercise.exerciseTitle" label="标题" width="180">
       </el-table-column>
       <el-table-column
-        prop="exerciseDescription"
+        prop="exercise.exerciseDescription"
         label="描述"
         width="180"
         :show-overflow-tooltip="true"
       >
       </el-table-column>
       <el-table-column
-        prop="exerciseInput"
+        prop="exercise.exerciseInput"
         label="问题输入"
         width="180"
         :show-overflow-tooltip="true"
       >
       </el-table-column>
       <el-table-column
-        prop="exerciseOutPut"
+        prop="exercise.exerciseOutPut"
         label="问题输出"
         width="180"
         :show-overflow-tooltip="true"
       >
       </el-table-column>
-      <el-table-column prop="exerciseSampleInput" label="样例输入" width="180">
+      <el-table-column
+        prop="exercise.exerciseSampleInput"
+        label="样例输入"
+        width="180"
+      >
       </el-table-column>
-      <el-table-column prop="exerciseSampleOutput" label="样例输出">
+      <el-table-column prop="exercise.exerciseSampleOutput" label="样例输出">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -74,7 +78,7 @@
         v-model="select_word"
         size="mini"
         class="search_input"
-        placeholder="请输入习题编号"
+        placeholder="请输入习题标题关键字"
         style="width: 200px"
         clearable
       ></el-input>
@@ -170,24 +174,16 @@ export default {
     select_word: function () {
       if (this.select_word == '') {
         this.searchData = this.tableData;
-      } else if (/^\d+$/.test(this.select_word) == true) {
+      } else {
         this.searchData = [];
         for (let item of this.tableData) {
-          if (item.exerciseId.toString().includes(this.select_word)) {
+          //item.exerciseTitle 添加习题的搜索框按习题标题检索
+          if (item.exerciseTitle.toString().includes(this.select_word)) {
             this.currentPage = 1;
             this.searchData.push(item);
           }
         }
       }
-      // else {
-      //   this.searchData = [];
-      //   for (let item of this.tableData) {
-      //     if (item.exerciseTitle.includes(this.select_word)) {
-      //       this.currentPage = 1;
-      //       this.searchData.push(item);
-      //     }
-      //   }
-      // }
     },
   },
   methods: {
@@ -213,14 +209,6 @@ export default {
       this.edittableDataVisible_add = true
 
     },
-    //根据输入框输入的编号，预览相应的编程题
-    programmingPreview () { },
-    // programmingIdListInit () {
-    //   for (var i = 0; i < this.programmingList.length; i++) {
-    //     this.programmingIdList[i] = this.programmingList[i].exerciseId
-    //   }
-    //   console.log("当前考试已添加的编程题的ID为:" + this.programmingIdList);
-    // },
     getprogramming (examId) {
       const that = this
       let params = new URLSearchParams();
@@ -235,8 +223,6 @@ export default {
         data: params
       }).then(function (resp) {
         that.programmingList = resp.data
-        // that.programmingIdListInit();
-        // console.log(that.programmingList);
       })
     },
     addProgramming_dialog () {
@@ -286,10 +272,10 @@ export default {
       }).then(function (resp) {
         // console.log(resp.data);
         that.tableData = resp.data;
-        // console.log(that.tableData);  
+        // console.log(that.tableData);
         for (var i = 0, len1 = that.tableData.length; i < len1; i++) {
           for (var j = 0, len2 = that.programmingList.length; j < len2; j++) {
-            if (that.tableData[i].exerciseId === that.programmingList[j].exerciseId) {
+            if (that.tableData[i].exerciseId === that.programmingList[j].exercise.exerciseId) {
               that.tableData.splice(i, 1)
               len1 = that.tableData.length
             }
@@ -307,7 +293,7 @@ export default {
         type: 'warning'
       }).then((action) => {
         if (action === 'confirm') {
-          this.deleteProgramming(row.exerciseId);
+          this.deleteProgramming(row.exercise.exerciseId);
         }
       }).catch((resp) => {
         this.$message({

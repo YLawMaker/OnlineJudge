@@ -159,14 +159,32 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" width="300px" align="center">
-        <template>
-          <el-button class="operate" type="text" icon="el-icon-plus">
-          </el-button>
-          <el-button
-            class="operate"
-            type="text"
-            icon="el-icon-close"
-          ></el-button>
+        <template slot-scope="scope">
+          <div
+            v-for="(item, i) in completionQuestionStatus"
+            :key="item.completionQuestionId"
+          >
+            <el-button
+              class="operate"
+              type="text"
+              icon="el-icon-plus"
+              v-if="
+                item.status == 0 &&
+                item.completionQuestionId == scope.row.completionQuestionId
+              "
+              @click="cilckAddButtonEvent(scope.row.completionQuestionId, i)"
+            ></el-button>
+            <el-button
+              class="operate"
+              type="text"
+              icon="el-icon-close"
+              v-if="
+                item.status == 1 &&
+                item.completionQuestionId == scope.row.completionQuestionId
+              "
+              @click="cilckDeleteButtonEvent(scope.row.completionQuestionId, i)"
+            ></el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -375,8 +393,11 @@ export default {
       searchSecondKnowledgePointVisiable: true,//查询时第二知识点下拉框能否使用 true为禁用
       completionQuestionInfoList: [],
       chapterList: [],//章节内容
+      examId: 0,
       pageSize: 8,
       currentPage: 1,
+      completionQuestionInExam: [],
+      completionQuestionStatus: []
     }
   },
   computed: {
@@ -385,6 +406,7 @@ export default {
     }
   },
   mounted: function () {
+    this.examId = this.$route.query.examIdfromManage;
     //获取填空题信息
     this.getCompletionQuestionInfo();
     //获取章节信息
@@ -395,6 +417,8 @@ export default {
     this.getSearchQuestionLabelInfo();
     //获取全部教师信息 
     this.getTeacherUserInfo();
+    //获取考试已添加的填空题
+    this.getExamQuestionCompletionByExamId(this.examId);
   },
   methods: {
     //查询填空题信息
@@ -572,6 +596,54 @@ export default {
     //跳转页面调用
     handleCurrent (val) {
       this.currentPage = val;
+    },
+    cilckAddButtonEvent (completionQuestionId, i) {
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      params.append('questionId', completionQuestionId);
+      params.append('examQuestionType', "completionQuestion");
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/addExamQuestion',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.completionQuestionStatus[i].status = 1
+        } else if (res.data == false) {
+          this.$message.error('题目添加失败');
+        } else {
+          this.$message.error('系统发生了错误');
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
+    },
+    cilckDeleteButtonEvent (completionQuestionId, i) {
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      params.append('questionId', completionQuestionId);
+      params.append('examQuestionType', "completionQuestion");
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/deleteExamQuestion',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.completionQuestionStatus[i].status = 0
+        } else if (res.data == false) {
+          this.$message.error('题目删除失败');
+        } else {
+          this.$message.error('系统发生了错误');
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
     },
     //添加填空题信息添加填空
     addCompletionQuestionAddSpace () {
@@ -949,6 +1021,40 @@ export default {
           this.$message.error('修改填空题获取第二知识点错误');
 
         })
+    },
+    //获取当前考试添加过的填空题
+    getExamQuestionCompletionByExamId (examId) {
+      const that = this
+      let params = new URLSearchParams();
+      params.append('examId', examId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/queryExamQuestionCompletionByExamId',
+        data: params
+      }).then(function (resp) {
+        that.completionQuestionInExam = resp.data;
+
+
+        //可以优化，时间复杂度过高
+        for (var i = 0; i < that.completionQuestionInfoList.length; i++) {
+          var questionstatus = {};
+          questionstatus.completionQuestionId = that.completionQuestionInfoList[i].completionQuestionId;
+          questionstatus.status = 0;
+          that.completionQuestionStatus.push(questionstatus)
+        }
+
+        for (var i = 0; i < that.completionQuestionInfoList.length; i++) {
+          for (var j = 0; j < that.completionQuestionInExam.length; j++) {
+            // console.log(that.choiceQuestionList[i].choiceQuestionId + "  " + that.choiceQuestionInExam[j].choiceQuestionId);
+            if (that.completionQuestionInfoList[i].completionQuestionId == that.completionQuestionInExam[j].completionQuestion.completionQuestionId) {
+              that.completionQuestionStatus[i].status = 1
+            }
+          }
+        }
+      })
     }
   }
 }
