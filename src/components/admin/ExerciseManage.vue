@@ -20,7 +20,6 @@
       </div>
     </div>
     <el-table
-      class="tableBox"
       :data="data"
       style="width: 100%"
       :row-style="{ height: '20px' }"
@@ -75,9 +74,10 @@
       >
       </el-table-column>
       <el-table-column
-        prop="labels[0].firstPoint"
-        label="第一知识点"
-        width="90"
+        prop="exerciseOutPut"
+        label="问题输出"
+        width="180"
+        :show-overflow-tooltip="true"
       >
       </el-table-column>
 
@@ -95,7 +95,6 @@
           </div>
         </template>
       </el-table-column>
-      -->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
@@ -585,7 +584,6 @@ export default {
         if (res.data == true) {
           this.$message.success('习题信息修改成功');
           this.edittableDataVisible_modify = false;
-          this.edittableData.labels = [];
           this.getExercise(this.currentPage, '');
         } else if (res.data == false) {
           this.$message.error('习题信息修改失败');
@@ -760,6 +758,7 @@ export default {
         })
     }
 
+
     // Search (index) {
     //   if (index == 1) {
     //     var search = this.search;
@@ -831,4 +830,3 @@ a {
   margin-top: 10px;
 }
 </style>
-
