@@ -52,16 +52,6 @@
             >修改</el-button
           >
           <el-button
-            type="primary"
-            @click.native.prevent="choiceManage(scope.row)"
-            >选择题</el-button
-          >
-          <el-button
-            type="primary"
-            @click.native.prevent="programmingManage(scope.row)"
-            >编程题</el-button
-          >
-          <el-button
             type="danger"
             @click.native.prevent="deleteConfirm(scope.row)"
             >删除</el-button

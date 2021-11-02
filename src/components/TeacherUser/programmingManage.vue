@@ -5,7 +5,7 @@
         size="small"
         type="primary"
         @click.native.prevent="addDialogvisiable()"
-        >添加编程题</el-button
+        >添加</el-button
       >
     </div>
     <el-table
@@ -14,80 +14,39 @@
       :row-style="{ height: '20px' }"
       stripe
     >
-      <el-table-column prop="examProgrammingTitle" label="标题" width="180">
-        <template slot-scope="scope">
-          <router-link
-            :to="{
-              path: 'programmingAnswerManage',
-              query: {
-                examProgrammingIdfromManage: scope.row.examProgrammingId,
-                examIdFromManage: examIdFromAddExam,
-              },
-            }"
-          >
-            {{ scope.row.examProgrammingTitle }}
-          </router-link>
-        </template>
+      <el-table-column prop="exercise.exerciseTitle" label="标题" width="180">
       </el-table-column>
       <el-table-column
-        prop="examProgrammingDescription"
+        prop="exercise.exerciseDescription"
         label="描述"
         width="180"
         :show-overflow-tooltip="true"
       >
       </el-table-column>
       <el-table-column
-        prop="examProgrammingInput"
+        prop="exercise.exerciseInput"
         label="问题输入"
         width="180"
         :show-overflow-tooltip="true"
       >
       </el-table-column>
       <el-table-column
-        prop="examProgrammingOutput"
+        prop="exercise.exerciseOutPut"
         label="问题输出"
         width="180"
         :show-overflow-tooltip="true"
       >
       </el-table-column>
       <el-table-column
-        prop="examProgrammingSampleInput"
+        prop="exercise.exerciseSampleInput"
         label="样例输入"
         width="180"
       >
+      </el-table-column>
+      <el-table-column prop="exercise.exerciseSampleOutput" label="样例输出">
+      </el-table-column>
+      <el-table-column label="操作">
         <template slot-scope="scope">
-          <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
-            {{ scope.row.examProgrammingSampleInput }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="examProgrammingSampleOutput"
-        label="样例输出"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
-            {{ scope.row.examProgrammingSampleOutput }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="examProgrammingScore" label="分数" width="50">
-      </el-table-column>
-      <el-table-column label="操作"
-        ><template slot-scope="scope">
-          <el-button
-            type="primary"
-            @click.native.prevent="programmingInfoDialog(scope.row)"
-            size="small"
-            >详情</el-button
-          >
-          <el-button
-            type="primary"
-            @click.native.prevent="modifyProgrammingInfoDialog(scope.row)"
-            size="small"
-            >修改</el-button
-          >
           <el-button
             type="danger"
             @click.native.prevent="deleteConfirm(scope.row)"
@@ -110,13 +69,16 @@
     <el-dialog
       title="添加编程题"
       :visible.sync="edittableDataVisible_add"
+      v-if="edittableDataVisible_add"
       :before-close="handleClose"
+      :close-on-click-modal="false"
+      width="850px"
     >
       <el-input
         v-model="select_word"
         size="mini"
         class="search_input"
-        placeholder="请输入习题编号"
+        placeholder="请输入习题标题关键字"
         style="width: 200px"
         clearable
       ></el-input>
@@ -159,130 +121,6 @@
         @click="addProgramming_dialog('')"
         >添加</el-button
       >
-        <el-form-item label="题目" prop="examProgrammingTitle">
-          <el-input
-            v-model="modifyProgrammingData.examProgrammingTitle"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="题目描述" prop="examProgrammingDescription">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="modifyProgrammingData.examProgrammingDescription"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输入" prop="examProgrammingInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="modifyProgrammingData.examProgrammingInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输出" prop="examProgrammingOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="modifyProgrammingData.examProgrammingOutput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输入" prop="examProgrammingSampleInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="modifyProgrammingData.examProgrammingSampleInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输出" prop="examProgrammingSampleOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="modifyProgrammingData.examProgrammingSampleOutput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="分数" prop="examProgrammingScore">
-          <el-input v-model="modifyProgrammingData.examProgrammingScore">
-          </el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="modifyProgramming()"
-            >修改</el-button
-          >
-          <el-button @click="handleClose">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <el-dialog
-      title="详情"
-      :visible.sync="edittableDataVisible_info"
-      :before-close="handleClose"
-    >
-      <el-form
-        ref="ProgrammingInfo"
-        :model="modifyProgrammingData"
-        :rules="addRules"
-        class="ProgrammingInfoForm"
-      >
-        <el-form-item label="题目" prop="examProgrammingTitle">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-            v-model="modifyProgrammingData.examProgrammingTitle"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="题目描述" prop="examProgrammingDescription">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-            v-model="modifyProgrammingData.examProgrammingDescription"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输入" prop="examProgrammingInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-            v-model="modifyProgrammingData.examProgrammingInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输出" prop="examProgrammingOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-            v-model="modifyProgrammingData.examProgrammingOutput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输入" prop="examProgrammingSampleInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-            v-model="modifyProgrammingData.examProgrammingSampleInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输出" prop="examProgrammingSampleOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-            v-model="modifyProgrammingData.examProgrammingSampleOutput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="分数" prop="examProgrammingScore">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-            v-model="modifyProgrammingData.examProgrammingScore"
-          >
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button type="primary" @click="handleClose">确 定</el-button>
-      </span>
     </el-dialog>
   </div>
 </template>
@@ -301,117 +139,90 @@ export default {
         examProgrammingSampleOutput: '',
         examProgrammingScore: ''
       },
-      addProgrammingData: {
-        examId: '',
-        examProgrammingTitle: '',
-        examProgrammingDescription: '',
-        examProgrammingInput: '',
-        examProgrammingOutput: '',
-        examProgrammingSampleInput: '',
-        examProgrammingSampleOutput: '',
-        examProgrammingScore: ''
-      },
-      modifyProgrammingData: {
-        examId: '',
-        examProgrammingId: '',
-        examProgrammingTitle: '',
-        examProgrammingDescription: '',
-        examProgrammingInput: '',
-        examProgrammingOutput: '',
-        examProgrammingSampleInput: '',
-        examProgrammingSampleOutput: '',
-        examProgrammingScore: ''
-      },
       edit: true,
       addRules: {},
       programmingList: [],
-      examIdFromAddExam: '',
+      searchData: [],
+      examIdFromExamManage: 0,
       edittableDataVisible_add: false,
-      edittableDataVisible_modify: false,
-      edittableDataVisible_info: false,
+      DataVisible_preview: false,
       currentPage: 1,
       pagesize: 8,
+      currentPage_dialog: 1,
+      pagesize_dialog: 7,
+      select_word: '',
+      multipleSelection: [],
+      tableData: [],
+      programmingIdList: []
     }
   },
   mounted: function () {
-    // alert(this.$route.query.examId)
-    this.examIdFromAddExam = this.$route.query.examId;
-    this.getprogramming(this.$route.query.examId);
+    this.examIdFromExamManage = this.$route.query.examIdfromManage;
+    this.getprogramming(this.examIdFromExamManage);
+    this.getExercise()
   },
   computed: {
     data () {
-      return this.programmingList.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
-    }
 
+      return this.programmingList.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
+    },
+    data_dialog () {
+      return this.searchData.slice((this.currentPage_dialog - 1) * this.pagesize_dialog, this.currentPage_dialog * this.pagesize_dialog);
+    }
+  },
+  watch: {
+    select_word: function () {
+      if (this.select_word == '') {
+        this.searchData = this.tableData;
+      } else {
+        this.searchData = [];
+        for (let item of this.tableData) {
+          //item.exerciseTitle 添加习题的搜索框按习题标题检索
+          if (item.exerciseTitle.toString().includes(this.select_word)) {
+            this.currentPage = 1;
+            this.searchData.push(item);
+          }
+        }
+      }
+    },
   },
   methods: {
     handleClose (done) {
       this.edittableDataVisible_add = false
-      this.edittableDataVisible_modify = false
-      this.edittableDataVisible_info = false
       this.addProgrammingData = new Object();
+      this.select_word = ""
+    },
+    handleCurrent_dialog (val) {
+      this.currentPage_dialog = val;
     },
     handleCurrent (val) {
       this.currentPage = val;
     },
+    handleSelectionChange (val) {
+      this.multipleSelection = val;
+      // console.log(this.multipleSelection);
+    },
+    getRowKey (row) {
+      return row.exerciseId
+    },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
+
     },
-    modifyProgrammingInfoDialog (row) {
-      this.edittableDataVisible_modify = true
-      this.modifyProgrammingData.examId = this.examIdFromAddExam;
-      this.modifyProgrammingData.examProgrammingId = row.examProgrammingId;
-      this.modifyProgrammingData.examProgrammingTitle = row.examProgrammingTitle;
-      this.modifyProgrammingData.examProgrammingDescription = row.examProgrammingDescription;
-      this.modifyProgrammingData.examProgrammingInput = row.examProgrammingInput;
-      this.modifyProgrammingData.examProgrammingOutput = row.examProgrammingOutput;
-      this.modifyProgrammingData.examProgrammingSampleInput = row.examProgrammingSampleInput;
-      this.modifyProgrammingData.examProgrammingSampleOutput = row.examProgrammingSampleOutput;
-      this.modifyProgrammingData.examProgrammingScore = row.examProgrammingScore;
-    },
-    programmingInfoDialog (row) {
-      this.edittableDataVisible_info = true
-      this.modifyProgrammingData.examProgrammingTitle = row.examProgrammingTitle;
-      this.modifyProgrammingData.examProgrammingDescription = row.examProgrammingDescription;
-      this.modifyProgrammingData.examProgrammingInput = row.examProgrammingInput;
-      this.modifyProgrammingData.examProgrammingOutput = row.examProgrammingOutput;
-      this.modifyProgrammingData.examProgrammingSampleInput = row.examProgrammingSampleInput;
-      this.modifyProgrammingData.examProgrammingSampleOutput = row.examProgrammingSampleOutput;
-      this.modifyProgrammingData.examProgrammingScore = row.examProgrammingScore;
-    },
-    modifyProgramming () {
+    getprogramming (examId) {
+      const that = this
       let params = new URLSearchParams();
-      params.append('examProgrammingId', this.modifyProgrammingData.examProgrammingId);
-      params.append('examProgrammingTitle', this.modifyProgrammingData.examProgrammingTitle);
-      params.append('examProgrammingDescription', this.modifyProgrammingData.examProgrammingDescription);
-      params.append('examProgrammingInput', this.modifyProgrammingData.examProgrammingInput);
-      params.append('examProgrammingOutput', this.modifyProgrammingData.examProgrammingOutput);
-      params.append('examProgrammingSampleInput', this.modifyProgrammingData.examProgrammingSampleInput);
-      params.append('examProgrammingSampleOutput', this.modifyProgrammingData.examProgrammingSampleOutput);
-      params.append('examProgrammingScore', this.modifyProgrammingData.examProgrammingScore);
+      // console.log(examId);
+      params.append('examId', examId);
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/examProgramming/modifyProgramExamInfo',
+        url: '/examQuestion/queryExamQuestionProgrammingByExamId',
         data: params
-      }).then((res) => {
-        if (res.data == true) {
-          this.$message.success('编程题修改成功');
-          this.edittableDataVisible_modify = false;
-          this.getprogramming(this.examIdFromAddExam);
-        } else if (res.data == false) {
-          this.$message.error('编程题修改失败');
-          this.edittableDataVisible_modify = false;
-          this.getprogramming(this.examIdFromAddExam);
-        } else {
-          this.$message.error('发生了错误');
-          this.edittableDataVisible_modify = false;
-          this.getprogramming(this.examIdFromAddExam);
-        }
-      }).catch((res) => {
-        console.log(res);
+      }).then(function (resp) {
+        that.programmingList = resp.data
       })
     },
     addProgramming_dialog () {
@@ -452,87 +263,57 @@ export default {
     },
     getExercise () {
       const that = this
-      let params = new URLSearchParams();
-      // console.log(examId);
-      params.append('examId', examId);
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/examProgramming/queryProgrammingInfoById',
-        data: params
+        url: '/exercise/queryExerciseInfo',
       }).then(function (resp) {
-        that.addProgrammingData.examId = examId
-        that.programmingList = resp.data
-        // console.log(that.programmingList);
-      })
-    },
-    addProgramming (addProgramming) {
-      var that = this;
-      var id = this.addProgrammingData.examId
-      this.$refs[addProgramming].validate((valid) => {
-        if (valid) {
-          let params = new URLSearchParams();
-          params.append('examId', this.addProgrammingData.examId);
-          params.append('examProgrammingTitle', this.addProgrammingData.examProgrammingTitle);
-          params.append('examProgrammingDescription', this.addProgrammingData.examProgrammingDescription);
-          params.append('examProgrammingInput', this.addProgrammingData.examProgrammingInput);
-          params.append('examProgrammingOutput', this.addProgrammingData.examProgrammingOutput);
-          params.append('examProgrammingSampleInput', this.addProgrammingData.examProgrammingSampleInput);
-          params.append('examProgrammingSampleOutput', this.addProgrammingData.examProgrammingSampleOutput);
-          params.append('examProgrammingScore', this.addProgrammingData.examProgrammingScore);
-          this.$axios({
-            method: 'post',
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            url: '/examProgramming/addProgramExamInfo',
-            data: params
-          }).then((res) => {
-            if (res.data == 0) {
-              // console.log(res.data);
-              this.$message.error('编程题添加失败');
-              this.edittableDataVisible_add = false;
-              this.getprogramming(id);
-            } else {
-              this.$message.success('编程题添加成功');
-              this.edittableDataVisible_add = false;
-              this.addProgrammingData = new Object();
-              this.getprogramming(id);
+        // console.log(resp.data);
+        that.tableData = resp.data;
+        // console.log(that.tableData);
+        for (var i = 0, len1 = that.tableData.length; i < len1; i++) {
+          for (var j = 0, len2 = that.programmingList.length; j < len2; j++) {
+            if (that.tableData[i].exerciseId === that.programmingList[j].exercise.exerciseId) {
+              that.tableData.splice(i, 1)
+              len1 = that.tableData.length
             }
-          })
-        } else {
-          this.$message.error('添加失败，请检查输入的内容后后重试');
+          }
         }
+        //添加编程题的dialog数据初始化(去重处理，Dialog不会显示已经添加过的题目)
+        that.searchData = that.tableData;
+        // console.log(that.tableData);
       })
     },
     deleteConfirm (row) {
-      this.$confirm('此操作将永久删除该题, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该分组, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then((action) => {
         if (action === 'confirm') {
-          this.deleteProgramming(row.examProgrammingId);
+          this.deleteProgramming(row.exercise.exerciseId);
         }
       }).catch((resp) => {
         this.$message({
           type: 'info',
           message: '已取消删除'
         });
-        console.log(resp);
+        // console.log(resp);
       });
     },
-    deleteProgramming (examProgrammingId) {
+    deleteProgramming (exerciseId) {
       let params = new URLSearchParams();
-      params.append('examProgrammingId', examProgrammingId);
+      params.append('examId', this.examIdFromExamManage);
+      params.append('questionId', exerciseId);
+      params.append('examQuestionType', "programmingQuestion")
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/examProgramming/deleteProgramExamInfo',
+        url: '/examQuestion/deleteExamQuestion',
         data: params
       }).then((res) => {
         if (res.data == true) {
@@ -557,10 +338,10 @@ export default {
 </script>
 <style>
 .el-tooltip__popper {
-  max-width: 50%;
-  background: white !important;
+  max-width: 30%;
+  background: black !important;
   color: white !important;
-  opacity: 0 !important; /*背景色透明度*/
+  opacity: 50 !important; /*背景色透明度*/
   white-space: pre-line !important;
 }
 .el-textarea.is-disabled .el-textarea__inner {
@@ -584,5 +365,18 @@ a {
   bottom: 0;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.block_addDialog {
+  position: absolute;
+  bottom: 7px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.addProgrammingDialog_button {
+  margin: 25px 25px 25px 25px;
+  float: right;
+}
+.el-dialog {
+  overflow: auto;
 }
 </style>
