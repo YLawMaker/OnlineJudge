@@ -13,12 +13,12 @@
     </div>
 
     <el-table :data="teachers" style="width: 100%" stripe>
-      <el-table-column prop="teacherAccount" label="账号" width="180">
+      <el-table-column prop="userAccount" label="账号" width="180">
       </el-table-column>
-      <el-table-column prop="teacherName" label="姓名" width="180">
+      <el-table-column prop="userName" label="姓名" width="180">
       </el-table-column>
       <el-table-column
-        prop="teacherPassword"
+        prop="userPassword"
         label="密码"
         width="180"
         :formatter="passwordFormat"
@@ -45,17 +45,17 @@
       :before-close="handleClose"
     >
       <el-form :model="edittableData" ref="edittableData">
-        <el-form-item label="账号" prop="teacherAccount">
+        <el-form-item label="账号" prop="userAccount">
           <el-input
-            v-model="edittableData.teacherAccount"
+            v-model="edittableData.userAccount"
             :disabled="edit"
           ></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="teacherName">
-          <el-input v-model="edittableData.teacherName"></el-input>
+        <el-form-item label="姓名" prop="userName">
+          <el-input v-model="edittableData.userName"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="teacherPassword">
-          <el-input v-model="edittableData.teacherPassword"></el-input>
+        <el-form-item label="密码" prop="userPassword">
+          <el-input v-model="edittableData.userPassword"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -102,10 +102,10 @@ export default {
     return {
       teachers: [],
       edittableData: {
-        teacherId: '',
-        teacherAccount: '',
-        teacherName: '',
-        teacherPassword: ''
+        userId: '',
+        userAccount: '',
+        userName: '',
+        userPassword: ''
       },
       addTeacherData: {
         account: '',
@@ -115,7 +115,7 @@ export default {
       addRules: {
         account: [
           { required: true, message: '请输入账号', trigger: 'blur' },
-          { min: 5, max: 5, message: '账号长度为5', trigger: 'blur' }
+          { min: 5, max: 16, message: '账号长度为5到16个字符', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -147,10 +147,10 @@ export default {
     modifyTeacher (row) {
       // console.log(row.teacherId);
       this.edittableDataVisible_modify = true
-      this.edittableData.teacherAccount = row.teacherAccount
-      this.edittableData.teacherName = row.teacherName
-      this.edittableData.teacherPassword = row.teacherPassword
-      this.edittableData.teacherId = row.teacherId
+      this.edittableData.userAccount = row.userAccount
+      this.edittableData.userName = row.userName
+      this.edittableData.userPassword = row.userPassword
+      this.edittableData.userId = row.userId
     },
     handleClose (done) {
       this.edittableDataVisible_add = false
@@ -168,18 +168,18 @@ export default {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/teacher/queryTeacherInfo',
+        url: '/user/queryTeacherUserInfo',
       }).then(function (resp) {
         that.teachers = resp.data;
-        // console.log(resp.data);
+        console.log(resp.data);
       })
     },
     modifyTeacherInfoDialog () {
       let params = new URLSearchParams();
-      params.append('teacherId', this.edittableData.teacherId);
+      params.append('userId', this.edittableData.userId);
       // params.append('teacherAccount', this.edittableData.teacherAccount);
-      params.append('teacherName', this.edittableData.teacherName);
-      params.append('teacherPassword', this.edittableData.teacherPassword);
+      params.append('userName', this.edittableData.userName);
+      params.append('userPassword', this.edittableData.userPassword);
       // console.log(this.edittableData.teacherId);
       // console.log(this.edittableData.teacherName);
       // console.log(this.edittableData.teacherPassword);
@@ -188,7 +188,7 @@ export default {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/teacher/modifyTeacherInfo',
+        url: '/user/modifyTeacherUserInfo',
         data: params
       }).then((res) => {
         if (res.data == true) {
@@ -208,16 +208,16 @@ export default {
         console.log(res);
       })
     },
-    deleteTeacher (teacherid) {
+    deleteTeacher (userId) {
       let params = new URLSearchParams();
-      params.append('teacherId', teacherid);
+      params.append('userId', userId);
 
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/teacher/deleteTeacher',
+        url: '/user/deleteUserInfoByUserId',
         data: params
       }).then((res) => {
         if (res.data == true) {
@@ -241,7 +241,7 @@ export default {
         type: 'warning'
       }).then((action) => {
         if (action === 'confirm') {
-          this.deleteTeacher(row.teacherId);
+          this.deleteTeacher(row.userId);
         }
       }).catch((resp) => {
         this.$message({
@@ -256,15 +256,15 @@ export default {
       this.$refs[addTeacher].validate((valid) => {
         if (valid) {
           let params = new URLSearchParams();
-          params.append('teacherAccount', this.addTeacherData.account);
-          params.append('teacherPassword', this.addTeacherData.password);
-          params.append('teacherName', this.addTeacherData.name);
+          params.append('userAccount', this.addTeacherData.account);
+          params.append('userPassword', this.addTeacherData.password);
+          params.append('userName', this.addTeacherData.name);
           this.$axios({
             method: 'post',
             headers: {
               "Content-Type": "application/x-www-form-urlencoded"
             },
-            url: '/teacher/addTeacher',
+            url: '/user/addTeacherUserInfo',
             data: params
           }).then((res) => {
             if (res.data == '0') {
