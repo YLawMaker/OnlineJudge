@@ -80,14 +80,7 @@
         :show-overflow-tooltip="true"
       >
       </el-table-column>
-      <el-table-column prop="labels[0].firstPoint" label="第一知识点"> </el-table-column>
-      <el-table-column  label="第二知识点" min-width="100%" :show-overflow-tooltip="true"> 
-          <template slot-scope="scope">
-              <div v-for="item in scope.row.labels" :key="item.labelId" style="margin-top:0px;margin-bottom:0px;display:inline;" >
-                    {{item.secondPoint}}  
-              </div>  
-          </template>
-      </el-table-column>
+   
       <el-table-column prop="exerciseSampleInput" label="样例输入" width="180">
         <template slot-scope="scope">
           <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
@@ -136,6 +129,7 @@
       >
       </el-pagination>
     </div>
+    <!-- 修改 -->
     <el-dialog
       title="修改习题信息"
       :visible.sync="edittableDataVisible_modify"
@@ -195,13 +189,7 @@
             v-model="edittableData.exerciseSampleOutput"
           ></el-input>
         </el-form-item>
-         <el-form-item label="习题标签" prop="labels">
-            <el-cascader
-                v-model="edittableData.labels"
-                :options="options"
-                :props="{multiple:true}"
-                clearable></el-cascader>
-        </el-form-item>
+     
       </el-form>
       <span slot="footer">
         <el-button @click="handleClose">取 消</el-button>
@@ -209,8 +197,9 @@
           >确 定</el-button
         >
       </span>
-      <!-- 添加 -->
+
     </el-dialog>
+    <!-- 添加 -->
     <el-dialog
       title="添加习题"
       :visible.sync="edittableDataVisible_add"
@@ -261,13 +250,15 @@
             v-model="addexerciseData.exerciseSampleOuput"
           ></el-input>
         </el-form-item>
-        <el-form-item label="习题标签" prop="labels">
-            <el-cascader
-                v-model="addexerciseData.labels"
-                :options="options"
-                :props="{multiple:true}"
-                clearable></el-cascader>
+        <el-form-item label="习题标签" prop="questionLabelId">
+          <el-cascader
+            :options="options"
+             collapse-tags
+             v-model="addexerciseData.questionLabelId"
+            clearable></el-cascader>
         </el-form-item>
+        
+     
         <el-form-item>
           <el-button type="primary" @click="addExercise('addExercise')"
             >添加</el-button
@@ -344,15 +335,18 @@
             :disabled="edit"
           ></el-input>
         </el-form-item>
-         <el-form-item prop="firstPoint" label="第一知识点" size="mini">
-              <el-input v-model="edittableData.labels[0].firstPoint" placeholder="第一知识点" type="textarea" :autosize="true"  :disabled="true" v-if="edittableData.labels.length>0">
-              </el-input>
-          </el-form-item>
-          <el-form-item prop="secondPoint" label="第二知识点" size="mini"> 
-              <p v-for="(item,index) in edittableData.labels" :key="index" style="margin-left:10px;float:left;margin-top:0px;color:black;font-size:12px;margin-bottom: 0px;">
-                  {{item.secondPoint}}
-              </p>
-          </el-form-item>
+       <el-form-item prop="chapter" label="所属章节" size="mini">                                                            
+            <el-input v-model="edittableData.questionLabel.chapter" placeholder="所属章节" type="textarea" :autosize="true"  :disabled="edit">
+            </el-input>
+        </el-form-item>
+        <el-form-item prop="firstKnowledgePoint" label="第一知识点" size="mini">
+            <el-input v-model="edittableData.questionLabel.firstKnowledgePoint" placeholder="第一知识点" type="textarea" :autosize="true"  :disabled="edit">
+            </el-input>
+        </el-form-item>
+        <el-form-item prop="secondKnowledgePoint" label="第二知识点" size="mini"> 
+               <el-input v-model="edittableData.questionLabel.secondKnowledgePoint" placeholder="第二知识点" type="textarea" :autosize="true"  :disabled="edit">
+            </el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button type="primary" @click="handleClose">确 定</el-button>
@@ -379,7 +373,13 @@ export default {
         exerciseSampleOutput: '',
         exerciseCorrectTimes: '',
         exerciseSubmitTimes: '',
-        labels:[],
+        questionLabel:{
+          questionLabelId:'',
+          chapter:'',
+          firstKnowledgePoint:'',
+          secondKnowledgePoint:'',
+          
+        },
       },
       addexerciseData: {
         exerciseId: '',
@@ -391,7 +391,7 @@ export default {
         exerciseSampleOutput: '',
         exerciseCorrectTimes: '0',
         exerciseSubmitTimes: '0',
-        labels:[],
+        questionLabelId:'',
       },
       empty: {
         exerciseId: '',
@@ -436,7 +436,7 @@ export default {
           { required: true, message: '请输入样例输出', trigger: 'blur' },
           { min: 1, max: 1000, message: '长度为1~1000', trigger: 'blur' }
         ],
-        labels:[
+        questionLabelId:[
           { required: true, message: '请选择标签', trigger: 'blur' },
         ]
       },
@@ -455,7 +455,7 @@ export default {
     } else {
       this.getExercise(parseInt(this.$route.params.page), this.$route.params.key);//需要触发的函数
     }
-    this.getFirstPointInfo();
+    this.geChapterInfo();
   },
   computed: {
     data () {
@@ -517,8 +517,8 @@ export default {
       this.edittableData.exerciseOutPut = row.exerciseOutPut
       this.edittableData.exerciseSampleInput = row.exerciseSampleInput
       this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
-      this.edittableData.labels=row.labels
-      
+      this.edittableData.questionLabel=row.questionLabel
+      // console.log(row)
     },
     getExercise (pageNum, key) {
       const that = this
@@ -529,6 +529,7 @@ export default {
         },
         url: '/exercise/queryExerciseInfo',
       }).then(function (resp) {
+        // console.log(resp.data)
         that.exercise = resp.data;
         that.exerciseBackup = resp.data;
         that.searchData = resp.data;
@@ -632,14 +633,7 @@ export default {
           params.append('exerciseOutPut', this.addexerciseData.exerciseOutPut);
           params.append('exerciseSampleInput', this.addexerciseData.exerciseSampleInput);
           params.append('exerciseSampleOutput', this.addexerciseData.exerciseSampleOuput);
-          for(var i=0;i<this.addexerciseData.labels.length;i++){
-            var label=new Object;
-            label.labelId=this.addexerciseData.labels[i][1];
-            console.log(label.labelId)
-            this.labels.push(label);
-          }
-          params.append('labels',JSON.stringify(this.labels))
-          // console.log(this.addexerciseData.exerciseCorrectTimes);
+          params.append('questionLabelId',this.addexerciseData.questionLabelId[2])
           this.$axios({
             method: 'post',
             headers: {
@@ -666,52 +660,81 @@ export default {
       })
     },
 
-    getFirstPointInfo(){
+    geChapterInfo(){
         let params = new URLSearchParams();
         this.$axios({
           method: 'post',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
-          url: '/label/queryLabelFirstPointInfo',
+          url: '/questionLabel/queryChapterInfo',
           data: params
         })
           .then((res) => {
               for(var i=0;i<res.data.length;i++){
-                var firstPoint=new Object;
-                firstPoint.label=res.data[i];
-                firstPoint.children=[];
-                this.options.push(firstPoint);  
+                var chapter=new Object;
+                chapter.label=res.data[i];
+                chapter.children=[];
+                this.options.push(chapter);  
               }
               for(var i=0;i<this.options.length;i++){
-                this.getSecondPointInfo(i);
+                this.getFirstKnowledgePointInfo(i);
               }
           })
           .catch((err) => {
             this.$message.error('失败1');
           })
        },
-       getSecondPointInfo(i){
+       getFirstKnowledgePointInfo(i){
           let params = new URLSearchParams();
-          params.append("firstPoint",this.options[i].label)
+          params.append("chapter",this.options[i].label)
           this.$axios({
             method: 'post',
             headers: {
               "Content-Type": "application/x-www-form-urlencoded"
             },
-            url: '/label/queryLabelSecondPointInfo',
+            url: '/questionLabel/queryFirstKnowledgePointInfoByChapter',
             data: params
           })
           .then((res) => {
             for(var o=0;o<res.data.length;o++){
-              var secondPoint=new Object;
-              secondPoint.label=res.data[o].secondPoint;
-              secondPoint.value=res.data[o].labelId;
-              this.options[i].children.push(secondPoint);
+              var firstKnowledgePoint=new Object;
+              firstKnowledgePoint.label=res.data[o];
+              firstKnowledgePoint.children=[];
+              this.options[i].children.push(firstKnowledgePoint);
+            }
+            //结束后再查询
+            for(var o=0;o<res.data.length;o++){
+                this.getSecondKnowledgePointInfo(i,o);
             }
           })
           .catch((err) => {
             this.$message.error('失败2');
+          })
+      },
+      getSecondKnowledgePointInfo(chapterId,firstKnowledgePointId){
+          let params = new URLSearchParams();
+          params.append("chapter",this.options[chapterId].label)
+          params.append("firstKnowledgePoint",this.options[chapterId].children[firstKnowledgePointId].label)
+          this.$axios({
+            method: 'post',
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            url: '/questionLabel/querySecondKnowledgePointInfoByChapter',
+            data: params
+          })
+          .then((res) => {
+            for(var o=0;o<res.data.length;o++){
+              var secondKnowledgePoint=new Object;
+              secondKnowledgePoint.label=res.data[o].secondKnowledgePoint;
+              secondKnowledgePoint.value=res.data[o].questionLabelId;
+              secondKnowledgePoint.important=res.data[o].important;
+              this.options[chapterId].children[firstKnowledgePointId].children.push(secondKnowledgePoint);
+            }  
+          })
+          .catch((err) => {
+            this.$message.error('失败3');
           })
       }
 
