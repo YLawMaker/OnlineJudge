@@ -205,6 +205,7 @@ const routes = [
   {
     path: '/AdminBackground',
     name: 'AdminBackground',
+    redirect: 'components/TeacherManage',
     component: () => import('../views/AdminBackground'),
     children: [
       {

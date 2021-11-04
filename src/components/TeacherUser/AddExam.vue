@@ -27,6 +27,7 @@
               path: 'ExamInfoHeader',
               query: {
                 examIdfromManage: scope.row.examId,
+                examManageCurrentPage: currentPage,
               },
             }"
           >
@@ -75,12 +76,14 @@
       :visible.sync="edittableDataVisible_add"
       :before-close="handleClose"
       :close-on-click-modal="false"
+      width="850px"
     >
       <el-form
         ref="addExam"
         :model="exam_add"
         :rules="addRules"
         class="addExamForm"
+        label-width="120px"
       >
         <el-form-item label="考试名称" prop="examName">
           <el-input v-model="exam_add.examName"></el-input>
@@ -128,7 +131,34 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-row>
+          <el-col :span="8"
+            ><el-form-item
+              label="选择题分值(每题)"
+              prop="examChoiceQuestionScore"
+            >
+              <el-input
+                v-model="exam_add.examChoiceQuestionScore"
+              ></el-input> </el-form-item
+          ></el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="填空题分值(每题)"
+              prop="examCompletionQuestionScore"
+            >
+              <el-input
+                v-model="exam_add.examCompletionQuestionScore"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="编程题分值(每题)" prop="examProgrammingScore">
+              <el-input v-model="exam_add.examProgrammingScore"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-form-item class="addDialogButton">
           <el-button type="primary" @click="addExam('addExam')">添加</el-button>
           <el-button @click="handleClose">取消</el-button>
         </el-form-item>
@@ -187,6 +217,33 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-row>
+          <el-col :span="8"
+            ><el-form-item
+              label="选择题分值(每题)"
+              prop="examChoiceQuestionScore"
+            >
+              <el-input
+                v-model="exam_modify.examChoiceQuestionScore"
+              ></el-input> </el-form-item
+          ></el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="填空题分值(每题)"
+              prop="examCompletionQuestionScore"
+            >
+              <el-input
+                v-model="exam_modify.examCompletionQuestionScore"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="编程题分值(每题)" prop="examProgrammingScore">
+              <el-input v-model="exam_modify.examProgrammingScore"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-form-item>
           <el-button type="primary" @click="modifyExamInfo()">修改</el-button>
           <el-button @click="handleClose">取消</el-button>
@@ -212,7 +269,10 @@ export default {
         teacherId: '',
         examStatus: '',
         examLanguage: '',
-        groupId: ''
+        groupId: '',
+        examChoiceQuestionScore: 0,
+        examCompletionQuestionScore: 0,
+        examProgrammingScore: 0
       },
       exam_modify: {
         examId: '',
@@ -222,7 +282,10 @@ export default {
         teacherId: '',
         examStatus: '',
         examLanguage: '',
-        groupId: ''
+        groupId: '',
+        examChoiceQuestionScore: 0,
+        examCompletionQuestionScore: 0,
+        examProgrammingScore: 0
       },
       groupList: [],
       language: [{ value: 'C', label: 'C' }, { value: 'C++', label: 'C++' }, { value: 'Java', label: 'Java' }],
@@ -243,6 +306,12 @@ export default {
   },
   mounted: function () {
     this.$nextTick(() => {
+      if (this.$route.params.currentPage == null) {
+        this.currentPage = 1;
+      } else {
+        this.currentPage = this.$route.params.currentPage;
+      }
+      // console.log(typeof (this.currentPage));
       this.getUserInfo();
       this.getGroupInfo();
     });
@@ -290,16 +359,56 @@ export default {
       this.exam_modify.examStartTime = row.examStartTime
       this.exam_modify.examEndTime = row.examEndTime
       this.exam_modify.examLanguage = row.examLanguage
-      this.exam_modify.groupId = row.group.groupName
+      this.exam_modify.groupId = row.group.groupId
+      this.exam_modify.examChoiceQuestionScore = row.examChoiceQuestionScore
+      this.exam_modify.examCompletionQuestionScore = row.examCompletionQuestionScore
+      this.exam_modify.examProgrammingScore = row.examProgrammingScore
     },
     modifyExamInfo () {
       let params = new URLSearchParams();
+
+      //获取当前的时间,格式为YYYY-MM-DD HH:MM
+      const date = new Date()
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+      // console.log(date.toJSON().substr(0, 16).replace(/[T]/g, ' '));
+
+
+      // 将日期格式处理成字符串，方便比较
+      var status = ' ';
+      var currentDate = date.toJSON().substr(0, 16).replace(/[T]/g, ' ')
+      var startTime = this.exam_modify.examStartTime;
+      var endTime = this.exam_modify.examEndTime;
+      var temp1, temp2
+      temp1 = currentDate.substring(0, 10).split('-')
+      temp2 = currentDate.substring(11, 16).split(':')
+      currentDate = temp1[0] + temp1[1] + temp1[2] + temp2[0] + temp2[1]
+      temp1 = startTime.substring(0, 10).split('-')
+      temp2 = startTime.substring(11, 16).split(':')
+      startTime = temp1[0] + temp1[1] + temp1[2] + temp2[0] + temp2[1]
+      temp1 = endTime.substring(0, 10).split('-')
+      temp2 = endTime.substring(11, 16).split(':')
+      endTime = temp1[0] + temp1[1] + temp1[2] + temp2[0] + temp2[1]
+
+      if (currentDate >= startTime && currentDate <= endTime) {
+        status = "Running"
+      } else if (currentDate < startTime) {
+        status = "Pending"
+      } else {
+        status = "Ended"
+      }
+
       params.append('examId', this.exam_modify.examId);
       params.append('examStartTime', this.exam_modify.examStartTime);
       params.append('examEndTime', this.exam_modify.examEndTime);
       params.append('examName', this.exam_modify.examName);
       params.append('examLanguage', this.exam_modify.examLanguage);
       params.append('groupId', this.exam_modify.groupId);
+      params.append('examStatus', status);
+      params.append('examChoiceQuestionScore', this.exam_modify.examChoiceQuestionScore);
+      params.append('examCompletionQuestionScore', this.exam_modify.examCompletionQuestionScore);
+      params.append('examProgrammingScore', this.exam_modify.examProgrammingScore);
+      // console.log(this.exam_modify.examStartTime);
+
       this.$axios({
         method: 'post',
         headers: {
@@ -395,13 +504,48 @@ export default {
       this.$refs[addExam].validate((valid) => {
         if (valid) {
           let params = new URLSearchParams();
+
+          //获取当前的时间,格式为YYYY-MM-DD HH:MM
+          const date = new Date()
+          date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+          // console.log(date.toJSON().substr(0, 16).replace(/[T]/g, ' '));
+
+
+          // 将日期格式处理成字符串，方便比较
+          var status = ' ';
+          var currentDate = date.toJSON().substr(0, 16).replace(/[T]/g, ' ')
+          var startTime = this.exam_add.examStartTime;
+          var endTime = this.exam_add.examEndTime;
+          var temp1, temp2
+          temp1 = currentDate.substring(0, 10).split('-')
+          temp2 = currentDate.substring(11, 16).split(':')
+          currentDate = temp1[0] + temp1[1] + temp1[2] + temp2[0] + temp2[1]
+          temp1 = startTime.substring(0, 10).split('-')
+          temp2 = startTime.substring(11, 16).split(':')
+          startTime = temp1[0] + temp1[1] + temp1[2] + temp2[0] + temp2[1]
+          temp1 = endTime.substring(0, 10).split('-')
+          temp2 = endTime.substring(11, 16).split(':')
+          endTime = temp1[0] + temp1[1] + temp1[2] + temp2[0] + temp2[1]
+
+          if (currentDate >= startTime && currentDate <= endTime) {
+            status = "Running"
+          } else if (currentDate < startTime) {
+            status = "Pending"
+          } else {
+            status = "Ended"
+          }
+
           params.append('examName', this.exam_add.examName);
           params.append('examStartTime', this.exam_add.examStartTime);
           params.append('examEndTime', this.exam_add.examEndTime);
           params.append('teacherId', this.exam_add.teacherId);
-          params.append('examStatus', 'Pending');
+          params.append('examStatus', status);
           params.append('examLanguage', this.exam_add.examLanguage);
           params.append('groupId', this.exam_add.groupId);
+          params.append('examChoiceQuestionScore', this.exam_add.examChoiceQuestionScore);
+          params.append('examCompletionQuestionScore', this.exam_add.examCompletionQuestionScore);
+          params.append('examProgrammingScore', this.exam_add.examProgrammingScore);
+
           this.$axios({
             method: 'post',
             headers: {
@@ -490,6 +634,10 @@ export default {
   float: right;
   margin-right: 25px;
 }
+.addDialogButton {
+  float: right;
+  /* margin-bottom: 25px; */
+}
 .block {
   position: absolute;
   bottom: 0;
@@ -499,5 +647,11 @@ export default {
 a {
   /* text-decoration: none; */
   color: #606266;
+}
+.el-form-item__label {
+  text-align: left;
+}
+.el-dialog {
+  overflow: auto;
 }
 </style>

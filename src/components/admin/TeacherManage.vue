@@ -43,6 +43,7 @@
       title="修改教师信息"
       :visible.sync="edittableDataVisible_modify"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form :model="edittableData" ref="edittableData">
         <el-form-item label="账号" prop="userAccount">
@@ -69,6 +70,7 @@
       title="添加教师"
       :visible.sync="edittableDataVisible_add"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="addTeacher"

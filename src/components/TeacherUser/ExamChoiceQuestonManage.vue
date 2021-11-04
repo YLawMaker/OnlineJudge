@@ -253,6 +253,9 @@ export default {
       choiceQuestionStatus: []
     }
   },
+  created: function () {
+
+  },
   mounted: function () {
     this.examId = this.$route.query.examIdfromManage;
     //获取选择题标签信息
@@ -265,8 +268,7 @@ export default {
     this.getCurrentTeacherUserInfo();
     //获取全部教师信息
     this.getTeacherUserInfo();
-    //获取考试已添加的选择题
-    this.getExamQuestionChoiceByExamId(this.examId);
+
   },
   computed: {
     data () {
@@ -338,7 +340,8 @@ export default {
         data: params
       }).then(function (resp) {
         that.choiceQuestionList = resp.data
-        // console.log(resp.data);
+        //获取考试已添加的选择题
+        that.getExamQuestionChoiceByExamId(that.examId);
       })
     },
     //获取标签信息(获取chapter)
@@ -629,6 +632,12 @@ export default {
         // console.log(resp.data);
         // console.log(that.choiceQuestionList);
         // console.log(that.choiceQuestionInExam);
+
+        let a = [], b = [], result1 = [], result2 = [];
+        a = that.choiceQuestionList;
+        b = that.choiceQuestionInExam;
+        // console.log(a);
+        // console.log(b);
         //可以优化，时间复杂度过高
         for (var i = 0; i < that.choiceQuestionList.length; i++) {
           var questionstatus = {};
@@ -641,10 +650,26 @@ export default {
           for (var j = 0; j < that.choiceQuestionInExam.length; j++) {
             // console.log(that.choiceQuestionList[i].choiceQuestionId + "  " + that.choiceQuestionInExam[j].choiceQuestionId);
             if (that.choiceQuestionList[i].choiceQuestionId == that.choiceQuestionInExam[j].choiceQuestion.choiceQuestionId) {
-              that.choiceQuestionStatus[i].status = 1
+              that.choiceQuestionStatus[i].status = 1;
             }
           }
         }
+        // a.map(item => {
+        //   let map = new Map();
+        //   for (let [k, v] of Object.entries(item)) {
+        //     map.set(k, v);
+        //   }
+        //   result1.push(map)
+        // })
+        // b.map(item => {
+        //   let map = new Map();
+        //   for (let [k, v] of Object.entries(item)) {
+        //     map.set(k, v);
+        //   }
+        //   result2.push(map)
+        // })
+        // console.log(result1);
+        // console.log(result2);
       })
     }
   }

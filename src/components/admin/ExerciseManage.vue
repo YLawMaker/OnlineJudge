@@ -73,13 +73,6 @@
         :show-overflow-tooltip="true"
       >
       </el-table-column>
-      <el-table-column
-        prop="exerciseOutPut"
-        label="问题输出"
-        width="180"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
 
       <el-table-column prop="exerciseSampleInput" label="样例输入" width="180">
         <template slot-scope="scope">
@@ -188,6 +181,14 @@
             :autosize="true"
             v-model="edittableData.exerciseSampleOutput"
           ></el-input>
+        </el-form-item>
+        <el-form-item label="习题标签" prop="questionLabelId">
+          <el-cascader
+            :options="options"
+            collapse-tags
+            v-model="edittableData.questionLabel.questionLabelId"
+            clearable
+          ></el-cascader>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -475,7 +476,7 @@ export default {
     } else {
       this.getExercise(parseInt(this.$route.params.page), this.$route.params.key);//需要触发的函数
     }
-    this.geChapterInfo();
+    this.getChapterInfo();
   },
   computed: {
     data () {
@@ -508,12 +509,7 @@ export default {
       this.edittableData.exerciseOutPut = row.exerciseOutPut
       this.edittableData.exerciseSampleInput = row.exerciseSampleInput
       this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
-      this.edittableData.labels = []
-      for (var i = 0; i < row.labels.length; i++) {
-        this.labelChoice = [];
-        this.labelChoice[1] = row.labels[i].labelId;
-        this.edittableData.labels.push(this.labelChoice);
-      }
+      this.edittableData.questionLabel = row.questionLabel
     },
     handleCurrent (val) {
       this.currentPage = val;
@@ -523,7 +519,6 @@ export default {
       this.edittableDataVisible_modify = false
       this.edittableDataVisible_info = false
       this.addexerciseData = new Object();
-      // this.$refs.addExercise.clearValidate();
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -549,7 +544,7 @@ export default {
         },
         url: '/exercise/queryExerciseInfo',
       }).then(function (resp) {
-        // console.log(resp.data)
+        console.log(resp.data)
         that.exercise = resp.data;
         that.exerciseBackup = resp.data;
         that.searchData = resp.data;
@@ -566,13 +561,8 @@ export default {
       params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
       params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
       params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
-      for (var i = 0; i < this.edittableData.labels.length; i++) {
-        var label = new Object;
-        label.labelId = this.edittableData.labels[i][1];
-        console.log(label.labelId)
-        this.labels.push(label);
-      }
-      params.append('labels', JSON.stringify(this.labels))
+      params.append('questionLabelId', JSON.stringify(this.edittableData.questionLabel.questionLabelId[2]))
+      // console.log(JSON.stringify(this.edittableData.questionLabel.questionLabelId[2]));
       this.$axios({
         method: 'post',
         headers: {
@@ -680,7 +670,7 @@ export default {
       })
     },
 
-    geChapterInfo () {
+    getChapterInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: 'post',
@@ -828,5 +818,11 @@ a {
 }
 .topBar_Exercise {
   margin-top: 10px;
+}
+textarea {
+  min-height: 40px;
+}
+.el-textarea__inner {
+  resize: none;
 }
 </style>

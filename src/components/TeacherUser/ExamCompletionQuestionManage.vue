@@ -417,8 +417,7 @@ export default {
     this.getSearchQuestionLabelInfo();
     //获取全部教师信息 
     this.getTeacherUserInfo();
-    //获取考试已添加的填空题
-    this.getExamQuestionCompletionByExamId(this.examId);
+
   },
   methods: {
     //查询填空题信息
@@ -789,6 +788,8 @@ export default {
       })
         .then((res) => {
           this.completionQuestionInfoList = res.data;
+          //获取考试已添加的填空题
+          this.getExamQuestionCompletionByExamId(this.examId);
         })
         .catch((err) => {
           this.$message.error('查询填空题错误');
