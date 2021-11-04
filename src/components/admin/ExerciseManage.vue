@@ -73,14 +73,14 @@
         :show-overflow-tooltip="true"
       >
       </el-table-column>
-       <el-table-column
+      <el-table-column
         prop="exerciseOutPut"
         label="问题输出"
         width="180"
         :show-overflow-tooltip="true"
       >
       </el-table-column>
-   
+
       <el-table-column prop="exerciseSampleInput" label="样例输入" width="180">
         <template slot-scope="scope">
           <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
@@ -189,21 +189,23 @@
             v-model="edittableData.exerciseSampleOutput"
           ></el-input>
         </el-form-item>
-     <el-form-item label="习题标签" prop="questionLabel">
+        <el-form-item label="习题标签" prop="questionLabel">
           <el-cascader
             :options="options"
-             collapse-tags
-             v-model="edittableData.questionLabel.questionLabelId"
-            clearable></el-cascader>
+            collapse-tags
+            v-model="edittableData.questionLabel.questionLabelId"
+            clearable
+          ></el-cascader>
         </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="modifyExerciseInfoDialog('edittableData')"
+        <el-button
+          type="primary"
+          @click="modifyExerciseInfoDialog('edittableData')"
           >确 定</el-button
         >
       </span>
-
     </el-dialog>
     <!-- 添加 -->
     <el-dialog
@@ -259,9 +261,10 @@
         <el-form-item label="习题标签" prop="questionLabel">
           <el-cascader
             :options="options"
-             collapse-tags
-             v-model="addexerciseData.questionLabel"
-            clearable></el-cascader>
+            collapse-tags
+            v-model="addexerciseData.questionLabel"
+            clearable
+          ></el-cascader>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="addExercise('addExercise')"
@@ -339,17 +342,39 @@
             :disabled="edit"
           ></el-input>
         </el-form-item>
-       <el-form-item prop="chapter" label="所属章节" size="mini">                                                            
-            <el-input v-model="edittableData.questionLabel.chapter" placeholder="所属章节" type="textarea" :autosize="true"  :disabled="edit">
-            </el-input>
+        <el-form-item prop="chapter" label="所属章节" size="mini">
+          <el-input
+            v-model="edittableData.questionLabel.chapter"
+            placeholder="所属章节"
+            type="textarea"
+            :autosize="true"
+            :disabled="edit"
+          >
+          </el-input>
         </el-form-item>
         <el-form-item prop="firstKnowledgePoint" label="第一知识点" size="mini">
-            <el-input v-model="edittableData.questionLabel.firstKnowledgePoint" placeholder="第一知识点" type="textarea" :autosize="true"  :disabled="edit">
-            </el-input>
+          <el-input
+            v-model="edittableData.questionLabel.firstKnowledgePoint"
+            placeholder="第一知识点"
+            type="textarea"
+            :autosize="true"
+            :disabled="edit"
+          >
+          </el-input>
         </el-form-item>
-        <el-form-item prop="secondKnowledgePoint" label="第二知识点" size="mini"> 
-               <el-input v-model="edittableData.questionLabel.secondKnowledgePoint" placeholder="第二知识点" type="textarea" :autosize="true"  :disabled="edit">
-            </el-input>
+        <el-form-item
+          prop="secondKnowledgePoint"
+          label="第二知识点"
+          size="mini"
+        >
+          <el-input
+            v-model="edittableData.questionLabel.secondKnowledgePoint"
+            placeholder="第二知识点"
+            type="textarea"
+            :autosize="true"
+            :disabled="edit"
+          >
+          </el-input>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -362,11 +387,11 @@
 <script>
 //习题标签的校验
 const validatorQuestionLable = (rule, value, callback) => {
-    if(value.questionLabelId[2]==undefined){
-        new callback(new Error('请输入标签'))
-    }else{
-        callback();
-    }
+  if (value.questionLabelId[2] == undefined) {
+    new callback(new Error('请输入标签'))
+  } else {
+    callback();
+  }
 };
 export default {
   data () {
@@ -385,12 +410,12 @@ export default {
         exerciseSampleOutput: '',
         exerciseCorrectTimes: '',
         exerciseSubmitTimes: '',
-        questionLabel:{
-          questionLabelId:[],
-          chapter:'',
-          firstKnowledgePoint:'',
-          secondKnowledgePoint:'',
-          
+        questionLabel: {
+          questionLabelId: [],
+          chapter: '',
+          firstKnowledgePoint: '',
+          secondKnowledgePoint: '',
+
         },
       },
       addexerciseData: {
@@ -403,7 +428,7 @@ export default {
         exerciseSampleOutput: '',
         exerciseCorrectTimes: '0',
         exerciseSubmitTimes: '0',
-        questionLabelId:'',
+        questionLabelId: '',
       },
       empty: {
         exerciseId: '',
@@ -417,7 +442,7 @@ export default {
         exerciseSubmitTimes: '0'
       },
       edittableDataRules: {
-         exerciseTitle: [
+        exerciseTitle: [
           { required: true, message: '请输入题目标题', trigger: 'blur' },
           { min: 1, max: 30, message: '长度为1~30', trigger: 'blur' }
         ],
@@ -441,8 +466,8 @@ export default {
           { required: true, message: '请输入样例输出', trigger: 'blur' },
           { min: 1, max: 1000, message: '长度为1~1000', trigger: 'blur' }
         ],
-        questionLabel:[
-           { required: true, validator: validatorQuestionLable, trigger: 'blur' },
+        questionLabel: [
+          { required: true, validator: validatorQuestionLable, trigger: 'blur' },
         ]
       },
       edittableDataVisible_add: false,
@@ -476,17 +501,17 @@ export default {
           { required: true, message: '请输入样例输出', trigger: 'blur' },
           { min: 1, max: 1000, message: '长度为1~1000', trigger: 'blur' }
         ],
-        questionLabelId:[
+        questionLabelId: [
           { required: true, message: '请选择标签', trigger: 'blur' },
         ]
       },
       h: {},
       //标签信息上传用
-      labels:[],
+      labels: [],
       //后台读取的标签信息 放入下拉框中
-      options:[],
+      options: [],
       //标签选择用
-      labelChoice:[],
+      labelChoice: [],
     }
   },
   mounted: function () {
@@ -527,7 +552,7 @@ export default {
       this.edittableData.exerciseOutPut = row.exerciseOutPut
       this.edittableData.exerciseSampleInput = row.exerciseSampleInput
       this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
-      this.edittableData.questionLabel.questionLabelId=[]
+      this.edittableData.questionLabel.questionLabelId = []
       this.edittableData.questionLabel.questionLabelId.push(undefined)
       this.edittableData.questionLabel.questionLabelId.push(undefined)
       this.edittableData.questionLabel.questionLabelId.push(row.questionLabel.questionLabelId)
@@ -555,7 +580,7 @@ export default {
       this.edittableData.exerciseOutPut = row.exerciseOutPut
       this.edittableData.exerciseSampleInput = row.exerciseSampleInput
       this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
-      this.edittableData.questionLabel=row.questionLabel
+      this.edittableData.questionLabel = row.questionLabel
       // console.log(row)
     },
     getExercise (pageNum, key) {
@@ -578,40 +603,40 @@ export default {
     modifyExerciseInfoDialog (edittableData) {
       this.$refs[edittableData].validate((valid) => {
         if (valid) {
-      let params = new URLSearchParams();
-      params.append('exerciseId', this.edittableData.exerciseId);
-      params.append('exerciseTitle', this.edittableData.exerciseTitle);
-      params.append('exerciseDescription', this.edittableData.exerciseDescription);
-      params.append('exerciseInput', this.edittableData.exerciseInput);
-      params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
-      params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
-      params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
-      params.append('questionLabelId', this.edittableData.questionLabel.questionLabelId[2]);
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/exercise/modifyExerciseInfo',
-        data: params
-      }).then((res) => {
-        if (res.data == true) {
-          this.$message.success('习题信息修改成功');
-          this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage, '');
-        } else if (res.data == false) {
-          this.$message.error('习题信息修改失败');
-          this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage, '');
+          let params = new URLSearchParams();
+          params.append('exerciseId', this.edittableData.exerciseId);
+          params.append('exerciseTitle', this.edittableData.exerciseTitle);
+          params.append('exerciseDescription', this.edittableData.exerciseDescription);
+          params.append('exerciseInput', this.edittableData.exerciseInput);
+          params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
+          params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
+          params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
+          params.append('questionLabelId', this.edittableData.questionLabel.questionLabelId[2]);
+          this.$axios({
+            method: 'post',
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            url: '/exercise/modifyExerciseInfo',
+            data: params
+          }).then((res) => {
+            if (res.data == true) {
+              this.$message.success('习题信息修改成功');
+              this.edittableDataVisible_modify = false;
+              this.getExercise(this.currentPage, '');
+            } else if (res.data == false) {
+              this.$message.error('习题信息修改失败');
+              this.edittableDataVisible_modify = false;
+              this.getExercise(this.currentPage, '');
+            } else {
+              this.$message.error('发生了错误');
+              this.edittableDataVisible_modify = false;
+              this.getExercise(this.currentPage, '');
+            }
+          }).catch((res) => {
+            console.log(res);
+          })
         } else {
-          this.$message.error('发生了错误');
-          this.edittableDataVisible_modify = false;
-          this.getExercise(this.currentPage, '');
-        }
-      }).catch((res) => {
-        console.log(res);
-      })
-      } else {
           this.$message.error('修改失败，请检查输入的内容后后重试');
         }
       })
@@ -671,7 +696,7 @@ export default {
           params.append('exerciseOutPut', this.addexerciseData.exerciseOutPut);
           params.append('exerciseSampleInput', this.addexerciseData.exerciseSampleInput);
           params.append('exerciseSampleOutput', this.addexerciseData.exerciseSampleOuput);
-          params.append('questionLabelId',this.addexerciseData.questionLabelId[2])
+          params.append('questionLabelId', this.addexerciseData.questionLabelId[2])
           console.log(this.addexerciseData.questionLabelId)
           this.$axios({
             method: 'post',
@@ -698,84 +723,84 @@ export default {
         }
       })
     },
-    geChapterInfo(){
-        let params = new URLSearchParams();
-        this.$axios({
-          method: 'post',
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          url: '/questionLabel/queryChapterInfo',
-          data: params
+    geChapterInfo () {
+      let params = new URLSearchParams();
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/questionLabel/queryChapterInfo',
+        data: params
+      })
+        .then((res) => {
+          for (var i = 0; i < res.data.length; i++) {
+            var chapter = new Object;
+            chapter.label = res.data[i];
+            chapter.children = [];
+            this.options.push(chapter);
+          }
+          for (var i = 0; i < this.options.length; i++) {
+            this.getFirstKnowledgePointInfo(i);
+          }
         })
-          .then((res) => {
-              for(var i=0;i<res.data.length;i++){
-                var chapter=new Object;
-                chapter.label=res.data[i];
-                chapter.children=[];
-                this.options.push(chapter);  
-              }
-              for(var i=0;i<this.options.length;i++){
-                this.getFirstKnowledgePointInfo(i);
-              }
-          })
-          .catch((err) => {
-            this.$message.error('失败1');
-          })
-       },
-       getFirstKnowledgePointInfo(i){
-          let params = new URLSearchParams();
-          params.append("chapter",this.options[i].label)
-          this.$axios({
-            method: 'post',
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            url: '/questionLabel/queryFirstKnowledgePointInfoByChapter',
-            data: params
-          })
-          .then((res) => {
-            for(var o=0;o<res.data.length;o++){
-              var firstKnowledgePoint=new Object;
-              firstKnowledgePoint.label=res.data[o];
-              firstKnowledgePoint.children=[];
-              this.options[i].children.push(firstKnowledgePoint);
-            }
-            //结束后再查询
-            for(var o=0;o<res.data.length;o++){
-                this.getSecondKnowledgePointInfo(i,o);
-            }
-          })
-          .catch((err) => {
-            this.$message.error('失败2');
-          })
-      },
-      getSecondKnowledgePointInfo(chapterId,firstKnowledgePointId){
-          let params = new URLSearchParams();
-          params.append("chapter",this.options[chapterId].label)
-          params.append("firstKnowledgePoint",this.options[chapterId].children[firstKnowledgePointId].label)
-          this.$axios({
-            method: 'post',
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            url: '/questionLabel/querySecondKnowledgePointInfoByChapter',
-            data: params
-          })
-          .then((res) => {
-            for(var o=0;o<res.data.length;o++){
-              var secondKnowledgePoint=new Object;
-              secondKnowledgePoint.label=res.data[o].secondKnowledgePoint;
-              secondKnowledgePoint.value=res.data[o].questionLabelId;
-              secondKnowledgePoint.important=res.data[o].important;
-              this.options[chapterId].children[firstKnowledgePointId].children.push(secondKnowledgePoint);
-            }  
-          })
-          .catch((err) => {
-            this.$message.error('失败3');
-          })
-      }
-    
+        .catch((err) => {
+          this.$message.error('失败1');
+        })
+    },
+    getFirstKnowledgePointInfo (i) {
+      let params = new URLSearchParams();
+      params.append("chapter", this.options[i].label)
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/questionLabel/queryFirstKnowledgePointInfoByChapter',
+        data: params
+      })
+        .then((res) => {
+          for (var o = 0; o < res.data.length; o++) {
+            var firstKnowledgePoint = new Object;
+            firstKnowledgePoint.label = res.data[o];
+            firstKnowledgePoint.children = [];
+            this.options[i].children.push(firstKnowledgePoint);
+          }
+          //结束后再查询
+          for (var o = 0; o < res.data.length; o++) {
+            this.getSecondKnowledgePointInfo(i, o);
+          }
+        })
+        .catch((err) => {
+          this.$message.error('失败2');
+        })
+    },
+    getSecondKnowledgePointInfo (chapterId, firstKnowledgePointId) {
+      let params = new URLSearchParams();
+      params.append("chapter", this.options[chapterId].label)
+      params.append("firstKnowledgePoint", this.options[chapterId].children[firstKnowledgePointId].label)
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/questionLabel/querySecondKnowledgePointInfoByChapter',
+        data: params
+      })
+        .then((res) => {
+          for (var o = 0; o < res.data.length; o++) {
+            var secondKnowledgePoint = new Object;
+            secondKnowledgePoint.label = res.data[o].secondKnowledgePoint;
+            secondKnowledgePoint.value = res.data[o].questionLabelId;
+            secondKnowledgePoint.important = res.data[o].important;
+            this.options[chapterId].children[firstKnowledgePointId].children.push(secondKnowledgePoint);
+          }
+        })
+        .catch((err) => {
+          this.$message.error('失败3');
+        })
+    }
+
     // Search (index) {
     //   if (index == 1) {
     //     var search = this.search;
@@ -796,7 +821,7 @@ export default {
     //     this.getExercise()
     //   }
     // }
-    
+
   }
 }
 </script>

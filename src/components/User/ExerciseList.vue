@@ -9,15 +9,19 @@
     </el-input>
     <button @click="wwChange()">标签</button>
     <div v-if="ww" class="label">
-      <div v-for="(i,o) in options" :key="o" style="float:left">
-        <span style="margin-right:500px">
-          {{i.label}}
+      <div v-for="(i, o) in options" :key="o" style="float: left">
+        <span style="margin-right: 500px">
+          {{ i.label }}
         </span>
-          <span v-for="(w,e) in options[o].children" :key="e" style="color:blue;cursor:pointer;" @click="labelClick(w.label)">
-              {{w.label}}
-          </span>
+        <span
+          v-for="(w, e) in options[o].children"
+          :key="e"
+          style="color: blue; cursor: pointer"
+          @click="labelClick(w.label)"
+        >
+          {{ w.label }}
+        </span>
       </div>
-      
     </div>
     <el-table :data="data" style="width: 90%" class="tableclass" stripe>
       <el-table-column prop="exerciseId" label="习题编号"> </el-table-column>
@@ -32,7 +36,7 @@
               },
             }"
           >
-            {{ scope.row.exerciseTitle}}
+            {{ scope.row.exerciseTitle }}
           </router-link>
         </template>
       </el-table-column>
@@ -54,7 +58,7 @@
         :page-size="pageSize"
         :total="selectExercise.length"
         @current-change="handleCurrent"
-        v-if="selectExercise.length!=0"
+        v-if="selectExercise.length != 0"
       >
       </el-pagination>
     </div>
@@ -82,11 +86,11 @@ export default {
       select_word: '',
       pageSize: 10,
       currentPage: 1,
-      isPublish:false,
-      selectBackWord:'',
-      options:[],
-      ww:false,
-      labelChoice:[],
+      isPublish: false,
+      selectBackWord: '',
+      options: [],
+      ww: false,
+      labelChoice: [],
     }
   },
   watch: {
@@ -100,13 +104,13 @@ export default {
           if (item.exerciseTitle.includes(this.select_word)) {
             this.currentPage = 1;
             //保存查询后页码为1
-            sessionStorage.setItem("exerciseListCurrentPage",1);
-            sessionStorage.setItem("exerciseListSelectWord",this.select_word);
+            sessionStorage.setItem("exerciseListCurrentPage", 1);
+            sessionStorage.setItem("exerciseListSelectWord", this.select_word);
             this.selectExercise.push(item);
           }
         }
       }
-      
+
     }
   },
   computed: {
@@ -114,64 +118,64 @@ export default {
       return this.selectExercise.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
     }
   },
-    
+
   mounted: function () {
-     if(sessionStorage.getItem("isPublish")=="false"){
-        if(sessionStorage.getItem("exerciseListCurrentPage")!=null){
-          this.currentPage=Number(sessionStorage.getItem("exerciseListCurrentPage"));
-        }
-        if(sessionStorage.getItem("exerciseListSelectWord")!=null){
-          this.selectBackWord=sessionStorage.getItem("exerciseListSelectWord");
-        }
-      }else{
-          sessionStorage.setItem("isPublish","false");
+    if (sessionStorage.getItem("isPublish") == "false") {
+      if (sessionStorage.getItem("exerciseListCurrentPage") != null) {
+        this.currentPage = Number(sessionStorage.getItem("exerciseListCurrentPage"));
       }
-    
-     //获取习题信息
+      if (sessionStorage.getItem("exerciseListSelectWord") != null) {
+        this.selectBackWord = sessionStorage.getItem("exerciseListSelectWord");
+      }
+    } else {
+      sessionStorage.setItem("isPublish", "false");
+    }
+
+    //获取习题信息
     this.getExercise()
     //获取习题标签信息
     this.getFirstPointInfo()
-     
+
   },
 
-  
+
 
   methods: {
     //点击标签
-    labelClick(secondPoint){
-      var i=0;
-      for(var o=0;o<this.labelChoice.length;o++){
-        if(this.labelChoice[o].secondPoint==secondPoint){
-          this.labelChoice.splice(o,1);
-          i=1;
+    labelClick (secondPoint) {
+      var i = 0;
+      for (var o = 0; o < this.labelChoice.length; o++) {
+        if (this.labelChoice[o].secondPoint == secondPoint) {
+          this.labelChoice.splice(o, 1);
+          i = 1;
         }
       }
-      if(i==0){
-        var label=new Object;
-        label.secondPoint=secondPoint;
+      if (i == 0) {
+        var label = new Object;
+        label.secondPoint = secondPoint;
         this.labelChoice.push(label);
       }
-      if(this.labelChoice.length==0){
-          let params = new URLSearchParams();
-          this.$axios({
-            method: 'post',
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            url: '/exercise/queryExerciseInfo',
-            data: params
-          })
-            .then((res) => {
-              this.selectExercise = res.data;
-              this.exercise = res.data;
-            })
-            .catch((err) => {
-              this.$message.error('习题列表加载失败');
-
-            })
-      }else{
+      if (this.labelChoice.length == 0) {
         let params = new URLSearchParams();
-        params.append("labels",JSON.stringify(this.labelChoice))
+        this.$axios({
+          method: 'post',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          url: '/exercise/queryExerciseInfo',
+          data: params
+        })
+          .then((res) => {
+            this.selectExercise = res.data;
+            this.exercise = res.data;
+          })
+          .catch((err) => {
+            this.$message.error('习题列表加载失败');
+
+          })
+      } else {
+        let params = new URLSearchParams();
+        params.append("labels", JSON.stringify(this.labelChoice))
         this.$axios({
           method: 'post',
           headers: {
@@ -181,34 +185,34 @@ export default {
           data: params
         })
           .then((res) => {
-              this.selectExercise = res.data;
-              this.exercise = res.data;
+            this.selectExercise = res.data;
+            this.exercise = res.data;
           })
           .catch((err) => {
             this.$message.error('习题标签加载失败');
 
           })
       }
-      
+
     },
-      wwChange(){
-        this.ww=!this.ww;
-      },
+    wwChange () {
+      this.ww = !this.ww;
+    },
     //给sessionStorage存值
-    setContextData: function(key, value) { 
-      if(typeof value == "string"){
+    setContextData: function (key, value) {
+      if (typeof value == "string") {
         sessionStorage.setItem(key, value);
-      }else{
+      } else {
         sessionStorage.setItem(key, JSON.stringify(value));
       }
     },
     // 从sessionStorage取值
-    getContextData: function(key){
+    getContextData: function (key) {
       const str = sessionStorage.getItem(key);
-      if( typeof str == "string" ){
-        try{
+      if (typeof str == "string") {
+        try {
           return JSON.parse(str);
-        }catch(e) {
+        } catch (e) {
           return str;
         }
       }
@@ -216,7 +220,7 @@ export default {
     },
     handleCurrent (val) {
       //保存页码信息
-      sessionStorage.setItem("exerciseListCurrentPage",val);
+      sessionStorage.setItem("exerciseListCurrentPage", val);
       this.currentPage = val;
     },
     //获得习题比率
@@ -243,7 +247,7 @@ export default {
         .then((res) => {
           this.selectExercise = res.data;
           this.exercise = res.data;
-          this.select_word=this.selectBackWord;
+          this.select_word = this.selectBackWord;
         })
         .catch((err) => {
           this.$message.error('习题列表加载失败');
@@ -300,7 +304,7 @@ export default {
           this.$message.error('失败2');
         })
     }
-    
+
   }
 }
 </script>
@@ -318,12 +322,13 @@ export default {
   display: inline-block;
   margin-left: 5%;
 }
-.label{
-   width:500px;
-   height:500px;
-  position:absolute;
-  top:120px;background:white;
-  z-index:999;
-  border-radius: 30px
+.label {
+  width: 500px;
+  height: 500px;
+  position: absolute;
+  top: 120px;
+  background: white;
+  z-index: 999;
+  border-radius: 30px;
 }
 </style>
