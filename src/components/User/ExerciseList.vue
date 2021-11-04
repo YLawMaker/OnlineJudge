@@ -134,7 +134,7 @@ export default {
     //获取习题信息
     this.getExercise()
     //获取习题标签信息
-    this.getFirstPointInfo()
+    // this.getFirstPointInfo()
 
   },
 

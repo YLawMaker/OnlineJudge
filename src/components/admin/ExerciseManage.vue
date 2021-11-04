@@ -258,11 +258,11 @@
             v-model="addexerciseData.exerciseSampleOutput"
           ></el-input>
         </el-form-item>
-        <el-form-item label="习题标签" prop="questionLabel">
+        <el-form-item label="习题标签" prop="questionLabelId">
           <el-cascader
             :options="options"
             collapse-tags
-            v-model="addexerciseData.questionLabel"
+            v-model="addexerciseData.questionLabelId"
             clearable
           ></el-cascader>
         </el-form-item>
@@ -282,15 +282,14 @@
       :close-on-click-modal="false"
     >
       <el-form
-        :model="edittableData"
-        :rules="edittableDataRules"
-        ref="edittableData"
+        :model="showexerciseData"
+        ref="showexerciseData"
       >
         <el-form-item label="题目编号" prop="exerciseId">
           <el-input
             type="textarea"
             :autosize="true"
-            v-model="edittableData.exerciseId"
+            v-model="showexerciseData.exerciseId"
             :disabled="edit"
           ></el-input>
         </el-form-item>
@@ -298,7 +297,7 @@
           <el-input
             type="textarea"
             :autosize="true"
-            v-model="edittableData.exerciseTitle"
+            v-model="showexerciseData.exerciseTitle"
             :disabled="edit"
           ></el-input>
         </el-form-item>
@@ -306,7 +305,7 @@
           <el-input
             type="textarea"
             :autosize="true"
-            v-model="edittableData.exerciseDescription"
+            v-model="showexerciseData.exerciseDescription"
             :disabled="edit"
           ></el-input>
         </el-form-item>
@@ -314,7 +313,7 @@
           <el-input
             type="textarea"
             :autosize="true"
-            v-model="edittableData.exerciseInput"
+            v-model="showexerciseData.exerciseInput"
             :disabled="edit"
           ></el-input>
         </el-form-item>
@@ -322,7 +321,7 @@
           <el-input
             type="textarea"
             :autosize="true"
-            v-model="edittableData.exerciseOutPut"
+            v-model="showexerciseData.exerciseOutPut"
             :disabled="edit"
           ></el-input>
         </el-form-item>
@@ -330,7 +329,7 @@
           <el-input
             type="textarea"
             :autosize="true"
-            v-model="edittableData.exerciseSampleInput"
+            v-model="showexerciseData.exerciseSampleInput"
             :disabled="edit"
           ></el-input>
         </el-form-item>
@@ -338,13 +337,13 @@
           <el-input
             type="textarea"
             :autosize="true"
-            v-model="edittableData.exerciseSampleOutput"
+            v-model="showexerciseData.exerciseSampleOutput"
             :disabled="edit"
           ></el-input>
         </el-form-item>
         <el-form-item prop="chapter" label="所属章节" size="mini">
           <el-input
-            v-model="edittableData.questionLabel.chapter"
+            v-model="showexerciseData.questionLabel.chapter"
             placeholder="所属章节"
             type="textarea"
             :autosize="true"
@@ -354,7 +353,7 @@
         </el-form-item>
         <el-form-item prop="firstKnowledgePoint" label="第一知识点" size="mini">
           <el-input
-            v-model="edittableData.questionLabel.firstKnowledgePoint"
+            v-model="showexerciseData.questionLabel.firstKnowledgePoint"
             placeholder="第一知识点"
             type="textarea"
             :autosize="true"
@@ -368,7 +367,7 @@
           size="mini"
         >
           <el-input
-            v-model="edittableData.questionLabel.secondKnowledgePoint"
+            v-model="showexerciseData.questionLabel.secondKnowledgePoint"
             placeholder="第二知识点"
             type="textarea"
             :autosize="true"
@@ -429,6 +428,23 @@ export default {
         exerciseCorrectTimes: '0',
         exerciseSubmitTimes: '0',
         questionLabelId: '',
+      },
+      showexerciseData:{
+        exerciseId: '',
+        exerciseTitle: '',
+        exerciseDescription: '',
+        exerciseInput: '',
+        exerciseOutPut: '',
+        exerciseSampleInput: '',
+        exerciseSampleOutput: '',
+        exerciseCorrectTimes: '',
+        exerciseSubmitTimes: '',
+        questionLabel: {
+          questionLabelId: '',
+          chapter: '',
+          firstKnowledgePoint: '',
+          secondKnowledgePoint: '',
+        },
       },
       empty: {
         exerciseId: '',
@@ -573,14 +589,14 @@ export default {
     },
     exerciseInfoDialog (row) {
       this.edittableDataVisible_info = true
-      this.edittableData.exerciseId = row.exerciseId
-      this.edittableData.exerciseTitle = row.exerciseTitle
-      this.edittableData.exerciseDescription = row.exerciseDescription
-      this.edittableData.exerciseInput = row.exerciseInput
-      this.edittableData.exerciseOutPut = row.exerciseOutPut
-      this.edittableData.exerciseSampleInput = row.exerciseSampleInput
-      this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
-      this.edittableData.questionLabel = row.questionLabel
+      this.showexerciseData.exerciseId = row.exerciseId
+      this.showexerciseData.exerciseTitle = row.exerciseTitle
+      this.showexerciseData.exerciseDescription = row.exerciseDescription
+      this.showexerciseData.exerciseInput = row.exerciseInput
+      this.showexerciseData.exerciseOutPut = row.exerciseOutPut
+      this.showexerciseData.exerciseSampleInput = row.exerciseSampleInput
+      this.showexerciseData.exerciseSampleOutput = row.exerciseSampleOutput
+      this.showexerciseData.questionLabel = row.questionLabel
       // console.log(row)
     },
     getExercise (pageNum, key) {
@@ -689,15 +705,15 @@ export default {
         if (valid) {
           let params = new URLSearchParams();
           params.append('exerciseTitle', this.addexerciseData.exerciseTitle);
-          params.append('exerciseCorrectTimes', this.addexerciseData.exerciseCorrectTimes);
-          params.append('exerciseSubmitTimes', this.addexerciseData.exerciseSubmitTimes);
+          params.append('exerciseCorrectTimes', 0);
+          params.append('exerciseSubmitTimes', 0);
           params.append('exerciseDescription', this.addexerciseData.exerciseDescription);
           params.append('exerciseInput', this.addexerciseData.exerciseInput);
           params.append('exerciseOutPut', this.addexerciseData.exerciseOutPut);
           params.append('exerciseSampleInput', this.addexerciseData.exerciseSampleInput);
           params.append('exerciseSampleOutput', this.addexerciseData.exerciseSampleOuput);
           params.append('questionLabelId', this.addexerciseData.questionLabelId[2])
-          console.log(this.addexerciseData.questionLabelId)
+
           this.$axios({
             method: 'post',
             headers: {
