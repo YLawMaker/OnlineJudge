@@ -130,7 +130,7 @@ export default {
      //获取习题信息
     this.getExercise()
     //获取习题标签信息
-    this.getFirstPointInfo()
+    // this.getFirstPointInfo()
      
   },
 
@@ -139,6 +139,7 @@ export default {
   methods: {
     //点击标签
     labelClick(secondPoint){
+      //添加或删除对应的标签
       var i=0;
       for(var o=0;o<this.labelChoice.length;o++){
         if(this.labelChoice[o].secondPoint==secondPoint){
@@ -151,6 +152,7 @@ export default {
         label.secondPoint=secondPoint;
         this.labelChoice.push(label);
       }
+      //只有标签有值时才进行查询
       if(this.labelChoice.length==0){
           let params = new URLSearchParams();
           this.$axios({
@@ -170,6 +172,7 @@ export default {
 
             })
       }else{
+        //标签内没有对应的值就全部查询
         let params = new URLSearchParams();
         params.append("labels",JSON.stringify(this.labelChoice))
         this.$axios({
