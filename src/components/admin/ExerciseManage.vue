@@ -189,11 +189,17 @@
             v-model="edittableData.exerciseSampleOutput"
           ></el-input>
         </el-form-item>
-     
+     <el-form-item label="习题标签" prop="questionLabel">
+          <el-cascader
+            :options="options"
+             collapse-tags
+             v-model="edittableData.questionLabel.questionLabelId"
+            clearable></el-cascader>
+        </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="modifyExerciseInfoDialog()"
+        <el-button type="primary" @click="modifyExerciseInfoDialog('edittableData')"
           >确 定</el-button
         >
       </span>
@@ -243,22 +249,20 @@
             v-model="addexerciseData.exerciseSampleInput"
           ></el-input>
         </el-form-item>
-        <el-form-item label="样例输出" prop="exerciseSampleOuput">
+        <el-form-item label="样例输出" prop="exerciseSampleOutput">
           <el-input
             type="textarea"
             :autosize="true"
-            v-model="addexerciseData.exerciseSampleOuput"
+            v-model="addexerciseData.exerciseSampleOutput"
           ></el-input>
         </el-form-item>
-        <el-form-item label="习题标签" prop="questionLabelId">
+        <el-form-item label="习题标签" prop="questionLabel">
           <el-cascader
             :options="options"
              collapse-tags
-             v-model="addexerciseData.questionLabelId"
+             v-model="addexerciseData.questionLabel"
             clearable></el-cascader>
         </el-form-item>
-        
-     
         <el-form-item>
           <el-button type="primary" @click="addExercise('addExercise')"
             >添加</el-button
@@ -356,6 +360,14 @@
 </template>
 
 <script>
+//习题标签的校验
+const validatorQuestionLable = (rule, value, callback) => {
+    if(value.questionLabelId[2]==undefined){
+        new callback(new Error('请输入标签'))
+    }else{
+        callback();
+    }
+};
 export default {
   data () {
     return {
@@ -374,7 +386,7 @@ export default {
         exerciseCorrectTimes: '',
         exerciseSubmitTimes: '',
         questionLabel:{
-          questionLabelId:'',
+          questionLabelId:[],
           chapter:'',
           firstKnowledgePoint:'',
           secondKnowledgePoint:'',
@@ -404,7 +416,35 @@ export default {
         exerciseCorrectTimes: '0',
         exerciseSubmitTimes: '0'
       },
-      edittableDataRules: {},
+      edittableDataRules: {
+         exerciseTitle: [
+          { required: true, message: '请输入题目标题', trigger: 'blur' },
+          { min: 1, max: 30, message: '长度为1~30', trigger: 'blur' }
+        ],
+        exerciseDescription: [
+          { required: true, message: '请输入题目描述', trigger: 'blur' },
+          { min: 1, max: 2000, message: '长度为1~2000', trigger: 'blur' }
+        ],
+        exerciseInput: [
+          { required: true, message: '请输入问题输入', trigger: 'blur' },
+          { min: 1, max: 2000, message: '长度为1~2000', trigger: 'blur' }
+        ],
+        exerciseOutPut: [
+          { required: true, message: '请输入问题输出', trigger: 'blur' },
+          { min: 1, max: 2000, message: '长度为1~2000', trigger: 'blur' }
+        ],
+        exerciseSampleInput: [
+          { required: true, message: '请输入样例输入', trigger: 'blur' },
+          { min: 1, max: 1000, message: '长度为1~1000', trigger: 'blur' }
+        ],
+        exerciseSampleOutput: [
+          { required: true, message: '请输入样例输出', trigger: 'blur' },
+          { min: 1, max: 1000, message: '长度为1~1000', trigger: 'blur' }
+        ],
+        questionLabel:[
+           { required: true, validator: validatorQuestionLable, trigger: 'blur' },
+        ]
+      },
       edittableDataVisible_add: false,
       edittableDataVisible_modify: false,
       edittableDataVisible_info: false,
@@ -432,7 +472,7 @@ export default {
           { required: true, message: '请输入样例输入', trigger: 'blur' },
           { min: 1, max: 1000, message: '长度为1~1000', trigger: 'blur' }
         ],
-        exerciseSampleOuput: [
+        exerciseSampleOutput: [
           { required: true, message: '请输入样例输出', trigger: 'blur' },
           { min: 1, max: 1000, message: '长度为1~1000', trigger: 'blur' }
         ],
@@ -461,7 +501,6 @@ export default {
     data () {
       return this.searchData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
     }
-
   },
   watch: {
     select_word: function () {
@@ -488,12 +527,11 @@ export default {
       this.edittableData.exerciseOutPut = row.exerciseOutPut
       this.edittableData.exerciseSampleInput = row.exerciseSampleInput
       this.edittableData.exerciseSampleOutput = row.exerciseSampleOutput
-      this.edittableData.labels=[]
-      for(var i=0;i<row.labels.length;i++){
-          this.labelChoice=[];
-          this.labelChoice[1]=row.labels[i].labelId;
-          this.edittableData.labels.push(this.labelChoice);
-      }
+      this.edittableData.questionLabel.questionLabelId=[]
+      this.edittableData.questionLabel.questionLabelId.push(undefined)
+      this.edittableData.questionLabel.questionLabelId.push(undefined)
+      this.edittableData.questionLabel.questionLabelId.push(row.questionLabel.questionLabelId)
+      // console.log(this.edittableData)
     },
     handleCurrent (val) {
       this.currentPage = val;
@@ -537,7 +575,9 @@ export default {
         that.select_word = key
       })
     },
-    modifyExerciseInfoDialog () {
+    modifyExerciseInfoDialog (edittableData) {
+      this.$refs[edittableData].validate((valid) => {
+        if (valid) {
       let params = new URLSearchParams();
       params.append('exerciseId', this.edittableData.exerciseId);
       params.append('exerciseTitle', this.edittableData.exerciseTitle);
@@ -546,13 +586,7 @@ export default {
       params.append('exerciseOutPut', this.edittableData.exerciseOutPut);
       params.append('exerciseSampleInput', this.edittableData.exerciseSampleInput);
       params.append('exerciseSampleOutput', this.edittableData.exerciseSampleOutput);
-      for(var i=0;i<this.edittableData.labels.length;i++){
-            var label=new Object;
-            label.labelId=this.edittableData.labels[i][1];
-            console.log(label.labelId)
-            this.labels.push(label);
-          }
-          params.append('labels',JSON.stringify(this.labels))
+      params.append('questionLabelId', this.edittableData.questionLabel.questionLabelId[2]);
       this.$axios({
         method: 'post',
         headers: {
@@ -576,6 +610,10 @@ export default {
         }
       }).catch((res) => {
         console.log(res);
+      })
+      } else {
+          this.$message.error('修改失败，请检查输入的内容后后重试');
+        }
       })
     },
     deleteConfirm (row) {
@@ -634,6 +672,7 @@ export default {
           params.append('exerciseSampleInput', this.addexerciseData.exerciseSampleInput);
           params.append('exerciseSampleOutput', this.addexerciseData.exerciseSampleOuput);
           params.append('questionLabelId',this.addexerciseData.questionLabelId[2])
+          console.log(this.addexerciseData.questionLabelId)
           this.$axios({
             method: 'post',
             headers: {
@@ -659,7 +698,6 @@ export default {
         }
       })
     },
-
     geChapterInfo(){
         let params = new URLSearchParams();
         this.$axios({
@@ -737,7 +775,6 @@ export default {
             this.$message.error('失败3');
           })
       }
-
     
     // Search (index) {
     //   if (index == 1) {
@@ -810,4 +847,3 @@ a {
   margin-top: 10px;
 }
 </style>
-
