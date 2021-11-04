@@ -73,13 +73,6 @@
         :show-overflow-tooltip="true"
       >
       </el-table-column>
-      <el-table-column
-        prop="exerciseOutPut"
-        label="问题输出"
-        width="180"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
 
       <el-table-column prop="exerciseSampleInput" label="样例输入" width="180">
         <template slot-scope="scope">
@@ -281,10 +274,7 @@
       :before-close="handleClose"
       :close-on-click-modal="false"
     >
-      <el-form
-        :model="showexerciseData"
-        ref="showexerciseData"
-      >
+      <el-form :model="showexerciseData" ref="showexerciseData">
         <el-form-item label="题目编号" prop="exerciseId">
           <el-input
             type="textarea"
@@ -429,7 +419,7 @@ export default {
         exerciseSubmitTimes: '0',
         questionLabelId: '',
       },
-      showexerciseData:{
+      showexerciseData: {
         exerciseId: '',
         exerciseTitle: '',
         exerciseDescription: '',
