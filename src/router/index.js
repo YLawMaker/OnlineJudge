@@ -28,22 +28,22 @@ const routes = [
   {
     path: '/examRankList',
     name: 'ExamRankList',
-    component: () => import('@/components/User/ExamRankList.vue')
+    component: () => import('@/components/Exam/ExamRankList.vue')
   },
   {
     path: '/examChoice',
     name: 'ExamChoice',
-    component: () => import('@/components/User/ExamChoice.vue')
+    component: () => import('@/components/Exam/ExamChoice.vue')
   },
   {
     path: '/examCompletion',
     name: 'ExamCompletion',
-    component: () => import('@/components/User/ExamCompletion.vue')
+    component: () => import('@/components/Exam/ExamCompletion.vue')
   },
   {
     path: '/examProgramming',
     name: 'ExamProgramming',
-    component: () => import('@/components/User/ExamProgramming.vue')
+    component: () => import('@/components/Exam/ExamProgramming.vue')
   },
 
 
@@ -57,7 +57,7 @@ const routes = [
       {
         path: '/addExam',
         name: 'AddExam',
-        component: () => import('@/components/TeacherUser/AddExam.vue'),
+        component: () => import('@/components/ExamManage/AddExam.vue'),
       },
       {
         path: '/teacherInfo',
@@ -67,27 +67,27 @@ const routes = [
       {
         path: '/choiceQuestionList',
         name: 'ChoiceQuestionList',
-        component: () => import('@/components/TeacherUser/ChoiceQuestionList.vue')
+        component: () => import('@/components/Question/ChoiceQuestionList.vue')
       },
       {
         path: '/completionQuestionList',
         name: 'CompletionQuestionList',
-        component: () => import('@/components/TeacherUser/CompletionQuestionList.vue')
+        component: () => import('@/components/Question/CompletionQuestionList.vue')
       },
       {
         path: '/testManage',
         name: 'TestManage',
-        component: () => import('@/components/TeacherUser/TestManage.vue')
+        component: () => import('@/components/Test/TestManage.vue')
       },
       {
         path: '/groupInfoManage',
         name: 'GroupInfoManage',
-        component: () => import('@/components/TeacherUser/GroupInfoManage.vue')
+        component: () => import('@/components/Group/GroupInfoManage.vue')
       },
       {
         path: '/groupUserManage',
         name: 'GroupUserManage',
-        component: () => import('@/components/TeacherUser/GroupUserManage.vue')
+        component: () => import('@/components/Group/GroupUserManage.vue')
       },
 
     ]
@@ -101,27 +101,27 @@ const routes = [
       {
         path: '/candidateScore',
         name: 'CandidateScore',
-        component: () => import('@/components/TeacherUser/CandidateScore.vue')
+        component: () => import('@/components/ExamManage/CandidateScore.vue')
       },
       {
         path: '/examChoiceQuestonManage',
         name: 'ExamChoiceQuestonManage',
-        component: () => import('@/components/TeacherUser/ExamChoiceQuestonManage.vue')
+        component: () => import('@/components/ExamManage/ExamChoiceQuestonManage.vue')
       },
       {
         path: '/examCompletionQuestionManage',
         name: 'ExamCompletionQuestionManage',
-        component: () => import('@/components/TeacherUser/ExamCompletionQuestionManage.vue')
+        component: () => import('@/components/ExamManage/ExamCompletionQuestionManage.vue')
       },
       {
         path: '/programmingManage',
         name: 'programmingManage',
-        component: () => import('@/components/TeacherUser/programmingManage.vue')
+        component: () => import('@/components/ExamManage/programmingManage.vue')
       },
       {
         path: '/examAnalyse',
         name: 'ExamAnalyse',
-        component: () => import('@/components/TeacherUser/ExamAnalyse.vue')
+        component: () => import('@/components/ExamManage/ExamAnalyse.vue')
       },
     ]
   },
@@ -131,7 +131,7 @@ const routes = [
   {
     path: '/examDetail',
     name: 'ExamDetail',
-    component: () => import('@/components/User/ExamDetail.vue')
+    component: () => import('@/components/Exam/ExamDetail.vue')
   },
   {
     path: '/OnlineJudge',
@@ -150,7 +150,7 @@ const routes = [
       {
         path: '/exerciseList',
         name: 'ExerciseList',
-        component: () => import('@/components/User/ExerciseList.vue'),
+        component: () => import('@/components/Exercise/ExerciseList.vue'),
       },
       {
         path: '/userMainInterface',
@@ -160,7 +160,7 @@ const routes = [
       {
         path: '/exerciseDetail',
         name: 'ExerciseDetail',
-        component: () => import('@/components/User/ExerciseDetail.vue')
+        component: () => import('@/components/Exercise/ExerciseDetail.vue')
       },
       {
         path: '/userRankList',
@@ -175,17 +175,17 @@ const routes = [
       {
         path: '/exerciseStatistics',
         name: 'ExerciseStatistics',
-        component: () => import('@/components/User/ExerciseStatistics.vue')
+        component: () => import('@/components/Exercise/ExerciseStatistics.vue')
       },
       {
         path: '/submitCode',
         name: 'SubmitCode',
-        component: () => import('@/components/User/SubmitCode.vue')
+        component: () => import('@/components/Exercise/SubmitCode.vue')
       },
       {
         path: '/exerciseRealTimeStatus',
         name: 'ExerciseRealTimeStatus',
-        component: () => import('@/components/User/ExerciseRealTimeStatus.vue')
+        component: () => import('@/components/Exercise/ExerciseRealTimeStatus.vue')
       },
       {
         path: '/faq',
@@ -195,7 +195,7 @@ const routes = [
       {
         path: '/examList',
         name: 'ExamList',
-        component: () => import('../components/User/ExamList.vue')
+        component: () => import('../components/Exam/ExamList.vue')
       }
     ]
   },
@@ -211,35 +211,35 @@ const routes = [
       {
         path: '/components/TeacherManage',
         name: 'TeacherManage',
-        component: () => import('../components/admin/TeacherManage')
+        component: () => import('../components/TeacherUser/TeacherManage')
       },
 
       {
         path: '/components/ExerciseLabelManage',
         name: 'ExerciseLabelManage',
-        component: () => import('@/components/admin/ExerciseLabelManage')
+        component: () => import('@/components/Label/ExerciseLabelManage')
       },
       {
         path: '/components/QuestionLabelManage',
         name: 'QuestionLabelManage',
-        component: () => import('@/components/admin/QuestionLabelManage')
+        component: () => import('@/components/Label/QuestionLabelManage')
       },
 
       {
         path: '/components/ExerciseManage',
         name: 'ExerciseManage',
-        component: () => import('@/components/admin/ExerciseManage')
+        component: () => import('@/components/Exercise/ExerciseManage')
       },
 
       {
         path: '/components/ExerciseAnswerManage',
         name: 'ExerciseAnswerManage',
-        component: () => import('@/components/admin/ExerciseAnswerManage')
+        component: () => import('@/components/Exercise/ExerciseAnswerManage')
       },
       {
         path: '/components/GroupManage',
         name: 'GroupManage',
-        component: () => import('@/components/admin/GroupManage')
+        component: () => import('@/components/Group/GroupManage')
       },
     ]
   },
