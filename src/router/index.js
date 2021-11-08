@@ -196,6 +196,16 @@ const routes = [
         path: '/examList',
         name: 'ExamList',
         component: () => import('../components/Exam/ExamList.vue')
+      },
+      {
+        path: '/testList',
+        name: 'TestList',
+        component: () => import('../components/Test/TestList.vue')
+      },
+      {
+        path: '/testDetail',
+        name: 'TestDetail',
+        component: () => import('../components/Test/TestDetail.vue')
       }
     ]
   },

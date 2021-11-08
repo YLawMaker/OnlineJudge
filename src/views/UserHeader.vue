@@ -29,6 +29,7 @@
           <template slot="title">Online Teaching</template>
           <el-menu-item @click="goToExamList()">Exam List</el-menu-item>
           <el-menu-item @click="goToExamRankList()">Exam Statistics</el-menu-item>
+          <el-menu-item @click="goToTestList()">Test List</el-menu-item>
         </el-submenu>
           <el-submenu index="4" v-if="this.userIdentity=='teacher'">
           <template slot="title">Teacher</template>
@@ -86,8 +87,18 @@ export default {
   },
 
   methods: {
-
-       goToTeacherManager(){
+    //跳转到测试列表界面
+    goToTestList(){
+      if (this.userId == "") {
+          this.$message.error("请先登录用户");
+          this.$router.push('/userLogin')
+      }else{
+         this.$router.push( {path:'/testList'});
+        
+      }
+       
+    },
+    goToTeacherManager(){
        this.$router.push('/addExam');
     },
     //跳转到用户排行榜 保存返回值
@@ -123,7 +134,7 @@ export default {
             this.$message.error("请先登录用户");
             this.$router.push('/userLogin')
           } else if (this.userIdentity == "student") {
-            this.$router.push( {path:'/examList' ,query:{userId:this.userId}});
+            this.$router.push( {path:'/examList' ,query:{"userId":this.userId}});
           } else if (this.userIdentity == "teacher") {
             this.$router.push('/addExam');
           }

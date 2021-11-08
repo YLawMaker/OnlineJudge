@@ -1,0 +1,86 @@
+<template>
+  <div>
+      <div style="text-align:center">
+          {{testInfo.testName}}
+      </div>
+      <div>
+        <el-table :data="exerciseList" style="width: 80%;margin-left:10%" stripe>
+            <el-table-column label=" "> 
+                
+            </el-table-column>
+            <el-table-column label="问题编号"> 
+                <template slot-scope="scope">
+                    {{"第"+(scope.$index+1)+"题"}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="exerciseTitle" label="问题标题"></el-table-column>
+            <el-table-column label="正确率" align="center">
+                <template slot-scope="scope">
+                {{
+                    getAcceptRate(
+                    scope.row.exerciseCorrectTimes,
+                    scope.row.exerciseSubmitTimes
+                    )
+                }}
+                </template>
+            </el-table-column>
+        </el-table>
+      </div>
+  </div>
+</template>
+
+<script>
+export default {
+    data(){
+        return{
+            testInfo:{
+                testName:'',
+                testId:'',
+            },
+            //这里用的是习题的记录来保存提交成功和次数
+            exerciseList:[],
+        }
+    },
+    mounted: function(){
+        this.testInfo.testName=this.$route.query.testName;
+        this.testInfo.testId=this.$route.query.testId;
+        this.getTestQuestionList();
+    },
+    methods:{
+        //获得习题比率
+        getAcceptRate (exerciseCorrectTimes, exerciseSubmitTimes) {
+            if (!(exerciseCorrectTimes / exerciseSubmitTimes == exerciseCorrectTimes / exerciseSubmitTimes)) {
+                var acceptRate = 0 + "%" + "(" + exerciseCorrectTimes + "/" + exerciseSubmitTimes + ")";
+            }
+            else {
+                var acceptRate = ((exerciseCorrectTimes / exerciseSubmitTimes) * 100).toFixed(2) + "%" + "(" + exerciseCorrectTimes + "/" + exerciseSubmitTimes + ")";
+            }
+            return acceptRate;
+        },
+        //获取习题问题列表
+        getTestQuestionList(){
+            let params = new URLSearchParams();
+            params.append("testId",this.testInfo.testId);
+            this.$axios({
+                method: 'post',
+                headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+                },
+                url: '/testProgramming/queryTestProgrammingQuestionByTestId',
+                data: params
+            })
+            .then((res) => {
+                this.exerciseList=res.data;
+                console.log(res.data);
+            })
+            .catch((err) => {
+                this.$message.error('获取测试列表失败');
+            })
+        },
+    }
+}
+</script>
+
+<style>
+
+</style>
