@@ -5,8 +5,12 @@
       </div>
       <div>
         <el-table :data="exerciseList" style="width: 80%;margin-left:10%" stripe>
-            <el-table-column label=" "> 
-                
+            <el-table-column label=" " width="30%"> 
+                <template slot-scope="scope">
+                    <div v-if="scope.row.exerciseDescription==='success'">
+                        <i class="el-icon-check"></i>
+                    </div>
+                </template>
             </el-table-column>
             <el-table-column label="问题编号"> 
                 <template slot-scope="scope">
@@ -26,6 +30,12 @@
             </el-table-column>
         </el-table>
       </div>
+
+      <div>
+          <button @click="goToTestStandings()">
+              standings
+          </button>
+      </div>
   </div>
 </template>
 
@@ -37,7 +47,7 @@ export default {
                 testName:'',
                 testId:'',
             },
-            //这里用的是习题的记录来保存提交成功和次数
+            //这里用的是习题的记录来保存提交成功和次数  用习题详情保存了是否成功
             exerciseList:[],
         }
     },
@@ -47,6 +57,10 @@ export default {
         this.getTestQuestionList();
     },
     methods:{
+        //跳转到习题名次表界面
+        goToTestStandings(){
+            this.$router.push({path:'/testStandings',query:{'testId':this.testInfo.testId}})
+        },
         //获得习题比率
         getAcceptRate (exerciseCorrectTimes, exerciseSubmitTimes) {
             if (!(exerciseCorrectTimes / exerciseSubmitTimes == exerciseCorrectTimes / exerciseSubmitTimes)) {
@@ -71,7 +85,6 @@ export default {
             })
             .then((res) => {
                 this.exerciseList=res.data;
-                console.log(res.data);
             })
             .catch((err) => {
                 this.$message.error('获取测试列表失败');
