@@ -14,6 +14,7 @@
             </el-table-column>
             <el-table-column label="问题编号"> 
                 <template slot-scope="scope">
+                    <div></div>
                     {{"第"+(scope.$index+1)+"题"}}
                 </template>
             </el-table-column>

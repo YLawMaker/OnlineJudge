@@ -1,34 +1,30 @@
 <template>
   <div>
-      <el-table :data="testStandingsInfo" style="width: 100%" stripe>
-        <el-table-column label="Rank"> 
+      <el-table :data="testStandingsInfo" style="width: 100%"  :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}" stripe>
+            <el-table-column label="Rank"> 
                 <template slot-scope="scope">
                     {{(scope.$index+1)}}
                 </template>
             </el-table-column>
-        <el-table-column prop="userName" label="用户姓名" ></el-table-column>
+            <el-table-column prop="userName" label="用户姓名" ></el-table-column>
           <div v-if="testStandingsInfo.length>0">
               <div v-for="(item,index) in testStandingsInfo[0].testProgrammingQuestionResultStateTools" :key="index" >
                   <el-table-column  :label="'问题'+(index+1)" >
                       <template slot-scope="scope">
-                          <div v-if="scope.row.testProgrammingQuestionResultStateTools[index].testProgrammingQuestionResult==='success'">
-                              成功
+                          <div v-if="scope.row.testProgrammingQuestionResultStateTools[index].testProgrammingQuestionResult==='success'" style="background:#a9f5af">
+                              success
                           </div>
-                          <div v-else-if="scope.row.testProgrammingQuestionResultStateTools[index].testProgrammingQuestionResult==='error'">
-                              失败
+                          <div v-else-if="scope.row.testProgrammingQuestionResultStateTools[index].testProgrammingQuestionResult==='error'" style="background:#D01F3C;color:white">
+                              error
                           </div>
-                          <div v-else>
-                              没做
+                          <div v-else >
+                              
                           </div>
                       </template>
                   </el-table-column>
               </div>
           </div>
-          
-        
-        
-    </el-table>
-    
+        </el-table>
   </div>
 </template>
 

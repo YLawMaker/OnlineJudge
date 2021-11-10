@@ -31,7 +31,6 @@
     <div style="text-align: center">
       <el-button @click="dialogUserPwd=true">修改密码</el-button>
       <p v-show="dialogUserPwd" style="position: center">
-
           <el-dialog title="修改密码" :visible.sync="dialogUserPwd">
             <el-form 
             ref="UserPwd"
@@ -144,8 +143,9 @@ export default {
   },
   mounted: function () {
     this.user.userId = this.$route.query.userId;
-
+    //获取用户信息
     this.getUserInfo();
+
     this.getUserExerciseInfo();
   },
   methods: {
