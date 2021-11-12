@@ -12,10 +12,12 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="问题编号"> 
+            <el-table-column label="问题编号">
                 <template slot-scope="scope">
-                    <div></div>
-                    {{"第"+(scope.$index+1)+"题"}}
+                    <div @click="getoTestExerciseDetail(scope.row.exerciseId)" style="color:blue;cursor:pointer">
+                        {{"第"+(scope.$index+1)+"题"}}
+                    </div>
+                    
                 </template>
             </el-table-column>
             <el-table-column prop="exerciseTitle" label="问题标题"></el-table-column>
@@ -58,7 +60,11 @@ export default {
         this.getTestQuestionList();
     },
     methods:{
-        //跳转到习题名次表界面
+        //跳转到测试习题具体信息界面
+        getoTestExerciseDetail(testProgrammingQuestionId){
+            this.$router.push({path:'/testExerciseDetail',query:{'testProgrammingQuestionId':testProgrammingQuestionId}})
+        },
+        //跳转到测试名次表界面
         goToTestStandings(){
             this.$router.push({path:'/testStandings',query:{'testId':this.testInfo.testId}})
         },

@@ -211,7 +211,17 @@ const routes = [
         path: '/testStandings',
         name: 'TestStandings',
         component: () => import('../components/Test/TestStandings.vue')
-      }
+      },
+      {
+        path: '/testExerciseDetail',
+        name: 'TestExerciseDetail',
+        component: () => import('../components/Test/TestExerciseDetail.vue')
+      },
+      {
+        path: '/testCodeSubmit',
+        name: 'TestCodeSubmit',
+        component: () => import('../components/Test/TestCodeSubmit.vue')
+      },
     ]
   },
 

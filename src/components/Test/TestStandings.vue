@@ -1,20 +1,41 @@
 <template>
   <div>
       <el-table :data="testStandingsInfo" style="width: 100%"  :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}" stripe>
-            <el-table-column label="Rank"> 
+          
+     
+              
+            <el-table-column label="Rank" fixed='left'> 
                 <template slot-scope="scope">
                     {{(scope.$index+1)}}
                 </template>
+            </el-table-column>  
+            <el-table-column  label="用户姓名">
+                <template slot-scope="scope">
+                        <router-link style="color:blue"
+                        :to="{  
+                                path: 'userInfo',     
+                                query: {   
+                                    userId:scope.row.userId, 
+                                    },  
+                                }" 
+                            >
+                            {{scope.row.userName}}
+                            </router-link>
+                    </template>
             </el-table-column>
-            <el-table-column prop="userName" label="用户姓名" ></el-table-column>
           <div v-if="testStandingsInfo.length>0">
               <div v-for="(item,index) in testStandingsInfo[0].testProgrammingQuestionResultStateTools" :key="index" >
-                  <el-table-column  :label="'问题'+(index+1)" >
+                  <el-table-column   scoped-slot >
+                      <template slot="header">
+                            <div @click="goToTestExerciseDetail(index)" style="color:blue;cursor:pointer">
+                                {{('第'+(index+1)+'题')}}
+                            </div>
+                        </template>
                       <template slot-scope="scope">
-                          <div v-if="scope.row.testProgrammingQuestionResultStateTools[index].testProgrammingQuestionResult==='success'" style="background:#a9f5af">
+                          <div v-if="scope.row.testProgrammingQuestionResultStateTools[index].testProgrammingQuestionResult==='success'" style="color:green">
                               success
                           </div>
-                          <div v-else-if="scope.row.testProgrammingQuestionResultStateTools[index].testProgrammingQuestionResult==='error'" style="background:#D01F3C;color:white">
+                          <div v-else-if="scope.row.testProgrammingQuestionResultStateTools[index].testProgrammingQuestionResult==='error'" style="color:#D01F3C">
                               error
                           </div>
                           <div v-else >
@@ -24,6 +45,7 @@
                   </el-table-column>
               </div>
           </div>
+          
         </el-table>
   </div>
 </template>
@@ -37,10 +59,17 @@ export default {
     }
   },
   mounted: function(){
+    //获取测试编号
     this.testId=this.$route.query.testId;
+    //获取测试名称排行
     this.getTestStandings();
   },
   methods:{
+     
+      //前往测试习题详情界面
+      goToTestExerciseDetail(index){
+          this.$router.push({path:'/testExerciseDetail',query:{'testProgrammingQuestionId':this.testStandingsInfo[0].testProgrammingQuestionResultStateTools[index].testProgrammingQuestionId}})
+      },
       //获取测试名称排行
       getTestStandings(){
           let params = new URLSearchParams();
@@ -55,7 +84,6 @@ export default {
           })
           .then((res) => {
               this.testStandingsInfo=res.data;
-              console.log(this.testStandingsInfo)
           })
           .catch((err) => {
               this.$message.error('获取测试名次排行');
