@@ -7,16 +7,25 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "angular-expressions": "^1.1.4",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "docxtemplater": "^3.26.3",
+    "docxtemplater-image-module-free": "^1.1.1",
     "echarts": "^5.2.0",
     "element-ui": "^2.15.6",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.7.1",
+    "jszip-utils": "^0.1.0",
     "less-loader": "^10.0.1",
+    "pizzip": "^3.1.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.3",
+    "@types/pizzip": "^3.0.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",

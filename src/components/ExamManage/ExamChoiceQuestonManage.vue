@@ -629,15 +629,7 @@ export default {
         data: params
       }).then(function (resp) {
         that.choiceQuestionInExam = resp.data;
-        // console.log(resp.data);
-        // console.log(that.choiceQuestionList);
-        // console.log(that.choiceQuestionInExam);
 
-        let a = [], b = [], result1 = [], result2 = [];
-        a = that.choiceQuestionList;
-        b = that.choiceQuestionInExam;
-        // console.log(a);
-        // console.log(b);
         //可以优化，时间复杂度过高
         for (var i = 0; i < that.choiceQuestionList.length; i++) {
           var questionstatus = {};
@@ -654,22 +646,7 @@ export default {
             }
           }
         }
-        // a.map(item => {
-        //   let map = new Map();
-        //   for (let [k, v] of Object.entries(item)) {
-        //     map.set(k, v);
-        //   }
-        //   result1.push(map)
-        // })
-        // b.map(item => {
-        //   let map = new Map();
-        //   for (let [k, v] of Object.entries(item)) {
-        //     map.set(k, v);
-        //   }
-        //   result2.push(map)
-        // })
-        // console.log(result1);
-        // console.log(result2);
+
       })
     }
   }
