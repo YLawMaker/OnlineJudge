@@ -5,7 +5,7 @@
       </el-table-column>
        <el-table-column label="习题编号" width="100px">
         <template slot-scope="scope">
-              {{fangfa(scope.row.testProgrammingQuestion.testProgrammingQuestionId)}}
+              {{changeShowQuestion(scope.row.testProgrammingQuestion.testProgrammingQuestionId)}}
         </template>
       </el-table-column>
       <el-table-column prop="testProgrammingSubmitTime" label="提交时间">
@@ -78,14 +78,13 @@ export default {
 
     },
     methods:{
-        fangfa(testProgrammingQuestionId){
+        //将测试编程题变成第几题
+        changeShowQuestion(testProgrammingQuestionId){
             for(var i=0;i<this.testProgrammingList.length;i++){
-             
                 if(this.testProgrammingList[i].exerciseId==testProgrammingQuestionId){
                     return '第'+(i+1)+'题';
                 }
             }
-            
         },
         //获取测试编程题实时状态
         getTestProgrammingRealTimeStatusInfo () {
