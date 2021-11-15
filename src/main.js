@@ -6,6 +6,10 @@ import axios from 'axios';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import * as echarts from 'echarts'
+// import Docxtemplater from 'docxtemplater'
+// import PizZip from 'pizzip'
+// import JSZipUtils from 'jszip-utils'
+// import { saveAs } from 'file-saver'
 axios.defaults.baseURL = 'http://localhost:8888'
 Vue.config.productionTip = false
 //前端跨域
