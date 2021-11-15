@@ -85,7 +85,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="代码长度">
+      <el-table-column label="代码">
         <template slot-scope="scope">
           <router-link
             v-if="scope.row.user.userId === userId"

@@ -222,6 +222,11 @@ const routes = [
         name: 'TestCodeSubmit',
         component: () => import('../components/Test/TestCodeSubmit.vue')
       },
+      {
+        path: '/testProgrammingRealTimeStatus',
+        name: 'TestProgrammingRealTimeStatus',
+        component: () => import('../components/Test/TestProgrammingRealTimeStatus.vue')
+      },
     ]
   },
 

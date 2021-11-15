@@ -111,7 +111,7 @@ export default {
                 headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
                 },
-                url: '/testProgramming/queryTestProgrammingQuestionByTestId',
+                url: '/testProgramming/queryTestProgrammingQuestionAndIsSuccess',
                 data: params
             })
             .then((res) => {
