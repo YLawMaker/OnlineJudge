@@ -14,7 +14,7 @@
         </el-table-column>
         
      </el-table>
-     <div id="myChart" :style="{width: '500px', height: '300px'}"></div>
+     <div id="myChart" :style="{width: '600px', height: '300px'}"></div>
   </div>
 </template>
 
@@ -44,10 +44,13 @@ export default {
     },
     mounted: function () {
       this.exercise.exerciseId = this.$route.query.exerciseId;
+      //获取习题统计信息
       this.getExerciseStatisticsInfo();
+      //获取习题结果信息
       this.getResultInfo();
     },
     methods:{
+        //画图表
         drawLine(){
         // 基于准备好的dom，初始化echarts实例
         let myChart = this.$echarts.init(document.getElementById('myChart'))
@@ -61,7 +64,15 @@ export default {
                     case "accept":
                         itemStyle.color='#00ff00';
                         obj.itemStyle=itemStyle;
-                    break;
+                        break;
+                    case "wrong answer":
+                        itemStyle.color='red';
+                        obj.itemStyle=itemStyle;
+                        break;
+                    case "loding":
+                        itemStyle.color='blue';
+                        obj.itemStyle=itemStyle;
+                        break;
                 };
                 resultInfo[i]=obj;
             }
@@ -74,10 +85,12 @@ export default {
                 }
                 ]
             }
+            console.log(resultInfo)
             myChart.setOption(option);
 
 
     },
+    //获取习题统计信息
     getExerciseStatisticsInfo(){
         let params=new URLSearchParams();
         params.append('exerciseId',this.exercise.exerciseId);
@@ -96,6 +109,7 @@ export default {
             this.$message.error('查询习题统计信息失败');
         })
     },
+    //获取习题结果信息
     getResultInfo(){
         let params=new URLSearchParams();
         params.append('exerciseId',this.exercise.exerciseId);
@@ -109,6 +123,7 @@ export default {
         })
         .then((res)=> {
                 this.exerciseResultInfo=res.data;
+                console.log(this.exerciseResultInfo)
                 this.drawLine();
         })
         .catch((err)=> {

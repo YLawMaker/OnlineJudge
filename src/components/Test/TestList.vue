@@ -95,7 +95,7 @@ export default {
                 })
                 .then((res) => {
                     if(res.data==true){
-                        this.$router.push({path:'/testDetail',query:{"testName":testInfo.testName,"testId":testInfo.testId}})
+                        this.$router.push({path:'/testDetail',query:{"testName":testInfo.testName,"testId":testInfo.testId,"testStatus":testInfo.testStatus}})
                     }else{
                         this.$message.warning("不在测试名单中")
                     }

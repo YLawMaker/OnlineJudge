@@ -95,7 +95,6 @@ export default {
             })
             .then((res)=> {
                   this.exercise=res.data;
-                  console.log(this.exercise);
             })
             .catch((err)=> {
                 this.$message.error('习题详情读取失败');

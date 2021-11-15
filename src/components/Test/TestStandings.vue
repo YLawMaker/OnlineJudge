@@ -9,7 +9,7 @@
                     {{(scope.$index+1)}}
                 </template>
             </el-table-column>  
-            <el-table-column  label="用户姓名">
+            <el-table-column  label="用户姓名" fixed='left'>
                 <template slot-scope="scope">
                         <router-link style="color:blue"
                         :to="{  

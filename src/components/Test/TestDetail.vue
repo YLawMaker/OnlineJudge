@@ -49,6 +49,7 @@ export default {
             testInfo:{
                 testName:'',
                 testId:'',
+                testStatus:'',
             },
             //这里用的是习题的记录来保存提交成功和次数  用习题详情保存了是否成功
             exerciseList:[],
@@ -57,12 +58,35 @@ export default {
     mounted: function(){
         this.testInfo.testName=this.$route.query.testName;
         this.testInfo.testId=this.$route.query.testId;
+        this.testInfo.testStatus=this.$route.query.testStatus;
         this.getTestQuestionList();
     },
     methods:{
         //跳转到测试习题具体信息界面
         getoTestExerciseDetail(testProgrammingQuestionId){
-            this.$router.push({path:'/testExerciseDetail',query:{'testProgrammingQuestionId':testProgrammingQuestionId}})
+            if(this.testInfo.testStatus=='Running'){
+                this.$router.push({path:'/testExerciseDetail',query:{'testProgrammingQuestionId':testProgrammingQuestionId}})
+            }else{
+                //获取习题编号并跳转到习题详情界面
+                let params=new URLSearchParams();
+                params.append('testProgrammingQuestionId',testProgrammingQuestionId);
+                this.$axios({
+                    method: 'post',
+                    headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                    url: '/testProgramming/queryExerciseByTestProgrammingQuestionId',
+                    data: params
+                })
+                .then((res)=> {
+                     this.$router.push({path:'/exerciseDetail',query:{'exerciseId':res.data.exerciseId}})
+                })
+                .catch((err)=> {
+                    this.$message.error('测试编程题读取失败');
+                })
+        
+            }
+            
         },
         //跳转到测试名次表界面
         goToTestStandings(){

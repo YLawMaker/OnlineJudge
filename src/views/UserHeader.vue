@@ -129,6 +129,7 @@ export default {
     //跳转到考试列表界面
     
     goToExamList () {
+      
         if(this.$route.path!="/examList"){
           if (this.userId == "") {
             this.$message.error("请先登录用户");
@@ -198,9 +199,11 @@ export default {
         .then((res) => {
           alert("退出成功");
           this.userName = '';
+          this.userIdentity='';
+          this.userId = '';
         })
         .catch((err) => {
-          this.$message.error('删除选择题错误');
+          this.$message.error('退出登录失败');
 
         })
     },
