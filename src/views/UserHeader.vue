@@ -178,7 +178,7 @@ export default {
           }
         })
         .catch((err) => {
-          this.$message.error('查询学生信息失败');
+          this.$message.error('查询用户信息失败');
 
         })
     },

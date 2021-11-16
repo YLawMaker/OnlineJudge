@@ -17,20 +17,23 @@ export default {
     data(){
         return{
             code:'',
+            testId:'',
             testProgrammingQuestionId:'',
-            exerciseHistoryId:'',
+            testProgrammingQuestionHistoryId:'',
         }    
     },
     mounted: function () {
       this.testProgrammingQuestionId = this.$route.query.testProgrammingQuestionId;
-      this.exerciseHistoryId = this.$route.query.exerciseHistoryId;
-    //   if(this.exerciseHistoryId==null){
+      this.testProgrammingQuestionHistoryId = this.$route.query.testProgrammingQuestionHistoryId;
+      //获取testId
+      this.getTestId();
+      if(this.testProgrammingQuestionHistoryId==null){
 
-    //   }
-    //   //有传值过来
-    //   else{
-    //         this.getCodeInfo();
-    //   }
+      }
+      //有传值过来
+      else{
+            this.getCodeInfo();
+      }
       
     },
     methods:{
@@ -60,7 +63,9 @@ export default {
                     })
                     .then((res)=> {
                         if(res.data==true){
+                            
                             this.$message.success('提交成功');
+                            this.$router.push({path:'/testProgrammingRealTimeStatus',query:{"testId":this.testId}})
                         }
                     })
                     .catch((err)=> {
@@ -71,21 +76,41 @@ export default {
         //获得提交的代码信息
         getCodeInfo(){
             let params=new URLSearchParams();
-            params.append('exerciseHistoryId',this.exerciseHistoryId);
+            params.append('testProgrammingQuestionHistoryId',this.testProgrammingQuestionHistoryId);
         
             this.$axios({
                 method: 'post',
                 headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                             },
-                url: '/exerciseHistory/queryCodeInfoByExerciseHistoryId',
+                url: '/testProgrammingHistory/queryTestProgrammingHistoryByTestProgrammingQuestionHistoryId',
                 data: params
             })
             .then((res)=> {
-                this.code=res.data;
+                this.code=res.data.testProgrammingCode;
             })
             .catch((err)=> {
                 this.$message.error('查看代码失败');
+            })
+        },
+        //获取testId
+        getTestId(){
+            let params=new URLSearchParams();
+            params.append('testProgrammingQuestionId',this.testProgrammingQuestionId);
+        
+            this.$axios({
+                method: 'post',
+                headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                url: '/testProgramming/queryTestIdByTestProgrammingQuestionId',
+                data: params
+            })
+            .then((res)=> {
+                this.testId=res.data;
+            })
+            .catch((err)=> {
+                this.$message.error('获取testId失败');
             })
         }
                         
