@@ -1,11 +1,62 @@
 <template>
     <div>
+      
+    
+    <span class="span-label">问题名称</span>
+    <el-select
+      v-model="select_testProgrammingQuestionName"
+      placeholder="请选择题目"
+      size="mini"
+      class="handle-select"
+      style="margin-left: 1%"
+    >
+      <el-option
+        v-for="(item,index) in testProgrammingQuestionNameOptions"
+        :key="index"
+        :label="item.testProgrammingQuestionLabel"
+        :value="item.testProgrammingQuestionId"
+      >
+      </el-option>
+    </el-select>
+    <span class="span-label">提交作者姓名</span>
+    <el-input
+      style="margin-left: 1%"
+      v-model="select_userName"
+      size="mini"
+      placeholder="提交作者姓名"
+      class="handle-input"
+      clearable=""
+    >
+    </el-input>
+    <span class="span-label">结果</span>
+    <el-select
+      v-model="select_status"
+      placeholder="请选择"
+      size="mini"
+      class="handle-select"
+      style="margin-left: 1%"
+    >
+      <el-option
+        v-for="item in statusOptions"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      >
+      </el-option>
+    </el-select>
+    <el-button
+      type="primary"
+      size="mini"
+      @click="searchTestProgrammingRealTimeInfo()"
+      style="margin-left: 2%"
+      >查询</el-button
+    >
     <el-table :data="data" style="width: 90%" class="tableclass"  :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}" stripe>
       <el-table-column prop="testProgrammingQuestionHistoryId" label="测试编程记录编号" width="200px">
       </el-table-column>
        <el-table-column label="习题编号" width="100px">
         <template slot-scope="scope">
-          <div @click="goToTestDetail()" style="color:blue;cursor:pointer">
+          <div @click="goToTestExerciseDetail(scope.row.testProgrammingQuestion.testProgrammingQuestionId)" style="color:blue;cursor:pointer">
               {{changeShowQuestion(scope.row.testProgrammingQuestion.testProgrammingQuestionId)}}
           </div>
               
@@ -25,6 +76,7 @@
               query: {
                   testProgrammingQuestionId: scope.row.testProgrammingQuestion.testProgrammingQuestionId,
                   testProgrammingQuestionHistoryId: scope.row.testProgrammingQuestionHistoryId,
+                  testStatus:testStatus
                 },
             }"
           >
@@ -82,10 +134,36 @@ export default {
             },
             testId:'',
             userId:'',
+            testStatus:'',
             testProgrammingRealTimeStatusList:[],
             testProgrammingList:[],
             pageSize: 4,
             currentPage: 1,
+            select_testProgrammingQuestionName:'',
+            select_userName:'',
+            select_status:'',
+            testProgrammingQuestionNameOptions:[],
+            statusOptions: [
+              {
+                value: 'All',
+                label: 'All'
+              },
+              {
+                value: 'accept',
+                label: 'accept'
+              }, {
+                value: 'wrong answer',
+                label: 'wrong answer'
+              },
+              {
+                value: 'compile error',
+                label: 'compile error'
+              },
+              {
+                value: 'time out',
+                label: 'time out'
+              },
+            ],
         }
     },
     computed: {
@@ -95,40 +173,42 @@ export default {
     },
     mounted: function(){
         this.testId=this.$route.query.testId;
+        this.testStatus=this.$route.query.testStatus;
         //获取测试编程题实时状态
         this.getTestProgrammingRealTimeStatusInfo();
         //获取全部的测试编程题
         this.getTestProgrammingInfo();
         //获取用户信息
         this.getUserInfo();
-
     },
     methods:{
-        //跳转到测试详情界面
-        goToTestDetail(){
-            let params = new URLSearchParams();
-            params.append("testId",this.testId);
-            this.$axios({
-                method: 'post',
-                headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-                },
-                url: '/test/queryTestInfoByTestId',
-                data: params
-            })
-            .then((res) => {
-                this.$router.push({path:'/testDetail',query:{"testName":res.data.testName,"testId":res.data.testId,"testStatus":res.data.testStatus}})
-            })
-            .catch((err) => {
-                this.$message.error('获取测试信息失败');
-
-            })
-          
+        //跳转到测试编程题详情界面
+        goToTestExerciseDetail(testProgrammingQuestionId){
+            if(this.testStatus=='Running'){
+                this.$router.push({path:'/testExerciseDetail',query:{"testProgrammingQuestionId":testProgrammingQuestionId}})
+            }else{
+                //获取习题编号并跳转到习题详情界面
+                let params=new URLSearchParams();
+                params.append('testProgrammingQuestionId',testProgrammingQuestionId);
+                this.$axios({
+                    method: 'post',
+                    headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                    url: '/testProgramming/queryExerciseByTestProgrammingQuestionId',
+                    data: params
+                })
+                .then((res)=> {
+                     this.$router.push({path:'/exerciseDetail',query:{'exerciseId':res.data.exerciseId}})
+                })
+                .catch((err)=> {
+                    this.$message.error('测试编程题读取失败');
+                })
+            }
         },
         //页面变换
         handleCurrent (val) {
           this.currentPage = val;
-          this.setContextData("exerciseRealTimeStatusCurrentPage", val);
         },
         //将测试编程题变成第几题
         changeShowQuestion(testProgrammingQuestionId){
@@ -137,6 +217,10 @@ export default {
                     return '第'+(i+1)+'题';
                 }
             }
+        },
+        //根据输入信息获取测试编程题实时状态
+        searchTestProgrammingRealTimeInfo(){
+          console.log(this.select_testProgrammingQuestionName);
         },
         //获取测试编程题实时状态
         getTestProgrammingRealTimeStatusInfo () {
@@ -159,7 +243,7 @@ export default {
             })
         },
 
-        //获取全部的测试编程题
+        //获取全部的测试编程题 并且给测试问题下拉框赋值
         getTestProgrammingInfo () {
             let params = new URLSearchParams();
             params.append("testId",this.testId);
@@ -173,13 +257,23 @@ export default {
             })
             .then((res) => {
                 this.testProgrammingList=res.data;
+                this.testProgrammingQuestionNameOptions=[];
+                for(var i=0;i<this.testProgrammingList.length;i++){
+                  var testProgrammingQuestion=new Object;
+                  testProgrammingQuestion.testProgrammingQuestionId=this.testProgrammingList[i].exerciseId;
+                  testProgrammingQuestion.testProgrammingQuestionLabel='第'+(i+1)+'题';
+                  this.testProgrammingQuestionNameOptions.push(testProgrammingQuestion);
+                }
+                var testProgrammingQuestion=new Object;
+                testProgrammingQuestion.testProgrammingQuestionId='全部题目';
+                testProgrammingQuestion.testProgrammingQuestionLabel='全部题目';
+                this.testProgrammingQuestionNameOptions.unshift(testProgrammingQuestion);
             })
             .catch((err) => {
                 this.$message.error('获取全部的测试编程题');
 
             })
         },
-
         //获取用户信息
         getUserInfo () {
           let params = new URLSearchParams();
@@ -212,5 +306,12 @@ export default {
 .pagination {
   display: flex;
   justify-content: center;
+}
+.handle-input {
+  width: 200px;
+  display: inline-block;
+}
+.span-label {
+  margin-left: 2%;
 }
 </style>

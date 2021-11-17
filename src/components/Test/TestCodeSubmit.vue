@@ -24,7 +24,9 @@ export default {
     },
     mounted: function () {
       this.testProgrammingQuestionId = this.$route.query.testProgrammingQuestionId;
+      //测试编程题历史编号和测试状态是从测试实时状态传过来的
       this.testProgrammingQuestionHistoryId = this.$route.query.testProgrammingQuestionHistoryId;
+      this.testStatus = this.$route.query.testStatus;
       //获取testId
       this.getTestId();
       if(this.testProgrammingQuestionHistoryId==null){
@@ -39,39 +41,45 @@ export default {
     methods:{
         //提交代码
         submitCode(){
-                if(this.code.trim().length<20){
-                    this.$message.warning('代码长度过短');
+                if(this.testStatus=='Running'){
+                    if(this.code.trim().length<20){
+                        this.$message.warning('代码长度过短');
+                    }
+                    else{
+                        let yy = new Date().getFullYear();
+                    　　let mm = new Date().getMonth()+1;
+                    　　let dd = new Date().getDate();
+                    　　let hh = new Date().getHours()<10?'0'+new Date().getHours():new Date().getHours();
+                    　　let mf = new Date().getMinutes()<10 ? '0'+new Date().getMinutes() : new Date().getMinutes();
+                    　　var time = yy+'-'+mm+'-'+dd+' '+hh+':'+mf;
+                        let params=new URLSearchParams();
+                        params.append('testProgrammingQuestionId',this.testProgrammingQuestionId);
+                        params.append('testProgrammingCode',this.code);
+                        params.append('testProgrammingSubmitTime',time);
+                        this.$axios({
+                            method: 'post',
+                            headers: {
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                        },
+                            url: '/testProgrammingHistory/addTestProgrammingQuestionHistoryInfo',
+                            data: params
+                        })
+                        .then((res)=> {
+                            if(res.data==true){
+                                
+                                this.$message.success('提交成功');
+                                this.$router.push({path:'/testProgrammingRealTimeStatus',query:{"testId":this.testId}})
+                            }
+                        })
+                        .catch((err)=> {
+                            this.$message.error('提交失败');
+                        })
+                    }
+                }else{
+                    //测试不在运行中，不能往测试中提交代码
+                    this.$message.warning('测试已结束,不能提交代码');
                 }
-                else{
-                    let yy = new Date().getFullYear();
-                　　let mm = new Date().getMonth()+1;
-                　　let dd = new Date().getDate();
-                　　let hh = new Date().getHours()<10?'0'+new Date().getHours():new Date().getHours();
-                　　let mf = new Date().getMinutes()<10 ? '0'+new Date().getMinutes() : new Date().getMinutes();
-                　　var time = yy+'-'+mm+'-'+dd+' '+hh+':'+mf;
-                    let params=new URLSearchParams();
-                    params.append('testProgrammingQuestionId',this.testProgrammingQuestionId);
-                    params.append('testProgrammingCode',this.code);
-                    params.append('testProgrammingSubmitTime',time);
-                    this.$axios({
-                        method: 'post',
-                        headers: {
-                                    "Content-Type": "application/x-www-form-urlencoded"
-                                    },
-                        url: '/testProgrammingHistory/addTestProgrammingQuestionHistoryInfo',
-                        data: params
-                    })
-                    .then((res)=> {
-                        if(res.data==true){
-                            
-                            this.$message.success('提交成功');
-                            this.$router.push({path:'/testProgrammingRealTimeStatus',query:{"testId":this.testId}})
-                        }
-                    })
-                    .catch((err)=> {
-                        this.$message.error('提交失败');
-                    })
-                }
+                
         },
         //获得提交的代码信息
         getCodeInfo(){

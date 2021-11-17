@@ -55,12 +55,14 @@ export default {
   data(){
     return{
       testId:'',
+      testStatus:'',
       testStandingsInfo:[],
     }
   },
   mounted: function(){
-    //获取测试编号
+    //获取测试编号 和考试状态
     this.testId=this.$route.query.testId;
+    this.testStatus=this.$route.query.testStatus;
     //获取测试名称排行
     this.getTestStandings();
   },
@@ -68,7 +70,27 @@ export default {
      
       //前往测试习题详情界面
       goToTestExerciseDetail(index){
-          this.$router.push({path:'/testExerciseDetail',query:{'testProgrammingQuestionId':this.testStandingsInfo[0].testProgrammingQuestionResultStateTools[index].testProgrammingQuestionId}})
+            if(this.testStatus=='Running'){
+                this.$router.push({path:'/testExerciseDetail',query:{'testProgrammingQuestionId':this.testStandingsInfo[0].testProgrammingQuestionResultStateTools[index].testProgrammingQuestionId}})
+            }else{
+                //获取习题编号并跳转到习题详情界面
+                let params=new URLSearchParams();
+                params.append('testProgrammingQuestionId',this.testStandingsInfo[0].testProgrammingQuestionResultStateTools[index].testProgrammingQuestionId);
+                this.$axios({
+                    method: 'post',
+                    headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                    url: '/testProgramming/queryExerciseByTestProgrammingQuestionId',
+                    data: params
+                })
+                .then((res)=> {
+                     this.$router.push({path:'/exerciseDetail',query:{'exerciseId':res.data.exerciseId}})
+                })
+                .catch((err)=> {
+                    this.$message.error('测试编程题读取失败');
+                })
+            }
       },
       //获取测试名称排行
       getTestStandings(){

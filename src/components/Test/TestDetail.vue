@@ -38,6 +38,9 @@
           <button @click="goToTestStandings()">
               standings
           </button>
+          <button @click="goToTestStatus()">
+              status
+          </button>
       </div>
   </div>
 </template>
@@ -62,6 +65,15 @@ export default {
         this.getTestQuestionList();
     },
     methods:{
+        //跳转到测试编程题状态界面
+        goToTestStatus(){
+            if(this.testInfo.testStatus=='Running'){
+                this.$router.push({path:'/testProgrammingRealTimeStatus',query:{"testId":this.testInfo.testId,'testStatus':'Running'}})
+            }else{
+                //传递表示测试已结束  
+                this.$router.push({path:'/testProgrammingRealTimeStatus',query:{"testId":this.testInfo.testId,'testStatus':'Ending'}})
+            }
+        },
         //跳转到测试习题具体信息界面
         getoTestExerciseDetail(testProgrammingQuestionId){
             if(this.testInfo.testStatus=='Running'){
@@ -90,7 +102,12 @@ export default {
         },
         //跳转到测试名次表界面
         goToTestStandings(){
-            this.$router.push({path:'/testStandings',query:{'testId':this.testInfo.testId}})
+            if(this.testInfo.testStatus=='Running'){
+                this.$router.push({path:'/testStandings',query:{"testId":this.testInfo.testId,'testStatus':'Running'}})
+            }else{
+                //传递表示测试已结束  
+                this.$router.push({path:'/testStandings',query:{"testId":this.testInfo.testId,'testStatus':'Ending'}})
+            }
         },
         //获得习题比率
         getAcceptRate (exerciseCorrectTimes, exerciseSubmitTimes) {
