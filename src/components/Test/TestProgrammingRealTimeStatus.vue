@@ -4,7 +4,7 @@
     
     <span class="span-label">问题名称</span>
     <el-select
-      v-model="select_testProgrammingQuestionName"
+      v-model="select_testProgrammingQuestionId"
       placeholder="请选择题目"
       size="mini"
       class="handle-select"
@@ -30,7 +30,7 @@
     </el-input>
     <span class="span-label">结果</span>
     <el-select
-      v-model="select_status"
+      v-model="select_testProgrammingQuestionResult"
       placeholder="请选择"
       size="mini"
       class="handle-select"
@@ -139,9 +139,9 @@ export default {
             testProgrammingList:[],
             pageSize: 4,
             currentPage: 1,
-            select_testProgrammingQuestionName:'',
+            select_testProgrammingQuestionId:'',
             select_userName:'',
-            select_status:'',
+            select_testProgrammingQuestionResult:'',
             testProgrammingQuestionNameOptions:[],
             statusOptions: [
               {
@@ -220,7 +220,39 @@ export default {
         },
         //根据输入信息获取测试编程题实时状态
         searchTestProgrammingRealTimeInfo(){
-          console.log(this.select_testProgrammingQuestionName);
+          //根据输入的内容查询信息
+          let params = new URLSearchParams();
+          params.append("testId",this.testId);
+          if(this.select_testProgrammingQuestionId=='全部题目'||this.select_testProgrammingQuestionId==''){
+              params.append("testProgrammingQuestionId",0);
+          }else{
+              params.append("testProgrammingQuestionId",this.select_testProgrammingQuestionId);
+          }
+          if(this.select_userName==''){
+               params.append("userName",'');
+          }else{
+              params.append("userName",this.select_userName);
+          }
+          if(this.select_testProgrammingQuestionResult==''||this.select_testProgrammingQuestionResult=='All'){
+               params.append("testProgrammingResult",'');
+          }else{
+              params.append("testProgrammingResult",this.select_testProgrammingQuestionResult);
+          }
+          this.$axios({
+              method: 'post',
+              headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+              },
+              url: '/testProgrammingHistory/queryTestProgrammingRealStatusBySearchInfo',
+              data: params
+          })
+          .then((res) => {
+               this.testProgrammingRealTimeStatusList=res.data;
+          })
+          .catch((err) => {
+              this.$message.error('获取测试编程实时状态失败');
+
+          })
         },
         //获取测试编程题实时状态
         getTestProgrammingRealTimeStatusInfo () {
@@ -243,7 +275,7 @@ export default {
             })
         },
 
-        //获取全部的测试编程题 并且给测试问题下拉框赋值
+        //获取全部的测试编程题 并且给查询用的测试问题下拉框赋值
         getTestProgrammingInfo () {
             let params = new URLSearchParams();
             params.append("testId",this.testId);
