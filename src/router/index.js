@@ -47,7 +47,6 @@ const routes = [
   },
 
 
-
   {
     path: '/teacherUserAside',
     name: 'TeacherUserAside',
@@ -59,6 +58,7 @@ const routes = [
         name: 'AddExam',
         component: () => import('@/components/ExamManage/AddExam.vue'),
       },
+
       {
         path: '/teacherInfo',
         name: 'TeacherInfo',
@@ -78,6 +78,11 @@ const routes = [
         path: '/testManage',
         name: 'TestManage',
         component: () => import('@/components/Test/TestManage.vue')
+      },
+      {
+        path: '/testProblemManage',
+        name: 'TestProblemManage',
+        component: () => import('@/components/Test/TestProblemManage.vue')
       },
       {
         path: '/groupInfoManage',
@@ -122,6 +127,11 @@ const routes = [
         path: '/examAnalyse',
         name: 'ExamAnalyse',
         component: () => import('@/components/ExamManage/ExamAnalyse.vue')
+      },
+      {
+        path: '/examInfo',
+        name: 'ExamInfo',
+        component: () => import('@/components/ExamManage/ExamInfo.vue'),
       },
     ]
   },
@@ -226,6 +236,11 @@ const routes = [
         path: '/testProgrammingRealTimeStatus',
         name: 'TestProgrammingRealTimeStatus',
         component: () => import('../components/Test/TestProgrammingRealTimeStatus.vue')
+      },
+      {
+        path: '/personalExamHistory',
+        name: 'PersonalExamHistory',
+        component: () => import('@/components/Exam/PersonalExamHistory.vue')
       },
     ]
   },

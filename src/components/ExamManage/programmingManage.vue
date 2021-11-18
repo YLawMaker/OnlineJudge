@@ -189,7 +189,6 @@ export default {
   methods: {
     handleClose (done) {
       this.edittableDataVisible_add = false
-      this.addProgrammingData = new Object();
       this.select_word = ""
     },
     handleCurrent_dialog (val) {
