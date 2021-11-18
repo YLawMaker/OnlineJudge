@@ -34,13 +34,13 @@
         </el-table>
       </div>
 
-      <div>
-          <button @click="goToTestStandings()">
+      <div class="foot">
+          <span @click="goToTestStandings()" style="color:blue;cursor:pointer">
               standings
-          </button>
-          <button @click="goToTestStatus()">
+          </span>
+          <span @click="goToTestStatus()" style="color:blue;cursor:pointer;margin-left:2%">
               status
-          </button>
+          </span>
       </div>
   </div>
 </template>
@@ -143,5 +143,8 @@ export default {
 </script>
 
 <style>
-
+.foot{
+    margin-top: 10%;
+    margin-left: 10%;
+}
 </style>
