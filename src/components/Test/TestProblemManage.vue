@@ -14,9 +14,53 @@
         >添加</el-button
       >
     </div>
-    <el-table>
-      <el-table-column label="编号" width="80"></el-table-column>
-      <el-table-column label="标题"></el-table-column>
+    <el-table
+      :data="data"
+      style="width: 100%"
+      :row-style="{ height: '20px' }"
+      stripe
+    >
+      <el-table-column prop="exercise.exerciseTitle" label="标题" width="180">
+      </el-table-column>
+      <el-table-column
+        prop="exercise.exerciseDescription"
+        label="描述"
+        width="180"
+        :show-overflow-tooltip="true"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="exercise.exerciseInput"
+        label="问题输入"
+        width="180"
+        :show-overflow-tooltip="true"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="exercise.exerciseOutPut"
+        label="问题输出"
+        width="180"
+        :show-overflow-tooltip="true"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="exercise.exerciseSampleInput"
+        label="样例输入"
+        width="180"
+      >
+      </el-table-column>
+      <el-table-column prop="exercise.exerciseSampleOutput" label="样例输出">
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            type="danger"
+            @click.native.prevent="deleteConfirm(scope.row)"
+            size="small"
+            >删除</el-button
+          >
+        </template>
+      </el-table-column>
     </el-table>
     <div class="block">
       <el-pagination
@@ -104,6 +148,7 @@ export default {
       tableData: [],
       programmingList: [],
       multipleSelection: [],
+      programmingIdList: []
     }
   },
   mounted: function () {
@@ -173,8 +218,11 @@ export default {
         // console.log(resp.data);
         that.tableData = resp.data;
         // console.log(that.tableData);
+        console.log(that.programmingList);
         for (var i = 0, len1 = that.tableData.length; i < len1; i++) {
+          // console.log(that.tableData[i].exerciseId);
           for (var j = 0, len2 = that.programmingList.length; j < len2; j++) {
+            // console.log("List:" + that.programmingList[j].exerciseId);
             if (that.tableData[i].exerciseId === that.programmingList[j].exercise.exerciseId) {
               that.tableData.splice(i, 1)
               len1 = that.tableData.length
@@ -196,9 +244,10 @@ export default {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/testProgramming/queryTestProgrammingQuestionByTestId',
+        url: '/testProgramming/queryTestProgrammingQuestionInfoByTestId',
         data: params
       }).then(function (resp) {
+        // console.log(resp.data);
         that.programmingList = resp.data
       })
     },
@@ -213,30 +262,76 @@ export default {
       }
       // console.log(this.programmingIdList);
       let params = new URLSearchParams();
-      params.append('addExamQuestions', JSON.stringify(this.programmingIdList));
+      params.append('testProgrammingQuestions', JSON.stringify(this.programmingIdList));
+      // console.log(params.toString());
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/examQuestion/addExamQuestions',
+        url: '/testProgramming/addTestProgrammingQuestionInfos',
         data: params
       }).then((res) => {
         if (res.data == false) {
           this.$message.error('添加失败');
           this.edittableDataVisible_add = false;
-          this.getprogramming(this.examIdFromExamManage);
+          this.getTestProgramming(this.testId);
           this.getExercise();
         } else {
           this.$message.success('添加成功');
           this.edittableDataVisible_add = false;
-          this.getprogramming(this.examIdFromExamManage);
+          this.getTestProgramming(this.testId);
           this.getExercise();
         }
       }).catch((err) => {
         console.log(err);
       })
     },
+    deleteConfirm (row) {
+      this.$confirm('此操作将永久删除该分组, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then((action) => {
+        if (action === 'confirm') {
+          this.deleteProgramming(row.testProgrammingQuestionId);
+        }
+      }).catch((resp) => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+        // console.log(resp);
+      });
+    },
+    deleteProgramming (testProgrammingQuestionId) {
+      let params = new URLSearchParams();
+      params.append('testProgrammingQuestionId', testProgrammingQuestionId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/testProgramming/deleteTestProgrammingQuestionByTestProgrammingQuestionId',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.$message.success('题目删除成功');
+          this.getTestProgramming(this.testId);
+          this.getExercise();
+        } else if (res.data == false) {
+          this.$message.error('题目删除失败');
+          this.getTestProgramming(this.testId);
+          this.getExercise();
+        } else {
+          this.$message.error('系统发生了错误');
+          this.getTestProgramming(this.testId);
+          this.getExercise();
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
+    }
   }
 }
 </script>

@@ -272,6 +272,7 @@ export default {
         // console.log(resp.data);
         that.tableData = resp.data;
         // console.log(that.tableData);
+        // console.log(that.programmingList);
         for (var i = 0, len1 = that.tableData.length; i < len1; i++) {
           for (var j = 0, len2 = that.programmingList.length; j < len2; j++) {
             if (that.tableData[i].exerciseId === that.programmingList[j].exercise.exerciseId) {

@@ -100,7 +100,7 @@ const routes = [
   {
     path: '/examInfoHeader',
     name: 'ExamInfoHeader',
-    redirect: 'candidateScore',
+    redirect: 'examInfo',
     component: () => import('../views/ExamInfoHeader.vue'),
     children: [
       {
@@ -257,12 +257,6 @@ const routes = [
         path: '/components/TeacherManage',
         name: 'TeacherManage',
         component: () => import('../components/TeacherUser/TeacherManage')
-      },
-
-      {
-        path: '/components/ExerciseLabelManage',
-        name: 'ExerciseLabelManage',
-        component: () => import('@/components/Label/ExerciseLabelManage')
       },
       {
         path: '/components/QuestionLabelManage',
