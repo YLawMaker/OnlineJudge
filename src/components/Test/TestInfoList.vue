@@ -230,7 +230,7 @@ export default {
       edittableDataVisible_add: false,
       edittableDataVisible_modify: false,
       currentPage: 1,
-      pagesize: 2,
+      pagesize: 7,
       select_word: "",
       searchData: []
     }
