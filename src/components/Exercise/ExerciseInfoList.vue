@@ -36,7 +36,7 @@
         <template slot-scope="scope">
           <router-link
             :to="{
-              path: 'ExerciseAnswerManage',
+              path: 'ExerciseAnswerList',
               query: {
                 exerciseIdfromManage: scope.row.exerciseId,
                 page: currentPage,

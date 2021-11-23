@@ -29,7 +29,7 @@
             ><template slot-scope="scope">
               <router-link
                 :to="{
-                  path: 'TestProblemManage',
+                  path: 'TestProblemList',
                   query: {
                     testIdfromManage: scope.row.testId,
                     managePage: currentPage,
@@ -467,7 +467,7 @@ export default {
       })
     },
     deleteConfirm (row) {
-      this.$confirm('此操作将永久删除该考试, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该测试, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -495,10 +495,10 @@ export default {
         data: params
       }).then((res) => {
         if (res.data == true) {
-          this.$message.success('考试删除成功');
+          this.$message.success('测试删除成功');
           this.getTestInfo(this.currentPage);
         } else if (res.data == false) {
-          this.$message.error('考试删除失败');
+          this.$message.error('测试删除失败');
           this.getTestInfo(this.currentPage);
         } else {
           this.$message.error('发生了错误');

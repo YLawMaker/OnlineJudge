@@ -184,7 +184,7 @@ export default {
   methods: {
     goBack (currentPage) {
       // console.log(currentPage);
-      this.$router.push({ name: 'TestManage', params: { page: currentPage } })
+      this.$router.push({ name: 'TestInfoList', params: { page: currentPage } })
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true

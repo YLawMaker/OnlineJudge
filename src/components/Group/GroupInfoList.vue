@@ -167,7 +167,7 @@ export default {
       // alert(row.groupId)
       // alert(this.currentPage)
       // alert(this.select_word)
-      this.$router.push({ path: 'GroupUserManage', query: { page: this.currentPage, groupIdFromInfoManage: row.groupId, searchKeyFromInfoManage: this.select_word } })
+      this.$router.push({ path: 'GroupUserList', query: { page: this.currentPage, groupIdFromInfoManage: row.groupId, searchKeyFromInfoManage: this.select_word } })
     },
     getGroupInfo (pageNum, key) {
       const that = this

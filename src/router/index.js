@@ -50,13 +50,13 @@ const routes = [
   {
     path: '/teacherUserAside',
     name: 'TeacherUserAside',
-    redirect: 'addExam',
+    redirect: 'examList',
     component: () => import('../views/TeacherUserAside.vue'),
     children: [
       {
-        path: '/addExam',
-        name: 'AddExam',
-        component: () => import('@/components/ExamManage/AddExam.vue'),
+        path: '/examList',
+        name: 'ExamList',
+        component: () => import('@/components/ExamManage/ExamList.vue'),
       },
 
       {
@@ -75,24 +75,24 @@ const routes = [
         component: () => import('@/components/Question/CompletionQuestionList.vue')
       },
       {
-        path: '/testManage',
-        name: 'TestManage',
-        component: () => import('@/components/Test/TestManage.vue')
+        path: '/testInfoList',
+        name: 'TestInfoList',
+        component: () => import('@/components/Test/TestInfoList.vue')
       },
       {
-        path: '/testProblemManage',
-        name: 'TestProblemManage',
-        component: () => import('@/components/Test/TestProblemManage.vue')
+        path: '/testProblemList',
+        name: 'TestProblemList',
+        component: () => import('@/components/Test/TestProblemList.vue')
       },
       {
-        path: '/groupInfoManage',
-        name: 'GroupInfoManage',
-        component: () => import('@/components/Group/GroupInfoManage.vue')
+        path: '/groupInfoList',
+        name: 'GroupInfoList',
+        component: () => import('@/components/Group/GroupInfoList.vue')
       },
       {
-        path: '/groupUserManage',
-        name: 'GroupUserManage',
-        component: () => import('@/components/Group/GroupUserManage.vue')
+        path: '/groupUserList',
+        name: 'GroupUserList',
+        component: () => import('@/components/Group/GroupUserList.vue')
       },
 
     ]
@@ -109,19 +109,19 @@ const routes = [
         component: () => import('@/components/ExamManage/CandidateScore.vue')
       },
       {
-        path: '/examChoiceQuestonManage',
-        name: 'ExamChoiceQuestonManage',
-        component: () => import('@/components/ExamManage/ExamChoiceQuestonManage.vue')
+        path: '/examChoiceQuestonList',
+        name: 'ExamChoiceQuestonList',
+        component: () => import('@/components/ExamManage/ExamChoiceQuestonList.vue')
       },
       {
-        path: '/examCompletionQuestionManage',
-        name: 'ExamCompletionQuestionManage',
-        component: () => import('@/components/ExamManage/ExamCompletionQuestionManage.vue')
+        path: '/examCompletionQuestionList',
+        name: 'ExamCompletionQuestionList',
+        component: () => import('@/components/ExamManage/ExamCompletionQuestionList.vue')
       },
       {
-        path: '/programmingManage',
-        name: 'programmingManage',
-        component: () => import('@/components/ExamManage/programmingManage.vue')
+        path: '/programmingList',
+        name: 'programmingList',
+        component: () => import('@/components/ExamManage/programmingList.vue')
       },
       {
         path: '/examAnalyse',
@@ -250,35 +250,35 @@ const routes = [
   {
     path: '/AdminBackground',
     name: 'AdminBackground',
-    redirect: 'components/TeacherManage',
+    redirect: 'components/TeacherList',
     component: () => import('../views/AdminBackground'),
     children: [
       {
-        path: '/components/TeacherManage',
-        name: 'TeacherManage',
-        component: () => import('../components/TeacherUser/TeacherManage')
+        path: '/components/TeacherList',
+        name: 'TeacherList',
+        component: () => import('../components/TeacherUser/TeacherList')
       },
       {
-        path: '/components/QuestionLabelManage',
-        name: 'QuestionLabelManage',
-        component: () => import('@/components/Label/QuestionLabelManage')
-      },
-
-      {
-        path: '/components/ExerciseManage',
-        name: 'ExerciseManage',
-        component: () => import('@/components/Exercise/ExerciseManage')
+        path: '/components/QuestionLabelList',
+        name: 'QuestionLabelList',
+        component: () => import('@/components/Label/QuestionLabelList')
       },
 
       {
-        path: '/components/ExerciseAnswerManage',
-        name: 'ExerciseAnswerManage',
-        component: () => import('@/components/Exercise/ExerciseAnswerManage')
+        path: '/components/ExerciseInfoList',
+        name: 'ExerciseInfoList',
+        component: () => import('@/components/Exercise/ExerciseInfoList')
+      },
+
+      {
+        path: '/components/ExerciseAnswerList',
+        name: 'ExerciseAnswerList',
+        component: () => import('@/components/Exercise/ExerciseAnswerList')
       },
       {
-        path: '/components/GroupManage',
-        name: 'GroupManage',
-        component: () => import('@/components/Group/GroupManage')
+        path: '/components/GroupList',
+        name: 'GroupList',
+        component: () => import('@/components/Group/GroupList')
       },
     ]
   },

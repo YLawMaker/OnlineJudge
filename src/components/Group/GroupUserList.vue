@@ -135,7 +135,7 @@ export default {
       })
     },
     goBack (pageFromInfoManage, searchKeyFromInfoManage) {
-      this.$router.push({ name: 'GroupInfoManage', params: { page: pageFromInfoManage, key: searchKeyFromInfoManage } })
+      this.$router.push({ name: 'GroupInfoList', params: { page: pageFromInfoManage, key: searchKeyFromInfoManage } })
     },
     add (addGroupUser) {
       let userList = this.addGroupUserData.groupUserList.split(/[(\r\n)\r\n]+/)

@@ -14,7 +14,7 @@
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">测试</template>
-            <el-menu-item index="/TestManage">测试管理</el-menu-item>
+            <el-menu-item index="/TestInfoList">测试管理</el-menu-item>
           </el-submenu>
           <el-submenu index="3">
             <template slot="title">题库</template>
@@ -25,7 +25,7 @@
           </el-submenu>
           <el-submenu index="4">
             <template slot="title">分组</template>
-            <el-menu-item index="/groupInfoManage">分组管理</el-menu-item>
+            <el-menu-item index="/groupInfoList">分组管理</el-menu-item>
           </el-submenu>
 
           <el-menu-item index="/faq"><span>返回OJ</span></el-menu-item>

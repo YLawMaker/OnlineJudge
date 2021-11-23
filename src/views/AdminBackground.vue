@@ -10,16 +10,14 @@
         text-color="#000000"
         :collapse-transition="iscollapse"
       >
-        <el-menu-item index="../components/TeacherManage"
-          >教师管理</el-menu-item
-        >
-        <el-menu-item index="../components/ExerciseManage"
+        <el-menu-item index="../components/TeacherList">教师管理</el-menu-item>
+        <el-menu-item index="../components/ExerciseInfoList"
           >习题管理</el-menu-item
         >
-        <el-menu-item index="../components/QuestionLabelManage"
+        <el-menu-item index="../components/QuestionLabelList"
           >问题标签管理</el-menu-item
         >
-        <el-menu-item index="../components/GroupManage">分组管理</el-menu-item>
+        <el-menu-item index="../components/GroupList">分组管理</el-menu-item>
       </el-menu>
     </el-header>
     <el-main>

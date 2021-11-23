@@ -615,12 +615,12 @@ export default {
     choiceManage (row) {
       var id = row.examId;
       // console.log(id);
-      this.$router.push({ path: '/choiceQuestionManage', query: { examId: id } })
+      this.$router.push({ path: '/choiceQuestionList', query: { examId: id } })
     },
     programmingManage (row) {
       var id = row.examId;
       // console.log(id);
-      this.$router.push({ path: '/programmingManage', query: { examId: id } })
+      this.$router.push({ path: '/programmingList', query: { examId: id } })
     }
   }
 }
