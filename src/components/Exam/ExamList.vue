@@ -8,7 +8,7 @@
       <el-timeline >
         <el-timeline-item  v-for="exam in pageExamInfo" :key="exam.examId" :timestamp="exam.examStartTime" placement="top">
           <el-card >
-            <h4 @click="gotoExamDetail(exam.examId,exam.examName)">{{exam.examName}}</h4>
+            <h4 @click="gotoExamDetail(exam.examId,exam.examStartTime,exam.examEndTime)">{{exam.examName}}</h4>
             <p style="width:300px;float:left">开始时间{{exam.examStartTime}}</p>
             <p style="width:300px;float:left">结束时间{{exam.examEndTime}}</p>
           </el-card>
@@ -65,13 +65,47 @@ export default {
           this.getExamInfo();
         },
         //去到考试详情界面
-        gotoExamDetail(examId){
-          if(this.userId==""){
+        gotoExamDetail(examId,examStartTime,examEndTime){
+          var date = new Date();
+          var now = date.getTime();
+          var enddate = new Date(examEndTime);
+          var startdate = new Date(examStartTime);
+          var end = enddate.getTime(),
+            start = startdate.getTime();
+          if(now>start&&now<end){
+            if(this.userId==""){
                 this.$message.error("请先登录用户");
                 this.$router.push('/userLogin')
             }else{
-                this.$router.push({ path: '/examDetail', query: { userId: this.userId , examId: examId} });
+                let params = new URLSearchParams();
+                params.append("userId",this.userId);
+                params.append("examId",examId);
+                this.$axios({
+                    method: 'post',
+                    headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    url: '/examHistory/queryUserIfJoinExam',
+                    data: params
+                })  
+                .then((res) => {
+                  var join=1;
+                  join=res.data;
+                  if(!join){
+                    this.$router.push({ path: '/examDetail', query: { userId: this.userId , examId: examId} });
+                  }else{
+                    this.$message.error("您已经参加过考试")
+                  }
+                })
+                .catch((err) => {
+                  this.$message.error('查询考试信息失败') ;
+                })
+
             }
+          }else{
+            this.$message.error("未在考试时间内");
+          }
+          
         },
         //换页时调用
         handleCurrent (val) {
