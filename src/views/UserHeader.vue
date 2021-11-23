@@ -28,6 +28,7 @@
         <el-submenu index="3">
           <template slot="title">Online Teaching</template>
           <el-menu-item @click="goToExamList()">Exam List</el-menu-item>
+          <el-menu-item @click="goToTestList()">Test List</el-menu-item>
           <el-menu-item @click="goToExamRankList()"
             >Exam Statistics</el-menu-item
           >
@@ -93,6 +94,17 @@ export default {
   },
 
   methods: {
+    //跳转到测试列表界面
+    goToTestList () {
+      if (this.userId == "") {
+        this.$message.error("请先登录用户");
+        this.$router.push('/userLogin')
+      } else {
+        this.$router.push({ path: '/testList' });
+
+      }
+
+    },
     //跳转到用户排行榜 保存返回值
     gotoUserRankList () {
       if (this.$route.path != "/userRankList") {
