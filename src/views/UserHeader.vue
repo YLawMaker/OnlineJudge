@@ -28,8 +28,18 @@
         <el-submenu index="3">
           <template slot="title">Online Teaching</template>
           <el-menu-item @click="goToExamList()">Exam List</el-menu-item>
-          <el-menu-item @click="goToExamRankList()">Exam Statistics</el-menu-item>
-          <el-menu-item @click="goToPersonalExamHistory()">个人考试记录</el-menu-item>
+          <el-menu-item @click="goToExamRankList()"
+            >Exam Statistics</el-menu-item
+          >
+          <el-menu-item @click="goToPersonalExamHistory()"
+            >个人考试记录</el-menu-item
+          >
+        </el-submenu>
+        <el-submenu index="4" v-if="this.userIdentity == 'teacher'">
+          <template slot="title">Teacher</template>
+          <el-menu-item @click="goToTeacherManager()"
+            >TeacherManager</el-menu-item
+          >
         </el-submenu>
 
         <div class="loginbutton">
@@ -90,18 +100,21 @@ export default {
         this.$router.push('/userRankList')
       }
     },
+    goToTeacherManager () {
+      this.$router.push('/examInfoList');
+    },
     //跳转到个人考试记录
-    goToPersonalExamHistory(){
-      if(this.$route.path!="/personalExamHistory"){
-          if (this.userId == "") {
-            this.$message.error("请先登录用户");
-            this.$router.push('/userLogin')
-          } else if (this.userIdentity == "student") {
-            this.$router.replace( {path:'/personalExamHistory' ,query:{userId:this.userId}});
-          } else if (this.userIdentity == "teacher") {
-            this.$router.push('/addExam');
-          }
+    goToPersonalExamHistory () {
+      if (this.$route.path != "/personalExamHistory") {
+        if (this.userId == "") {
+          this.$message.error("请先登录用户");
+          this.$router.push('/userLogin')
+        } else if (this.userIdentity == "student") {
+          this.$router.replace({ path: '/personalExamHistory', query: { userId: this.userId } });
+        } else if (this.userIdentity == "teacher") {
+          this.$router.push('/examInfoList');
         }
+      }
     },
 
     //跳转到习题实时状态界面 保存返回值用
@@ -122,31 +135,31 @@ export default {
 
 
     //跳转到考试列表界面
-    
+
     goToExamList () {
-        if(this.$route.path!="/examList"){
-          if (this.userId == "") {
-            this.$message.error("请先登录用户");
-            this.$router.push('/userLogin')
-          } else if (this.userIdentity == "student") {
-            this.$router.replace( {path:'/examList' ,query:{userId:this.userId}});
-          } else if (this.userIdentity == "teacher") {
-            this.$router.push('/addExam');
-          }
+      if (this.$route.path != "/examList") {
+        if (this.userId == "") {
+          this.$message.error("请先登录用户");
+          this.$router.push('/userLogin')
+        } else if (this.userIdentity == "student") {
+          this.$router.replace({ path: '/examList', query: { userId: this.userId } });
+        } else if (this.userIdentity == "teacher") {
+          this.$router.push('/examInfoList');
         }
+      }
     },
     //跳转到考试排行榜界面
     goToExamRankList () {
-        if(this.$route.path!="/examRankList"){
-          if (this.userId == "") {
-            this.$message.error("请先登录用户");
-            this.$router.push('/userLogin')
-          } else if (this.userIdentity == "student") {
-            this.$router.push('/examRankList');
-          } else if (this.userIdentity == "teacher") {
-            this.$router.push('/addExam');
-          }
+      if (this.$route.path != "/examRankList") {
+        if (this.userId == "") {
+          this.$message.error("请先登录用户");
+          this.$router.push('/userLogin')
+        } else if (this.userIdentity == "student") {
+          this.$router.push('/examRankList');
+        } else if (this.userIdentity == "teacher") {
+          this.$router.push('/examInfoList');
         }
+      }
     },
     //跳转到用户登录界面
     userLogin () {

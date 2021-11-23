@@ -10,7 +10,7 @@ import * as echarts from 'echarts'
 // import PizZip from 'pizzip'
 // import JSZipUtils from 'jszip-utils'
 // import { saveAs } from 'file-saver'
-axios.defaults.baseURL = 'http://47.93.218.77:8888'
+axios.defaults.baseURL = 'http://localhost:8888'
 Vue.config.productionTip = false
 //前端跨域
 axios.defaults.withCredentials = true

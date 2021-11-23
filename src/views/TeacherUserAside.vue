@@ -10,7 +10,7 @@
         >
           <el-submenu index="1">
             <template slot="title">考试</template>
-            <el-menu-item index="/addExam">考试管理</el-menu-item>
+            <el-menu-item index="/examInfoList">考试管理</el-menu-item>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">测试</template>

@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     goBack () {
-      this.$router.push({ name: 'ExamList', params: { currentPage: this.examManageCurrentPage } })
+      this.$router.push({ name: 'ExamInfoList', params: { currentPage: this.examManageCurrentPage } })
       // , params: { page: currentPage, key: searchKey }
     },
     handleSelect (key, keyPath) {

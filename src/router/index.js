@@ -50,13 +50,13 @@ const routes = [
   {
     path: '/teacherUserAside',
     name: 'TeacherUserAside',
-    redirect: 'examList',
+    redirect: 'examInfoList',
     component: () => import('../views/TeacherUserAside.vue'),
     children: [
       {
-        path: '/examList',
-        name: 'ExamList',
-        component: () => import('@/components/ExamManage/ExamList.vue'),
+        path: '/examInfoList',
+        name: 'ExamInfoList',
+        component: () => import('@/components/ExamManage/ExamInfoList.vue'),
       },
 
       {
