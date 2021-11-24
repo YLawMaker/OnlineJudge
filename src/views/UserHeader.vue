@@ -29,9 +29,6 @@
           <template slot="title">Online Teaching</template>
           <el-menu-item @click="goToExamList()">Exam List</el-menu-item>
           <el-menu-item @click="goToTestList()">Test List</el-menu-item>
-          <el-menu-item @click="goToExamRankList()"
-            >Exam Statistics</el-menu-item
-          >
           <el-menu-item @click="goToPersonalExamHistory()"
             >个人考试记录</el-menu-item
           >

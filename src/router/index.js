@@ -25,11 +25,7 @@ const routes = [
     name: 'ManagerLogin',
     component: () => import('../views/ManagerLogin.vue')
   },
-  {
-    path: '/examRankList',
-    name: 'ExamRankList',
-    component: () => import('@/components/Exam/ExamRankList.vue')
-  },
+
   {
     path: '/examChoice',
     name: 'ExamChoice',
@@ -241,6 +237,11 @@ const routes = [
         path: '/personalExamHistory',
         name: 'PersonalExamHistory',
         component: () => import('@/components/Exam/PersonalExamHistory.vue')
+      },
+      {
+        path: '/examRankList',
+        name: 'ExamRankList',
+        component: () => import('@/components/Exam/ExamRankList.vue')
       },
     ]
   },
