@@ -74,18 +74,20 @@
       :close-on-click-modal="false"
       width="850px"
     >
-      <el-input
+      <!-- <el-input
         v-model="select_word"
         size="mini"
         class="search_input"
         placeholder="请输入习题标题关键字"
         style="width: 200px"
+        :disabled="edit"
         clearable
-      ></el-input>
+      ></el-input> -->
       <el-table
         :data="data_dialog"
         @selection-change="handleSelectionChange"
         :row-key="getRowKey"
+        @filter-change="filterChange"
       >
         <el-table-column
           label="编号"
@@ -97,6 +99,29 @@
         <el-table-column
           label="标题"
           prop="exerciseTitle"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column
+          label="章节"
+          prop="questionLabel.chapter"
+          :show-overflow-tooltip="true"
+          :filter-multiple="false"
+          :filters="chapterInfo"
+          :filter-method="filterChapter"
+          column-key="chapter"
+          filter-placement="bottom-end"
+        >
+        </el-table-column>
+        <el-table-column
+          label="第一知识点"
+          prop="questionLabel.firstKnowledgePoint"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column
+          label="第二知识点"
+          prop="questionLabel.secondKnowledgePoint"
           :show-overflow-tooltip="true"
         >
         </el-table-column>
@@ -139,7 +164,7 @@ export default {
         examProgrammingSampleOutput: '',
         examProgrammingScore: ''
       },
-      edit: true,
+      edit: false,
       addRules: {},
       programmingList: [],
       searchData: [],
@@ -153,13 +178,15 @@ export default {
       select_word: '',
       multipleSelection: [],
       tableData: [],
-      programmingIdList: []
+      programmingIdList: [],
+      chapterInfo: [],
     }
   },
   mounted: function () {
     this.examIdFromExamManage = this.$route.query.examIdfromManage;
     this.getprogramming(this.examIdFromExamManage);
     this.getExercise()
+    this.getChatperInfo()
   },
   computed: {
     data () {
@@ -206,7 +233,23 @@ export default {
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
-
+    },
+    getChatperInfo () {
+      const that = this
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/questionLabel/queryChapterInfo',
+      }).then(function (resp) {
+        // console.log(resp.data);
+        let temp = resp.data;
+        temp.forEach((v, i) => {
+          that.chapterInfo.push({ text: temp[i], value: temp[i] })
+        });
+        // console.log(that.chapterInfo)
+      })
     },
     getprogramming (examId) {
       const that = this
@@ -221,6 +264,7 @@ export default {
         url: '/examQuestion/queryExamQuestionProgrammingByExamId',
         data: params
       }).then(function (resp) {
+        // console.log(resp.data);
         that.programmingList = resp.data
       })
     },
@@ -248,11 +292,13 @@ export default {
         if (res.data == false) {
           this.$message.error('添加失败');
           this.edittableDataVisible_add = false;
+          this.programmingIdList = [];
           this.getprogramming(this.examIdFromExamManage);
           this.getExercise();
         } else {
           this.$message.success('添加成功');
           this.edittableDataVisible_add = false;
+          this.programmingIdList = [];
           this.getprogramming(this.examIdFromExamManage);
           this.getExercise();
         }
@@ -332,7 +378,28 @@ export default {
       }).catch((res) => {
         console.log(res);
       })
-    }
+    },
+    filterChange (value) {
+      // console.log("筛选条件变化", value.chapter[0]);
+      this.searchData = []
+      // console.log(this.tableData);
+      if (value.chapter[0] == undefined) {
+        this.edit = false
+        this.searchData = this.tableData;
+      } else {
+        this.edit = true
+        for (let item of this.tableData) {
+          //item.exerciseTitle 添加习题的搜索框按习题标题检索
+          if (item.questionLabel.chapter.includes(value.chapter[0])) {
+            this.currentPage = 1;
+            this.searchData.push(item);
+          }
+        }
+      }
+    },
+    filterChapter (value, row) {
+      return row.questionLabel.chapter === value;
+    },
   }
 }
 </script>
