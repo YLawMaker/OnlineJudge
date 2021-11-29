@@ -1,38 +1,51 @@
 <template>
   <div>
     <el-container>
-      <el-header style="">
+      <el-header>
         <el-menu
           :default-active="$route.path"
           class="el-menu-demo"
           mode="horizontal"
+          background-color="#3A77B4"
+          text-color="#fff"
+          active-text-color="#ffd04b"
           @select="handleSelect"
         >
+          <el-menu-item class="backOJ" index="/faq">
+            <i class="el-icon-back"></i>
+            <span style="">返回OJ</span>
+          </el-menu-item>
           <el-submenu index="1">
-            <template slot="title">考试</template>
-            <el-menu-item index="/examInfoList">考试管理</el-menu-item>
+            <template slot="title">
+              <i class="iconfont icon-kaoshizuoda"></i>
+              <span>考试</span>
+            </template>
+            <el-menu-item index="/addExam">考试管理</el-menu-item>
           </el-submenu>
           <el-submenu index="2">
-            <template slot="title">测试</template>
-            <el-menu-item index="/TestInfoList">测试管理</el-menu-item>
-          </el-submenu>
-          <el-submenu index="3">
-            <template slot="title">题库</template>
+            <template slot="title">
+              <i class="iconfont icon-wodetiku-yunjiepoutikuxuanti"></i>
+              <span>题库</span>
+            </template>
             <el-menu-item index="/choiceQuestionList">选择题题库</el-menu-item>
             <el-menu-item index="/completionQuestionList"
               >填空题题库</el-menu-item
             >
           </el-submenu>
-          <el-submenu index="4">
-            <template slot="title">分组</template>
-            <el-menu-item index="/groupInfoList">分组管理</el-menu-item>
+          <el-submenu index="3">
+            <template slot="title"
+              ><i class="iconfont icon-navicon-rqfz"></i
+              ><span>分组</span></template
+            >
+            <el-menu-item index="/groupInfoManage">
+              分组管理
+            </el-menu-item>
           </el-submenu>
-
-          <el-menu-item index="/faq"><span>返回OJ</span></el-menu-item>
-          <div class="teacherName-right" @click="gotoTeacherInfo()">
-            <span el-dropdown-link> {{ teacherUserName }}教师 </span>
-          </div>
         </el-menu>
+        <div class="teacherName-right" @click="gotoTeacherInfo()">
+          <i class="el-icon-user-solid"></i>
+          <span el-dropdown-link> {{ teacherUserName }}教师 </span>
+        </div>
       </el-header>
       <el-main>
         <router-view> </router-view>
@@ -42,55 +55,49 @@
 </template>
 
 <script>
-
 export default {
-  data () {
+  data() {
     return {
-      teacherUserName: '',
-    }
+      teacherUserName: "",
+    };
   },
-  computed: {
-
-  },
-  mounted: function () {
+  computed: {},
+  mounted: function() {
     this.getTeacherUserInfo();
   },
   methods: {
     //跳转界面
-    handleSelect (key, keyPath) {
+    handleSelect(key, keyPath) {
       this.$router.push(key);
     },
     //跳转到教师信息
-    gotoTeacherInfo () {
-      this.$router.push('/teacherInfo');
+    gotoTeacherInfo() {
+      this.$router.push("/teacherInfo");
     },
     //获取教师用户信息
-    getTeacherUserInfo () {
+    getTeacherUserInfo() {
       let params = new URLSearchParams();
       this.$axios({
-        method: 'post',
+        method: "post",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        url: '/user/queryUserInfo',
-        data: params
+        url: "/user/queryUserInfo",
+        data: params,
       })
         .then((res) => {
-
           this.teacherUserName = res.data.userName;
           // console.log(this.teacher);
         })
         .catch((err) => {
-          this.$message.error('系统错误请稍后再尝试');
-
-        })
-    }
-  }
-
-}
+          this.$message.error("系统错误请稍后再尝试");
+        });
+    },
+  },
+};
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .collapse-btn {
   float: left;
   padding: 0 21px;
@@ -105,18 +112,51 @@ export default {
   color: #ffffff;
   cursor: pointer;
 }
-.teacherName-right span {
-  font-size: 14px;
+.el-dropdown-link:hover {
+  color: #b1b1b1;
   cursor: pointer;
-  margin-top: 20px;
 }
 .teacherName-right {
-  float: right;
-  /*居中 */
-  display: flex;
-  margin-right: 20px;
+  padding-top: 20px;
+  color: #ffffff;
+  height: 100%;
+  width: 120px;
+  font-size: 1em;
+  cursor: pointer;
 }
-.el-submenu {
-  width: 100px;
+
+.el-header {
+  padding: 0 20px 0 10px;
+  background: #3a77b4;
+  display: flex;
+  justify-content:space-between;
+}
+.el-menu {
+  height:100%;
+}
+.el-menu{
+  .backOJ{
+    padding: 0 20px 0 0px;
+    font-size:1em;
+  }
+  .el-menu-item {
+    padding: 0 20px 0 10px;
+    border-right: 1px solid white;
+  }
+  i{
+    color: #fff;
+  }
+  i:active{
+    color: #ffd04b;
+  }
+  .el-submenu {
+    width: 100px;
+    margin-left: 30px;
+  }
+  .el-submenu__title {
+    span {
+      margin-left: 10px;
+    }
+  }
 }
 </style>
