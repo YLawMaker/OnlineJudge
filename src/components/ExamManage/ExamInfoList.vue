@@ -245,7 +245,7 @@
         </el-row>
 
         <el-form-item>
-          <el-button type="primary" @click="modifyExamInfo()">修改</el-button>
+          <el-button type="primary" @click="modifyExamInfo()">提交</el-button>
           <el-button @click="handleClose">取消</el-button>
         </el-form-item>
       </el-form>

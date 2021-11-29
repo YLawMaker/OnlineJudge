@@ -42,8 +42,18 @@
         label="样例输入"
         width="180"
       >
+        <template slot-scope="scope">
+          <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
+            {{ scope.row.exercise.exerciseSampleInput }}
+          </div>
+        </template>
       </el-table-column>
       <el-table-column prop="exercise.exerciseSampleOutput" label="样例输出">
+        <template slot-scope="scope">
+          <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
+            {{ scope.row.exercise.exerciseSampleInput }}
+          </div>
+        </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -333,7 +343,7 @@ export default {
       })
     },
     deleteConfirm (row) {
-      this.$confirm('此操作将永久删除该分组, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该题目, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
