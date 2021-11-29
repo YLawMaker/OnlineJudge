@@ -19,13 +19,13 @@
           >
 
           <el-menu-item index="/ExamInfo"><span>试卷一览</span></el-menu-item>
-          <el-menu-item index="/ExamChoiceQuestonManage"
+          <el-menu-item index="/ExamChoiceQuestonList"
             ><span>选择题</span></el-menu-item
           >
-          <el-menu-item index="/ExamCompletionQuestionManage"
+          <el-menu-item index="/ExamCompletionQuestionList"
             ><span>填空题</span></el-menu-item
           >
-          <el-menu-item index="/ProgrammingManage"
+          <el-menu-item index="/ProgrammingList"
             ><span>编程题</span></el-menu-item
           >
           <el-menu-item index="/CandidateScore"
@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     goBack () {
-      this.$router.push({ name: 'AddExam', params: { currentPage: this.examManageCurrentPage } })
+      this.$router.push({ name: 'ExamInfoList', params: { currentPage: this.examManageCurrentPage } })
       // , params: { page: currentPage, key: searchKey }
     },
     handleSelect (key, keyPath) {

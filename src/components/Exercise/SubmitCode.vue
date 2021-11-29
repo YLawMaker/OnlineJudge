@@ -43,7 +43,7 @@ export default {
     mounted: function () {
       this.exercise.exerciseId = this.$route.query.exerciseId;
       this.exerciseHistoryId = this.$route.query.exerciseHistoryId;
-      if(this.exerciseHistoryId==null){
+      if(!this.exerciseHistoryId){
 
       }
       //有传值过来
@@ -113,24 +113,25 @@ export default {
         },
         //获得提交的代码信息
         getCodeInfo(){
-            let params=new URLSearchParams();
-            params.append('exerciseHistoryId',this.exerciseHistoryId);
-        
-            this.$axios({
-                method: 'post',
-                headers: {
-                            "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                url: '/exerciseHistory/queryCodeInfoByExerciseHistoryId',
-                data: params
-            })
-            .then((res)=> {
-                this.code=res.data;
-            })
-            .catch((err)=> {
-                this.$message.error('查看代码失败');
-            })
-        }
+             
+                let params=new URLSearchParams();
+                params.append('exerciseHistoryId',this.exerciseHistoryId);
+            
+                this.$axios({
+                    method: 'post',
+                    headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                    url: '/exerciseHistory/queryCodeInfoByExerciseHistoryId',
+                    data: params
+                })
+                .then((res)=> {
+                    this.code=res.data;
+                })
+                .catch((err)=> {
+                    this.$message.error('查看代码失败');
+                })
+            }
                         
                 
         

@@ -1,18 +1,28 @@
 <template>
   <div>
-    <div>
-      <div style="width: 500px; height: 500px" ref="chart"></div>
+    <div id="chart" style="display: none"></div>
 
-      <div>
-        <el-button
-          class="addButton_Exam"
-          type="primary"
-          size="small"
-          @click.native.prevent="importWord()"
-          >导出</el-button
-        >
-      </div>
+    <div class="topBar_analyse">
+      <el-button
+        type="primary"
+        size="small"
+        @click.native.prevent="importWord()"
+        >导出分析</el-button
+      >
     </div>
+    <br />
+    <br />
+    <el-row>
+      <el-col :span="8" class="examUserInfo"
+        >应考人数:{{ this.examUserJoin.examUser }}</el-col
+      >
+      <el-col :span="8" class="examUserInfo"
+        >实考人数:{{ this.examUserJoin.examSubmitUser }}</el-col
+      >
+      <el-col :span="8" class="examUserInfo"
+        >缺考人数:{{ this.examUserJoin.examNotSubmitUser }}</el-col
+      >
+    </el-row>
     <div>
       <el-table :data="averageScore">
         <el-table-column label="各题型平均分" align="center">
@@ -73,7 +83,6 @@
 </template>
 
 <script>
-import { log } from 'util';
 const echarts = require('echarts');
 
 export default {
@@ -113,6 +122,7 @@ export default {
         percent4: 0,
         percent5: 0,
       },
+      examUserJoin: {}
     }
   },
   mounted: function () {
@@ -120,9 +130,7 @@ export default {
     this.examId = this.$route.query.examIdfromManage
     this.anaylseScoreAndSection()
     this.getExamExerciseScore()
-
-
-
+    this.getExamUserJoinInfo()
   },
   methods: {
     anaylseScoreAndSection () {
@@ -205,9 +213,29 @@ export default {
         })
       })
     },
+    //查询考试用户参加情况
+    getExamUserJoinInfo () {
+      const that = this
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      // console.log(this.examId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examHistory/queryExamUserJoinInfo',
+        data: params
+      }).then(function (resp) {
+        that.examUserJoin = resp.data
+      })
+    },
     drawGradeLevelPhoto () {
       var that = this
-      var myChart = echarts.init(this.$refs.chart);
+      var myChart = echarts.init(document.getElementById('chart'), null, {
+        width: 500,
+        height: 500
+      });
       var gradeLevel;
       var d = [0, 0, 0, 0, 0]
       //echart获取分段人数数据
@@ -256,6 +284,7 @@ export default {
         ],
       }
       myChart.setOption(gradeLevel);
+      myChart.resize()
       that.img1 = myChart.getDataURL({
         pixelRatio: 2,      // 导出的图片分辨率比例，默认为 1。
         backgroundColor: '#fff'   // 导出的图片背景色，默认使用 option 里的 backgroundColor
@@ -372,5 +401,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.topBar_analyse {
+  float: right;
+  margin-bottom: 10px;
+  margin-right: 25px;
+}
+.examUserInfo {
+  text-align: center;
+  background-color: #f5f7fa;
+}
 </style>

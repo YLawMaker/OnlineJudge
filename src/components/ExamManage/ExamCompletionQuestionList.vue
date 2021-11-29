@@ -1,10 +1,6 @@
 <template>
   <div>
     <div>
-      <el-button size="small" type="primary" @click="handleAdd()"
-        >添加选择题
-      </el-button>
-
       <span class="span-label">章节</span>
       <el-select
         placeholder="请选择"
@@ -102,25 +98,25 @@
       </el-table-column>
       <el-table-column
         prop="completionQuestionDescription"
-        label="选择题描述"
+        label="填空题描述"
         :show-overflow-tooltip="true"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="questionLabels[0].chapter"
-        label="选择题章节"
+        label="填空题章节"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="questionLabels[0].firstKnowledgePoint"
-        label="选择题一级知识点"
+        label="填空题一级知识点"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        label="选择题二级知识点"
+        label="填空题二级知识点"
         min-width="100%"
         :show-overflow-tooltip="true"
       >
@@ -152,7 +148,7 @@
       </el-table-column>
       <el-table-column
         prop="completionQuestionDifficulty"
-        label="选择题难度"
+        label="填空题难度"
         align="center"
       >
       </el-table-column>
@@ -164,15 +160,31 @@
       </el-table-column>
       <el-table-column label="操作" width="300px" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" @click="handleShow(scope.row)"
-            >详情</el-button
+          <div
+            v-for="(item, i) in completionQuestionStatus"
+            :key="item.completionQuestionId"
           >
-          <el-button type="primary" @click="handleEdit(scope.row)"
-            >修改</el-button
-          >
-          <el-button type="danger" @click="handleDelete(scope.row)"
-            >删除</el-button
-          >
+            <el-button
+              class="operate"
+              type="text"
+              icon="el-icon-plus"
+              v-if="
+                item.status == 0 &&
+                item.completionQuestionId == scope.row.completionQuestionId
+              "
+              @click="cilckAddButtonEvent(scope.row.completionQuestionId, i)"
+            ></el-button>
+            <el-button
+              class="operate"
+              type="text"
+              icon="el-icon-close"
+              v-if="
+                item.status == 1 &&
+                item.completionQuestionId == scope.row.completionQuestionId
+              "
+              @click="cilckDeleteButtonEvent(scope.row.completionQuestionId, i)"
+            ></el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -188,471 +200,6 @@
       >
       </el-pagination>
     </div>
-
-    <!-- 添加填空题弹出框 -->
-    <el-dialog
-      title="添加选择题"
-      :visible.sync="addCompletionQuestionInfoVisible"
-      center
-    >
-      <el-form
-        :model="aCompletionQuestionInfo"
-        label-width="80px"
-        ref="aCompletionQuestionInfo"
-        :rules="addCompletionQuestionSubmitRules"
-      >
-        <el-form-item
-          prop="completionQuestionDescription"
-          label="题目描述"
-          size="mini"
-        >
-          <el-input
-            v-model="aCompletionQuestionInfo.completionQuestionDescription"
-            placeholder="题目描述"
-            type="textarea"
-            :autosize="true"
-            style="resize: none"
-          >
-          </el-input>
-          <el-button @click="addCompletionQuestionAddSpace()"
-            >添加填空</el-button
-          >
-          <el-button @click="addCompletionQuestionDeleteSpace()"
-            >删除填空</el-button
-          >
-        </el-form-item>
-        <el-form-item
-          prop="completionQuestionAnswers"
-          label="题目答案"
-          size="mini"
-        >
-          <div
-            v-for="(
-              item, index
-            ) in aCompletionQuestionInfo.completionQuestionAnswers"
-            :key="index"
-            style="width: 400px; float: left"
-          >
-            <p style="display: inline">
-              答案{{
-                aCompletionQuestionInfo.completionQuestionAnswers[index]
-                  .completionQuestionAnswerNumber
-              }}:
-            </p>
-            <el-input
-              v-model="
-                aCompletionQuestionInfo.completionQuestionAnswers[index]
-                  .completionQuestionAnswerContent
-              "
-              placeholder="题目答案"
-              :autosize="true"
-              style="resize: none; width: 300px"
-            >
-            </el-input>
-          </div>
-        </el-form-item>
-        <el-form-item label="标签" size="mini" prop="questionLabels">
-          <el-select
-            v-model="addCompletionQuestionChapterChoice"
-            placeholder="请选择"
-            @change="addCompletionQuestionChapterClick()"
-          >
-            <el-option
-              v-for="(item, index) in chapterList"
-              :key="index"
-              :label="item"
-              :value="index"
-            >
-            </el-option>
-          </el-select>
-          <el-select
-            v-model="addCompletionQuestionFirstKnowledgeChoice"
-            placeholder="请选择"
-            :disabled="addCompletionQuestionFirstKnowledgeUse"
-            @change="addCompletionQuestionFirstPointClick()"
-            style="margin-left: 20px"
-          >
-            <el-option
-              v-for="(item, index) in addCompletionQuestionFirstKnowledgeOption"
-              :key="index"
-              :label="item"
-              :value="index"
-            >
-            </el-option>
-          </el-select>
-          <el-select
-            v-model="aCompletionQuestionInfo.questionLabels"
-            multiple
-            placeholder="请选择"
-            :disabled="addCompletionQuestionSecondKnowledgeUse"
-            style="margin-left: 20px; width: 400px"
-          >
-            <el-option
-              v-for="item in addCompletionQuestionSecondKnowledgeOption"
-              :key="item.questionLabelId"
-              :label="item.secondKnowledgePoint"
-              :value="item.questionLabelId"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          prop="completionQuestionDifficulty"
-          label="题目难度"
-          size="mini"
-        >
-          <el-select
-            v-model="aCompletionQuestionInfo.completionQuestionDifficulty"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in difficultyOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="isPrivate" label="是否私有" size="mini">
-          <el-select
-            v-model="aCompletionQuestionInfo.isPrivate"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in isPrivateOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="addCompletionQuestionInfoVisible = false"
-          >取 消</el-button
-        >
-        <el-button
-          type="primary"
-          @click="addCompletionQuestionInfo('aCompletionQuestionInfo')"
-          >确 定</el-button
-        >
-      </div>
-    </el-dialog>
-    <!-- 填空题详情弹出框 -->
-    <div class="e2">
-      <el-dialog
-        title="选择题详情"
-        :visible.sync="showCompletionQuestionInfoVisible"
-        center
-      >
-        <!-- 上下分离 -->
-        <el-form
-          :model="showCompletionQuestionInfo"
-          label-width="80px"
-          ref="showCompletionQuestionInfo"
-          :label-position="'top'"
-        >
-          <el-form-item
-            prop="completionQuestionDescription"
-            label="题目描述"
-            size="mini"
-          >
-            <el-input
-              v-model="showCompletionQuestionInfo.completionQuestionDescription"
-              placeholder="题目描述"
-              type="textarea"
-              :autosize="true"
-              style="resize: none"
-              :disabled="true"
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item
-            prop="completionQuestionAnswers"
-            label="题目答案"
-            size="mini"
-          >
-            <div
-              v-for="(
-                item, index
-              ) in showCompletionQuestionInfo.completionQuestionAnswers"
-              :key="index"
-              style="width: 400px; float: left"
-              class="e1"
-            >
-              <p style="display: inline">
-                答案{{
-                  showCompletionQuestionInfo.completionQuestionAnswers[index]
-                    .completionQuestionAnswerNumber
-                }}:
-              </p>
-              <el-input
-                v-model="
-                  showCompletionQuestionInfo.completionQuestionAnswers[index]
-                    .completionQuestionAnswerContent
-                "
-                placeholder="题目答案"
-                :autosize="true"
-                style="resize: none; width: 300px"
-                :disabled="true"
-              >
-              </el-input>
-            </div>
-          </el-form-item>
-          <el-form-item prop="chapter" label="所属章节" size="mini">
-            <!-- 初始化页面时不让他初始化没有对应的值 -->
-            <el-input
-              v-model="showCompletionQuestionInfo.questionLabels[0].chapter"
-              placeholder="所属章节"
-              type="textarea"
-              :autosize="true"
-              :disabled="true"
-              v-if="showCompletionQuestionInfo.questionLabels.length > 0"
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item
-            prop="firstKnowledgePoint"
-            label="第一知识点"
-            size="mini"
-          >
-            <el-input
-              v-model="
-                showCompletionQuestionInfo.questionLabels[0].firstKnowledgePoint
-              "
-              placeholder="第一知识点"
-              type="textarea"
-              :autosize="true"
-              :disabled="true"
-              v-if="showCompletionQuestionInfo.questionLabels.length > 0"
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item
-            prop="secondKnowledgePoint"
-            label="第二知识点"
-            size="mini"
-          >
-            <p
-              v-for="(item, index) in showCompletionQuestionInfo.questionLabels"
-              :key="index"
-              style="
-                margin-left: 10px;
-                float: left;
-                margin-top: 0px;
-                color: black;
-                font-size: 12px;
-                margin-bottom: 0px;
-              "
-            >
-              {{ item.secondKnowledgePoint }}
-            </p>
-          </el-form-item>
-          <el-form-item>
-            <el-form inline>
-              <el-form-item label="是否私有" size="mini">
-                <el-input
-                  v-model="showCompletionQuestionInfo.isPrivate"
-                  placeholder="是否私有"
-                  type="textarea"
-                  :disabled="true"
-                  style="width: 50px; height: 23px; margin-left: 5px"
-                >
-                </el-input>
-              </el-form-item>
-              <el-form-item label="题目难度" size="mini">
-                <el-input
-                  v-model="
-                    showCompletionQuestionInfo.completionQuestionDifficulty
-                  "
-                  placeholder="题目难度"
-                  type="textarea"
-                  :disabled="true"
-                  style="width: 50px; height: 23px; margin-left: 5px"
-                >
-                </el-input>
-              </el-form-item>
-            </el-form>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="showCompletionQuestionInfoVisible = false"
-            >确定</el-button
-          >
-        </div>
-      </el-dialog>
-    </div>
-    <!-- 修改填空题弹出框 -->
-    <el-dialog
-      title="添加选择题"
-      :visible.sync="editCompletionQuestionInfoVisible"
-      center
-    >
-      <el-form
-        :model="eCompletionQuestionInfo"
-        label-width="80px"
-        ref="eCompletionQuestionInfo"
-        :rules="editCompletionQuestionSubmitRules"
-      >
-        <el-form-item
-          prop="completionQuestionDescription"
-          label="题目描述"
-          size="mini"
-        >
-          <el-input
-            v-model="eCompletionQuestionInfo.completionQuestionDescription"
-            placeholder="题目描述"
-            type="textarea"
-            :autosize="true"
-            style="resize: none"
-          >
-          </el-input>
-          <el-button @click="editCompletionQuestionAddSpace()"
-            >添加填空</el-button
-          >
-          <el-button @click="editCompletionQuestionDeleteSpace()"
-            >删除填空</el-button
-          >
-        </el-form-item>
-        <el-form-item
-          prop="completionQuestionAnswers"
-          label="题目答案"
-          size="mini"
-        >
-          <div
-            v-for="(
-              item, index
-            ) in eCompletionQuestionInfo.completionQuestionAnswers"
-            :key="index"
-            style="width: 400px; float: left"
-          >
-            <p style="display: inline">
-              答案{{
-                eCompletionQuestionInfo.completionQuestionAnswers[index]
-                  .completionQuestionAnswerNumber
-              }}:
-            </p>
-            <el-input
-              v-model="
-                eCompletionQuestionInfo.completionQuestionAnswers[index]
-                  .completionQuestionAnswerContent
-              "
-              placeholder="题目答案"
-              :autosize="true"
-              style="resize: none; width: 300px"
-            >
-            </el-input>
-          </div>
-        </el-form-item>
-        <el-form-item label="标签" size="mini" prop="questionLabels">
-          <el-select
-            v-model="editCompletionQuestionChapterChoice"
-            placeholder="请选择"
-            @change="editCompletionQuestionChapterClick()"
-          >
-            <el-option
-              v-for="(item, index) in chapterList"
-              :key="index"
-              :label="item"
-              :value="index"
-            >
-            </el-option>
-          </el-select>
-          <el-select
-            v-model="editCompletionQuestionFirstKnowledgeChoice"
-            placeholder="请选择"
-            :disabled="editCompletionQuestionFirstKnowledgeUse"
-            @change="editCompletionQuestionFirstPointClick()"
-            style="margin-left: 20px"
-          >
-            <el-option
-              v-for="(
-                item, index
-              ) in editCompletionQuestionFirstKnowledgeOption"
-              :key="index"
-              :label="item"
-              :value="index"
-            >
-            </el-option>
-          </el-select>
-          <el-select
-            v-model="eCompletionQuestionInfo.questionLabels"
-            multiple
-            placeholder="请选择"
-            :disabled="editCompletionQuestionSecondKnowledgeUse"
-            value-key="questionLabelId"
-            style="margin-left: 20px; width: 400px"
-          >
-            <el-option
-              v-for="item in editCompletionQuestionSecondKnowledgeOption"
-              :key="item.questionLabelId"
-              :label="item.secondKnowledgePoint"
-              :value="item.questionLabelId"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          prop="completionQuestionDifficulty"
-          label="题目难度"
-          size="mini"
-        >
-          <el-select
-            v-model="eCompletionQuestionInfo.completionQuestionDifficulty"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in difficultyOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="isPrivate" label="是否私有" size="mini">
-          <el-select
-            v-model="eCompletionQuestionInfo.isPrivate"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in isPrivateOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="editCompletionQuestionInfoVisible = false"
-          >取 消</el-button
-        >
-        <el-button
-          type="primary"
-          @click="editCompletionQuestionInfo('eCompletionQuestionInfo')"
-          >确 定</el-button
-        >
-      </div>
-    </el-dialog>
-    <!-- 填空题删除弹出框 -->
-    <el-dialog
-      title="删除选择题"
-      :visible.sync="deleteCompletionQuestionVisible"
-      center
-      width="400px"
-    >
-      <p style="text-align: center">是否确定删除该填空题</p>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="deleteCompletionQuestionVisible = false"
-          >取 消</el-button
-        >
-        <el-button @click="deleteCompletionQuestionInfo()">确定删除</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -834,7 +381,6 @@ export default {
       //删除填空题弹出框显示
       deleteCompletionQuestionVisible: false,
       deleteCompletionQuestionId: '',//要删除的填空题编号
-
       teacherUserList: [],//教师用户列表
       searchChapterOptions: [],//查询用章节信息
       searchFirstKnowledgePointOptions: [],//查询用第一知识点
@@ -845,11 +391,13 @@ export default {
       searchTeacherUserId: '',//查询时的教师用户名称选择
       searchFirstKnowledgePointVisiable: true,//查询时第一知识点下拉框能否使用 true为禁用
       searchSecondKnowledgePointVisiable: true,//查询时第二知识点下拉框能否使用 true为禁用
-
       completionQuestionInfoList: [],
       chapterList: [],//章节内容
-      pageSize: 4,
+      examId: 0,
+      pageSize: 8,
       currentPage: 1,
+      completionQuestionInExam: [],
+      completionQuestionStatus: []
     }
   },
   computed: {
@@ -858,6 +406,7 @@ export default {
     }
   },
   mounted: function () {
+    this.examId = this.$route.query.examIdfromManage;
     //获取填空题信息
     this.getCompletionQuestionInfo();
     //获取章节信息
@@ -868,6 +417,7 @@ export default {
     this.getSearchQuestionLabelInfo();
     //获取全部教师信息 
     this.getTeacherUserInfo();
+
   },
   methods: {
     //查询填空题信息
@@ -1046,6 +596,54 @@ export default {
     handleCurrent (val) {
       this.currentPage = val;
     },
+    cilckAddButtonEvent (completionQuestionId, i) {
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      params.append('questionId', completionQuestionId);
+      params.append('examQuestionType', "completionQuestion");
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/addExamQuestion',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.completionQuestionStatus[i].status = 1
+        } else if (res.data == false) {
+          this.$message.error('题目添加失败');
+        } else {
+          this.$message.error('系统发生了错误');
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
+    },
+    cilckDeleteButtonEvent (completionQuestionId, i) {
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      params.append('questionId', completionQuestionId);
+      params.append('examQuestionType', "completionQuestion");
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/deleteExamQuestion',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.completionQuestionStatus[i].status = 0
+        } else if (res.data == false) {
+          this.$message.error('题目删除失败');
+        } else {
+          this.$message.error('系统发生了错误');
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
+    },
     //添加填空题信息添加填空
     addCompletionQuestionAddSpace () {
       var completionQuestionAnswer = new Object;
@@ -1190,6 +788,8 @@ export default {
       })
         .then((res) => {
           this.completionQuestionInfoList = res.data;
+          //获取考试已添加的填空题
+          this.getExamQuestionCompletionByExamId(this.examId);
         })
         .catch((err) => {
           this.$message.error('查询填空题错误');
@@ -1377,17 +977,6 @@ export default {
       this.deleteCompletionQuestionVisible = true;
       this.deleteCompletionQuestionId = row.completionQuestionId;
     },
-    //添加弹出框显示
-    handleAdd () {
-      this.addCompletionQuestionChapterChoice = '';
-      this.addCompletionQuestionFirstKnowledgeChoice = '';
-      this.aCompletionQuestionInfo.completionQuestionDifficulty = '';
-      this.aCompletionQuestionInfo.completionQuestionDescription = '';
-      this.aCompletionQuestionInfo.isPrivate = '';
-      this.aCompletionQuestionInfo.completionQuestionAnswers = [];
-      this.aCompletionQuestionInfo.questionLabels = [];
-      this.addCompletionQuestionInfoVisible = true;
-    },
     //修改填空题信息时获取第一知识点
     editCompletionQuestionGetFirstKnowledgeInfo (row) {
       let params = new URLSearchParams();
@@ -1433,6 +1022,40 @@ export default {
           this.$message.error('修改填空题获取第二知识点错误');
 
         })
+    },
+    //获取当前考试添加过的填空题
+    getExamQuestionCompletionByExamId (examId) {
+      const that = this
+      let params = new URLSearchParams();
+      params.append('examId', examId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examQuestion/queryExamQuestionCompletionByExamId',
+        data: params
+      }).then(function (resp) {
+        that.completionQuestionInExam = resp.data;
+
+
+        //可以优化，时间复杂度过高
+        for (var i = 0; i < that.completionQuestionInfoList.length; i++) {
+          var questionstatus = {};
+          questionstatus.completionQuestionId = that.completionQuestionInfoList[i].completionQuestionId;
+          questionstatus.status = 0;
+          that.completionQuestionStatus.push(questionstatus)
+        }
+
+        for (var i = 0; i < that.completionQuestionInfoList.length; i++) {
+          for (var j = 0; j < that.completionQuestionInExam.length; j++) {
+            // console.log(that.choiceQuestionList[i].choiceQuestionId + "  " + that.choiceQuestionInExam[j].choiceQuestionId);
+            if (that.completionQuestionInfoList[i].completionQuestionId == that.completionQuestionInExam[j].completionQuestion.completionQuestionId) {
+              that.completionQuestionStatus[i].status = 1
+            }
+          }
+        }
+      })
     }
   }
 }

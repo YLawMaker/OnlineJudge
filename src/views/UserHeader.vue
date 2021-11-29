@@ -28,12 +28,16 @@
         <el-submenu index="3">
           <template slot="title">Online Teaching</template>
           <el-menu-item @click="goToExamList()">Exam List</el-menu-item>
-          <el-menu-item @click="goToExamRankList()">Exam Statistics</el-menu-item>
           <el-menu-item @click="goToTestList()">Test List</el-menu-item>
+          <el-menu-item @click="goToPersonalExamHistory()"
+            >个人考试记录</el-menu-item
+          >
         </el-submenu>
-          <el-submenu index="4" v-if="this.userIdentity=='teacher'">
+        <el-submenu index="4" v-if="this.userIdentity == 'teacher'">
           <template slot="title">Teacher</template>
-          <el-menu-item @click="goToTeacherManager()">TeacherManager</el-menu-item>
+          <el-menu-item @click="goToTeacherManager()"
+            >TeacherManager</el-menu-item
+          >
         </el-submenu>
 
         <div class="loginbutton">
@@ -88,24 +92,37 @@ export default {
 
   methods: {
     //跳转到测试列表界面
-    goToTestList(){
+    goToTestList () {
       if (this.userId == "") {
-          this.$message.error("请先登录用户");
-          this.$router.push('/userLogin')
-      }else{
-         this.$router.push( {path:'/testList'});
-        
+        this.$message.error("请先登录用户");
+        this.$router.push('/userLogin')
+      } else {
+        this.$router.push({ path: '/testList' });
+
       }
-       
-    },
-    goToTeacherManager(){
-       this.$router.push('/addExam');
+
     },
     //跳转到用户排行榜 保存返回值
     gotoUserRankList () {
       if (this.$route.path != "/userRankList") {
         sessionStorage.setItem("isPublish", "true");
         this.$router.push('/userRankList')
+      }
+    },
+    goToTeacherManager () {
+      this.$router.push('/examInfoList');
+    },
+    //跳转到个人考试记录
+    goToPersonalExamHistory () {
+      if (this.$route.path != "/personalExamHistory") {
+        if (this.userId == "") {
+          this.$message.error("请先登录用户");
+          this.$router.push('/userLogin')
+        } else if (this.userIdentity == "student") {
+          this.$router.replace({ path: '/personalExamHistory', query: { userId: this.userId } });
+        } else if (this.userIdentity == "teacher") {
+          this.$router.push('/examInfoList');
+        }
       }
     },
 
@@ -127,32 +144,31 @@ export default {
 
 
     //跳转到考试列表界面
-    
+
     goToExamList () {
-      
-        if(this.$route.path!="/examList"){
-          if (this.userId == "") {
-            this.$message.error("请先登录用户");
-            this.$router.push('/userLogin')
-          } else if (this.userIdentity == "student") {
-            this.$router.push( {path:'/examList' ,query:{"userId":this.userId}});
-          } else if (this.userIdentity == "teacher") {
-            this.$router.push('/addExam');
-          }
+      if (this.$route.path != "/examList") {
+        if (this.userId == "") {
+          this.$message.error("请先登录用户");
+          this.$router.push('/userLogin')
+        } else if (this.userIdentity == "student") {
+          this.$router.replace({ path: '/examList', query: { userId: this.userId } });
+        } else if (this.userIdentity == "teacher") {
+          this.$router.push('/examInfoList');
         }
+      }
     },
     //跳转到考试排行榜界面
     goToExamRankList () {
-        if(this.$route.path!="/examRankList"){
-          if (this.userId == "") {
-            this.$message.error("请先登录用户");
-            this.$router.push('/userLogin')
-          } else if (this.userIdentity == "student") {
-            this.$router.push('/examRankList');
-          } else if (this.userIdentity == "teacher") {
-            this.$router.push('/addExam');
-          }
+      if (this.$route.path != "/examRankList") {
+        if (this.userId == "") {
+          this.$message.error("请先登录用户");
+          this.$router.push('/userLogin')
+        } else if (this.userIdentity == "student") {
+          this.$router.push('/examRankList');
+        } else if (this.userIdentity == "teacher") {
+          this.$router.push('/examInfoList');
         }
+      }
     },
     //跳转到用户登录界面
     userLogin () {
@@ -178,7 +194,7 @@ export default {
           }
         })
         .catch((err) => {
-          this.$message.error('查询用户信息失败');
+          this.$message.error('查询学生信息失败');
 
         })
     },
@@ -199,11 +215,9 @@ export default {
         .then((res) => {
           alert("退出成功");
           this.userName = '';
-          this.userIdentity='';
-          this.userId = '';
         })
         .catch((err) => {
-          this.$message.error('退出登录失败');
+          this.$message.error('删除选择题错误');
 
         })
     },

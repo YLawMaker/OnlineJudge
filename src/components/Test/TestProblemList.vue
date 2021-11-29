@@ -4,6 +4,12 @@
       <el-button
         size="small"
         type="primary"
+        @click.native.prevent="goBack(managePage)"
+        >返回</el-button
+      >
+      <el-button
+        size="small"
+        type="primary"
         @click.native.prevent="addDialogvisiable()"
         >添加</el-button
       >
@@ -62,7 +68,7 @@
         :current-page.sync="currentPage"
         :page-size="pagesize"
         layout="total,prev, pager, next"
-        :total="this.programmingList.length"
+        :total="this.testProgrammingList.length"
       >
       </el-pagination>
     </div>
@@ -124,46 +130,35 @@
     </el-dialog>
   </div>
 </template>
+
 <script>
 export default {
   data () {
     return {
-      programmingData: {
-        examId: '',
-        examProgrammingId: '',
-        examProgrammingTitle: '',
-        examProgrammingDescription: '',
-        examProgrammingInput: '',
-        examProgrammingOutput: '',
-        examProgrammingSampleInput: '',
-        examProgrammingSampleOutput: '',
-        examProgrammingScore: ''
-      },
-      edit: true,
-      addRules: {},
-      programmingList: [],
-      searchData: [],
-      examIdFromExamManage: 0,
-      edittableDataVisible_add: false,
-      DataVisible_preview: false,
+      testProgrammingList: [],
       currentPage: 1,
       pagesize: 8,
       currentPage_dialog: 1,
       pagesize_dialog: 7,
       select_word: '',
-      multipleSelection: [],
+      managePage: 0,
+      testId: 0,
+      edittableDataVisible_add: false,
+      searchData: [],
       tableData: [],
+      programmingList: [],
+      multipleSelection: [],
       programmingIdList: []
     }
   },
   mounted: function () {
-    this.examIdFromExamManage = this.$route.query.examIdfromManage;
-    this.getprogramming(this.examIdFromExamManage);
+    this.testId = this.$route.query.testIdfromManage;
+    this.managePage = this.$route.query.managePage;
+    this.getTestProgramming(this.testId)
     this.getExercise()
   },
   computed: {
     data () {
-
       return this.programmingList.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
     },
     data_dialog () {
@@ -187,16 +182,22 @@ export default {
     },
   },
   methods: {
+    goBack (currentPage) {
+      // console.log(currentPage);
+      this.$router.push({ name: 'TestInfoList', params: { page: currentPage } })
+    },
+    addDialogvisiable () {
+      this.edittableDataVisible_add = true
+    },
     handleClose (done) {
       this.edittableDataVisible_add = false
-      this.addProgrammingData = new Object();
       this.select_word = ""
-    },
-    handleCurrent_dialog (val) {
-      this.currentPage_dialog = val;
     },
     handleCurrent (val) {
       this.currentPage = val;
+    },
+    handleCurrent_dialog (val) {
+      this.currentPage_dialog = val;
     },
     handleSelectionChange (val) {
       this.multipleSelection = val;
@@ -204,62 +205,6 @@ export default {
     },
     getRowKey (row) {
       return row.exerciseId
-    },
-    addDialogvisiable () {
-      this.edittableDataVisible_add = true
-
-    },
-    getprogramming (examId) {
-      const that = this
-      let params = new URLSearchParams();
-      // console.log(examId);
-      params.append('examId', examId);
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/examQuestion/queryExamQuestionProgrammingByExamId',
-        data: params
-      }).then(function (resp) {
-        that.programmingList = resp.data
-      })
-    },
-    addProgramming_dialog () {
-      //将添加界面选中的题目的信息格式转换成对象
-      // console.log(this.multipleSelection);
-      for (var i = 0; i < this.multipleSelection.length; i++) {
-        var emptyObject = {};
-        emptyObject.examId = Number(this.examIdFromExamManage);
-        emptyObject.questionId = this.multipleSelection[i].exerciseId;
-        emptyObject.examQuestion = "programmingQuestion"
-        this.programmingIdList.push(emptyObject)
-      }
-      // console.log(this.programmingIdList);
-      let params = new URLSearchParams();
-      params.append('addExamQuestions', JSON.stringify(this.programmingIdList));
-      this.$axios({
-        method: 'post',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: '/examQuestion/addExamQuestions',
-        data: params
-      }).then((res) => {
-        if (res.data == false) {
-          this.$message.error('添加失败');
-          this.edittableDataVisible_add = false;
-          this.getprogramming(this.examIdFromExamManage);
-          this.getExercise();
-        } else {
-          this.$message.success('添加成功');
-          this.edittableDataVisible_add = false;
-          this.getprogramming(this.examIdFromExamManage);
-          this.getExercise();
-        }
-      }).catch((err) => {
-        console.log(err);
-      })
     },
     getExercise () {
       const that = this
@@ -273,8 +218,11 @@ export default {
         // console.log(resp.data);
         that.tableData = resp.data;
         // console.log(that.tableData);
+        console.log(that.programmingList);
         for (var i = 0, len1 = that.tableData.length; i < len1; i++) {
+          // console.log(that.tableData[i].exerciseId);
           for (var j = 0, len2 = that.programmingList.length; j < len2; j++) {
+            // console.log("List:" + that.programmingList[j].exerciseId);
             if (that.tableData[i].exerciseId === that.programmingList[j].exercise.exerciseId) {
               that.tableData.splice(i, 1)
               len1 = that.tableData.length
@@ -286,6 +234,59 @@ export default {
         // console.log(that.tableData);
       })
     },
+    getTestProgramming (testId) {
+      const that = this
+      let params = new URLSearchParams();
+      // console.log(examId);
+      params.append('testId', testId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/testProgramming/queryTestProgrammingQuestionInfoByTestId',
+        data: params
+      }).then(function (resp) {
+        // console.log(resp.data);
+        that.programmingList = resp.data
+      })
+    },
+    addProgramming_dialog () {
+      //将添加界面选中的题目的信息格式转换成对象
+      // console.log(this.multipleSelection);
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        var emptyObject = {};
+        emptyObject.testId = Number(this.testId);
+        emptyObject.exerciseId = this.multipleSelection[i].exerciseId;
+        this.programmingIdList.push(emptyObject)
+      }
+      // console.log(this.programmingIdList);
+      let params = new URLSearchParams();
+      params.append('testProgrammingQuestions', JSON.stringify(this.programmingIdList));
+      // console.log(params.toString());
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/testProgramming/addTestProgrammingQuestionInfos',
+        data: params
+      }).then((res) => {
+        if (res.data == false) {
+          this.$message.error('添加失败');
+          this.edittableDataVisible_add = false;
+          this.getTestProgramming(this.testId);
+          this.getExercise();
+        } else {
+          this.$message.success('添加成功');
+          this.edittableDataVisible_add = false;
+          this.getTestProgramming(this.testId);
+          this.getExercise();
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
     deleteConfirm (row) {
       this.$confirm('此操作将永久删除该分组, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -293,7 +294,7 @@ export default {
         type: 'warning'
       }).then((action) => {
         if (action === 'confirm') {
-          this.deleteProgramming(row.exercise.exerciseId);
+          this.deleteProgramming(row.testProgrammingQuestionId);
         }
       }).catch((resp) => {
         this.$message({
@@ -303,30 +304,28 @@ export default {
         // console.log(resp);
       });
     },
-    deleteProgramming (exerciseId) {
+    deleteProgramming (testProgrammingQuestionId) {
       let params = new URLSearchParams();
-      params.append('examId', this.examIdFromExamManage);
-      params.append('questionId', exerciseId);
-      params.append('examQuestionType', "programmingQuestion")
+      params.append('testProgrammingQuestionId', testProgrammingQuestionId);
       this.$axios({
         method: 'post',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/examQuestion/deleteExamQuestion',
+        url: '/testProgramming/deleteTestProgrammingQuestionByTestProgrammingQuestionId',
         data: params
       }).then((res) => {
         if (res.data == true) {
           this.$message.success('题目删除成功');
-          this.getprogramming(this.examIdFromExamManage);
+          this.getTestProgramming(this.testId);
           this.getExercise();
         } else if (res.data == false) {
           this.$message.error('题目删除失败');
-          this.getprogramming(this.examIdFromExamManage);
+          this.getTestProgramming(this.testId);
           this.getExercise();
         } else {
           this.$message.error('系统发生了错误');
-          this.getprogramming(this.examIdFromExamManage);
+          this.getTestProgramming(this.testId);
           this.getExercise();
         }
       }).catch((res) => {
@@ -336,47 +335,12 @@ export default {
   }
 }
 </script>
+
 <style>
-.el-tooltip__popper {
-  max-width: 30%;
-  background: black !important;
-  color: white !important;
-  opacity: 50 !important; /*背景色透明度*/
-  white-space: pre-line !important;
-}
-.el-textarea.is-disabled .el-textarea__inner {
-  background-color: white;
-  border-color: white;
-  color: black;
-  cursor: default;
-}
-.el-table .cell {
-  white-space: pre-line;
-}
-.router-link-active {
-  text-decoration: none;
-}
-a {
-  /* text-decoration: none; */
-  color: #606266;
-}
 .block {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-.block_addDialog {
-  position: absolute;
-  bottom: 7px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.addProgrammingDialog_button {
-  margin: 25px 25px 25px 25px;
-  float: right;
-}
-.el-dialog {
-  overflow: auto;
 }
 </style>
