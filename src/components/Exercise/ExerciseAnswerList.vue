@@ -150,7 +150,7 @@ export default {
   methods: {
     goBack (currentPage, searchKey) {
       // alert(searchKey);
-      this.$router.push({ name: 'ExerciseManage', params: { page: currentPage, key: searchKey } })
+      this.$router.push({ name: 'ExerciseInfoList', params: { page: currentPage, key: searchKey } })
     },
     addExerciseAnswerDialog () {
       this.edittableDataVisible_add = true

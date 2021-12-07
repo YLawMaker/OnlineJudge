@@ -186,7 +186,7 @@ export default {
 .paper-content {
   position: absolute;
   left: 150px;
-  top: 60px;
+  top: 68px;
   right: 150px;
   bottom: 45px;
   overflow-x: hidden;
@@ -195,7 +195,12 @@ export default {
   padding: 10px;
   border: 1px solid #e4e4e4;
   border-top: none;
+  scrollbar-width: none; /* Firefox 隐藏进度条*/
 }
+::-webkit-scrollbar {
+  display: none; /* Chrome Safari 隐藏进度条*/
+}
+
 .title {
   font-size: 200%;
   color: rgb(0, 140, 255);

@@ -95,7 +95,7 @@
     <!-- 选择题列表 -->
     <div>
       <el-table
-      class="choiceQuestionTable"
+        class="choiceQuestionTable"
         :data="data"
         stripe
         :header-cell-style="{ 'text-align': 'center' }"
@@ -163,9 +163,7 @@
               >
                 ...
               </el-tag>
-              <sapn
-                v-if="index > 3"
-              ></sapn>
+              <sapn v-if="index > 3"></sapn>
             </div>
           </template>
         </el-table-column>
@@ -178,12 +176,8 @@
         </el-table-column>
         <el-table-column prop="isPrivate" label="是否私有" width="100px">
           <template slot-scope="scope">
-            <p v-if="scope.row.isPrivate === true" align="center">
-              私有
-            </p>
-            <p v-if="scope.row.isPrivate === false" align="center">
-              公有
-            </p>
+            <p v-if="scope.row.isPrivate === true" align="center">私有</p>
+            <p v-if="scope.row.isPrivate === false" align="center">公有</p>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="300px" align="center">
@@ -252,13 +246,19 @@
             placeholder="题目描述"
             type="textarea"
             :autosize="true"
-            style="resize:none;font-size:1.2em"
+            style="resize: none; font-size: 1.2em"
           >
           </el-input>
         </el-form-item>
         <!-- 选择正确选项上方的错误提醒 -->
         <p
-          style="float:right;margin-right:35px;width:100px;color:red;font-size: 12px;"
+          style="
+            float: right;
+            margin-right: 35px;
+            width: 100px;
+            color: red;
+            font-size: 12px;
+          "
           v-if="isChoiceErrorVisible"
         >
           请选择正确选项
@@ -298,7 +298,13 @@
           </el-table>
           <!-- 选项内容下方的错误提醒 -->
           <p
-            style="float:right;margin-right:43%;width:100px;color:red;font-size:12px;"
+            style="
+              float: right;
+              margin-right: 43%;
+              width: 100px;
+              color: red;
+              font-size: 12px;
+            "
             v-if="isChoiceInputErrorVisible"
           >
             请输入内容
@@ -309,7 +315,7 @@
             v-model="chapterChoice"
             placeholder="请选择"
             @change="addChapterClick()"
-            style="margin-left: 10px;width:45%"
+            style="margin-left: 10px; width: 45%"
           >
             <el-option
               v-for="item in chapterOptions"
@@ -324,7 +330,7 @@
             placeholder="请选择"
             :disabled="firstKnowledgePointVisiable"
             @change="addFirstKnowledgePointClick()"
-            style="margin-left:35px;width:45%"
+            style="margin-left: 35px; width: 45%"
           >
             <el-option
               v-for="item in firstKnowledgePointOptions"
@@ -339,7 +345,7 @@
             multiple
             placeholder="请选择"
             :disabled="secondKnowledgePointVisiable"
-            style="margin:10px;width:96%;"
+            style="margin: 10px; width: 96%"
           >
             <el-option
               v-for="item in secondKnowledgePointOptions"
@@ -353,7 +359,7 @@
         <el-form-item prop="choiceQuestionDifficulty" label="题目难度">
           <el-select
             v-model="choiceQuestionInfo.choiceQuestionDifficulty"
-            style="margin-left:10px"
+            style="margin-left: 10px"
             placeholder="请选择"
           >
             <el-option
@@ -368,7 +374,7 @@
         <el-form-item prop="isPrivate" label="是否私有">
           <el-select
             v-model="choiceQuestionInfo.isPrivate"
-            style="margin-left:10px"
+            style="margin-left: 10px"
             placeholder="请选择"
           >
             <el-option
@@ -384,12 +390,12 @@
       <div slot="footer" class="dialog-footer">
         <el-button
           type="primary"
-          style="width:300px;font-size:1.3em"
+          style="width: 100px; font-size: 1.3em"
           @click="addChoiceQuestionInfo('choiceQuestionInfo')"
           >确 定</el-button
         >
         <el-button
-          style="font-size:1.3em;margin-left:50px"
+          style="font-size: 1.3em; margin-left: 50px"
           @click="addChoiceQuestionVisible = false"
           >取 消</el-button
         >
@@ -415,13 +421,19 @@
             placeholder="题目描述"
             type="textarea"
             :autosize="true"
-            style="resize:none;;font-size:1.2em"
+            style="resize: none; font-size: 1.2em"
           >
           </el-input>
         </el-form-item>
         <!-- 选择正确选项上方的错误提醒 -->
         <p
-          style="float:right;margin-right:35px;width:100px;color:red;font-size: 12px;"
+          style="
+            float: right;
+            margin-right: 35px;
+            width: 100px;
+            color: red;
+            font-size: 12px;
+          "
           v-if="isChoiceErrorVisible"
         >
           请选择正确选项
@@ -461,7 +473,13 @@
           </el-table>
           <!-- 选项内容下方的错误提醒 -->
           <p
-            style="float:right;margin-right:43%;width:100px;color:red;font-size:12px;"
+            style="
+              float: right;
+              margin-right: 43%;
+              width: 100px;
+              color: red;
+              font-size: 12px;
+            "
             v-if="isChoiceInputErrorVisible"
           >
             请输入内容
@@ -472,7 +490,7 @@
             v-model="chapterChoice"
             placeholder="请选择"
             @change="editChapterClick()"
-            style="margin-left: 10px;width:45%"
+            style="margin-left: 10px; width: 45%"
           >
             <el-option
               v-for="item in chapterOptions"
@@ -486,7 +504,7 @@
             v-model="firstKnowledgePointChoice"
             placeholder="请选择"
             @change="editFirstKnowledgePointClick()"
-            style="margin-left:35px;width:45%"
+            style="margin-left: 35px; width: 45%"
           >
             <el-option
               v-for="item in firstKnowledgePointOptions"
@@ -500,7 +518,7 @@
             v-model="eChoiceQuestionInfo.questionLabels"
             multiple
             placeholder="请选择"
-            style="margin:10px;width:96%;"
+            style="margin: 10px; width: 96%"
             value-key="questionLabelId"
             :disabled="editSecondKnowledgePointVisiable"
           >
@@ -515,7 +533,7 @@
         </el-form-item>
         <el-form-item
           prop="choiceQuestionDifficulty"
-          style="margin-left:10px"
+          style="margin-left: 10px"
           label="题目难度"
         >
           <el-select
@@ -534,7 +552,7 @@
         <el-form-item prop="isPrivate" label="是否私有">
           <el-select
             v-model="eChoiceQuestionInfo.isPrivate"
-            style="margin-left:10px"
+            style="margin-left: 10px"
             placeholder="请选择"
           >
             <el-option
@@ -550,12 +568,12 @@
       <div slot="footer" class="dialog-footer">
         <el-button
           type="primary"
-          style="width:300px;font-size:1.3em"
+          style="width: 300px; font-size: 1.3em"
           @click="editChoiceQuestionInfo('eChoiceQuestionInfo')"
           >确定修改</el-button
         >
         <el-button
-          style="font-size:1.3em;margin-left:50px"
+          style="font-size: 1.3em; margin-left: 50px"
           @click="editChoiceQuestionVisible = false"
           >取 消</el-button
         >
@@ -716,7 +734,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       choiceQuestionInfo: {
         choiceQuestionId: "",
@@ -928,7 +946,7 @@ export default {
     };
   },
 
-  mounted: function() {
+  mounted: function () {
     //获取选择题标签信息
     this.getQuestionLabelInfo();
     //获取查询选择题标签信息
@@ -941,7 +959,7 @@ export default {
     this.getTeacherUserInfo();
   },
   computed: {
-    data() {
+    data () {
       return this.choiceQuestionList.slice(
         (this.currentPage - 1) * this.pageSize,
         this.currentPage * this.pageSize
@@ -951,15 +969,15 @@ export default {
 
   methods: {
     // 表头样式设置
-    headClass() {
+    headClass () {
       return "text-align: center;";
     },
     // 表格样式设置
-    rowClass() {
+    rowClass () {
       return "text-align: center;";
     },
     //获取全部教师信息
-    getTeacherUserInfo() {
+    getTeacherUserInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -981,7 +999,7 @@ export default {
         });
     },
     //点击查询选择题信息  这里他把=0也识别为''会用true所以加上 userId为0也会传0
-    searchChoiceQuestionInfo() {
+    searchChoiceQuestionInfo () {
       let params = new URLSearchParams();
       if (this.searchTeacherUserId == "") {
         params.append("userId", 0);
@@ -1037,7 +1055,7 @@ export default {
         });
     },
     //查询时点击章节信息
-    searchChapter() {
+    searchChapter () {
       //不为空时 查询时第一知识点可以使用 第二知识点禁用 第一知识点和第二知识点选择为空
       if (this.searchChapterOptions[this.searchChapterChoice].label != " ") {
         this.searchFirstKnowledgePointVisiable = false;
@@ -1056,7 +1074,7 @@ export default {
       }
     },
     //查询时点击第一知识点
-    searchFirstPoint() {
+    searchFirstPoint () {
       //查询时第二知识点可以使用  第二知识点选择为空
       if (
         this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice]
@@ -1075,11 +1093,11 @@ export default {
       }
     },
     //跳转页面调用
-    handleCurrent(val) {
+    handleCurrent (val) {
       this.currentPage = val;
     },
     //添加信息点击章节
-    addChapterClick() {
+    addChapterClick () {
       //清空数据信息并解除禁用 清空第一知识点
       this.firstKnowledgePointVisiable = false;
       this.firstKnowledgePointChoice = "";
@@ -1090,7 +1108,7 @@ export default {
       );
     },
     //添加信息点击第一知识点
-    addFirstKnowledgePointClick() {
+    addFirstKnowledgePointClick () {
       //清空数据信息并解除禁用
       this.secondKnowledgePointVisiable = false;
       this.secondKnowledgePointChoice = [];
@@ -1102,7 +1120,7 @@ export default {
       );
     },
     //修改信息点击章节
-    editChapterClick() {
+    editChapterClick () {
       this.editSecondKnowledgePointVisiable = true;
       this.eChoiceQuestionInfo.questionLabels = [];
       //获取第一知识点的数据写在下拉框数据里
@@ -1110,7 +1128,7 @@ export default {
         this.chapterOptions[this.chapterChoice].label
       );
     },
-    editFirstKnowledgePointClick() {
+    editFirstKnowledgePointClick () {
       this.editSecondKnowledgePointVisiable = false;
       this.eChoiceQuestionInfo.questionLabels = [];
       //获取第二知识点的数据写在下拉框数据里
@@ -1120,7 +1138,7 @@ export default {
       );
     },
     //添加选择题
-    addChoiceQuestionInfo(choiceQuestionInfo) {
+    addChoiceQuestionInfo (choiceQuestionInfo) {
       this.$refs[choiceQuestionInfo].validate((valid) => {
         //开启校验 不管标题和分数是否通过都要判断表单里的数据
         if (valid) {
@@ -1215,7 +1233,7 @@ export default {
       });
     },
     //修改选择题
-    editChoiceQuestionInfo(choiceQuestionInfo) {
+    editChoiceQuestionInfo (choiceQuestionInfo) {
       this.$refs[choiceQuestionInfo].validate((valid) => {
         //开启校验 不管标题和分数是否通过都要判断表单里的数据
         if (valid) {
@@ -1311,7 +1329,7 @@ export default {
       });
     },
     ///删除选择题
-    async deleteCohiceQuestionInfo(choiceQuestionId) {
+    async deleteCohiceQuestionInfo (choiceQuestionId) {
       let params = new URLSearchParams();
       params.append("choiceQuestionId", choiceQuestionId);
       const confirmResult = await this.$confirm(
@@ -1350,7 +1368,7 @@ export default {
         });
     },
     //控制添加弹出框 重新赋值为空
-    handleAdd() {
+    handleAdd () {
       //选择框禁用
       this.firstKnowledgePointVisiable = true;
       this.secondKnowledgePointVisiable = true;
@@ -1373,7 +1391,7 @@ export default {
       this.addChoiceQuestionVisible = true;
     },
     //控制修改弹出框 获取对应信息并赋值
-    handleEdit(row) {
+    handleEdit (row) {
       //清空数据
       this.chapterChoice = "";
       this.choice[0].input = "";
@@ -1424,7 +1442,7 @@ export default {
       this.editChoiceQuestionVisible = true;
     },
     //控制详情弹出框并赋值
-    handleShow(row) {
+    handleShow (row) {
       this.showChoiceQuestionInfo.choiceQuestionDescription =
         row.choiceQuestionDescription;
       this.showChoiceQuestionInfo.choiceQuestionStemA = row.choiceQuestionStemA;
@@ -1444,12 +1462,12 @@ export default {
       this.choiceQuestionShowVisible = true;
     },
     //控制删除弹出框并赋值
-    handleDelete(row) {
+    handleDelete (row) {
       this.deleteChoiceQuestionVisible = true;
       this.deleteChoiceQuestionId = row.choiceQuestionId;
     },
     //获取标签信息(获取chapter)
-    getQuestionLabelInfo() {
+    getQuestionLabelInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -1474,7 +1492,7 @@ export default {
         });
     },
     //获取查询标签信息(获取chapter)
-    getSearchQuestionLabelInfo() {
+    getSearchQuestionLabelInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -1504,7 +1522,7 @@ export default {
         });
     },
     //获取第一知识点信息
-    getFirstKnowledgePointInfo(chapter) {
+    getFirstKnowledgePointInfo (chapter) {
       let params = new URLSearchParams(chapter);
       params.append("chapter", chapter);
       this.$axios({
@@ -1531,7 +1549,7 @@ export default {
         });
     },
     //获取查询第一知识点信息
-    getSearchFirstKnowledgePointInfo(chapter) {
+    getSearchFirstKnowledgePointInfo (chapter) {
       let params = new URLSearchParams(chapter);
       params.append("chapter", chapter);
       this.$axios({
@@ -1563,7 +1581,7 @@ export default {
         });
     },
     //获取第二知识点
-    getSecondKnowledgePointInfo(chapter, firstKnowledgePoint) {
+    getSecondKnowledgePointInfo (chapter, firstKnowledgePoint) {
       let params = new URLSearchParams();
       params.append("chapter", chapter);
       params.append("firstKnowledgePoint", firstKnowledgePoint);
@@ -1597,7 +1615,7 @@ export default {
         });
     },
     //获取查询第二知识点
-    getSearchSecondKnowledgePointInfo(chapter, firstKnowledgePoint) {
+    getSearchSecondKnowledgePointInfo (chapter, firstKnowledgePoint) {
       let params = new URLSearchParams();
       params.append("chapter", chapter);
       params.append("firstKnowledgePoint", firstKnowledgePoint);
@@ -1636,7 +1654,7 @@ export default {
         });
     },
     //获取当前教师用户信息
-    getCurrentTeacherUserInfo() {
+    getCurrentTeacherUserInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -1655,7 +1673,7 @@ export default {
         });
     },
     //修改时获取第一知识点初始化
-    getEditFirstKnowledgePointInfo(row) {
+    getEditFirstKnowledgePointInfo (row) {
       let params = new URLSearchParams();
       params.append("chapter", this.chapterOptions[this.chapterChoice].label);
       this.$axios({
@@ -1695,7 +1713,7 @@ export default {
         });
     },
     //修改时获取第二知识点初始化
-    getEditSecondKnowledgePointInfo(row) {
+    getEditSecondKnowledgePointInfo (row) {
       let params = new URLSearchParams();
       params.append("chapter", this.chapterOptions[this.chapterChoice].label);
       params.append(
@@ -1736,7 +1754,7 @@ export default {
         });
     },
     //获取填空题信息
-    getChoiceQuestionInfo() {
+    getChoiceQuestionInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -1796,10 +1814,10 @@ export default {
   width: 200px;
   display: inline-block;
 }
-.choiceQuestionTable{
-  .el-tag{
-    float:left  ;
-    margin:3px 2px 2px 0;
+.choiceQuestionTable {
+  .el-tag {
+    float: left;
+    margin: 3px 2px 2px 0;
   }
 }
 /* 选择题详情页样式 */

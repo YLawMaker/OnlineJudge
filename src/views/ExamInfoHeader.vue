@@ -8,15 +8,9 @@
           mode="horizontal"
           @select="handleSelect"
         >
-          <el-menu-item
-            ><el-button
-              size="small"
-              type="header"
-              @click.native.prevent="goBack()"
-            >
-              返回
-            </el-button></el-menu-item
-          >
+          <el-menu-item>
+            <li @click="goBack()">返回</li>
+          </el-menu-item>
 
           <el-menu-item index="/ExamInfo"><span>试卷一览</span></el-menu-item>
           <el-menu-item index="/ExamChoiceQuestonList"
@@ -67,24 +61,71 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .collapse-btn {
   float: left;
   padding: 0 21px;
   cursor: pointer;
   line-height: 70px;
 }
+
 .el-dropdown-link {
   color: #ffffff;
   cursor: pointer;
 }
-.el-submenu {
-  width: 100px;
+.el-dropdown-link:hover {
+  color: #b1b1b1;
+  cursor: pointer;
 }
 .el-button--header {
   color: #909399;
   background-color: #fff;
   border-color: #fff;
   font-size: 14px;
+}
+.el-header {
+  padding: 0 20px 0 10px;
+  background: #3a77b4;
+  display: flex;
+  justify-content: space-between;
+}
+.el-menu {
+  height: 100%;
+}
+.el-menu {
+  .el-button--header {
+    color: white;
+    border-color: #3a77b4;
+    background-color: #3a77b4;
+  }
+  .el-button--header:hover {
+    color: white;
+    border-color: #2965a1;
+    background-color: #2965a1;
+  }
+  .el-menu-item {
+    padding: 0 20px 0 10px;
+    border-right: 1px solid #3a77b4;
+    background-color: #3a77b4;
+    color: white;
+  }
+  .el-menu-item:hover {
+    padding: 0 20px 0 10px;
+    border-right: 1px solid #3a77b4;
+    background-color: #2965a1;
+    color: white;
+  }
+  .el-menu-item.is-active {
+    padding: 0 20px 0 10px;
+    border-right: 1px solid #3a77b4;
+    background-color: #3a77b4;
+    color: white;
+  }
+  i {
+    color: #fff;
+  }
+  i:active {
+    color: #ffd04b;
+  }
 }
 </style>

@@ -44,7 +44,7 @@ export default {
 </script>
 
 
-<style>
+<style lang="less" scoped>
 .el-menu--collapse .el-menu .el-submenu,
 .el-menu--popup {
   min-width: 150px;
@@ -52,9 +52,62 @@ export default {
 .el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
   border-bottom: transparent;
 }
+.el-dropdown-link {
+  color: #ffffff;
+  cursor: pointer;
+}
+.el-dropdown-link:hover {
+  color: #b1b1b1;
+  cursor: pointer;
+}
 .el-header {
   padding: 0 0;
   box-sizing: border-box;
   flex-shrink: 0;
+}
+.el-header {
+  padding: 0 20px 0 10px;
+  background: #3a77b4;
+  display: flex;
+  justify-content: space-between;
+}
+.el-menu {
+  height: 100%;
+}
+.el-menu {
+  .el-button--header {
+    color: white;
+    border-color: #3a77b4;
+    background-color: #3a77b4;
+  }
+  .el-button--header:hover {
+    color: white;
+    border-color: #2965a1;
+    background-color: #2965a1;
+  }
+  .el-menu-item {
+    padding: 0 20px 0 10px !important;
+    border-right: 1px solid #3a77b4 !important;
+    background-color: #3a77b4 !important;
+    color: white !important;
+  }
+  .el-menu-item:hover {
+    padding: 0 20px 0 10px !important;
+    border-right: 1px solid #3a77b4 !important;
+    background-color: #2965a1 !important;
+    color: white !important;
+  }
+  .el-menu-item.is-active {
+    padding: 0 20px 0 10px !important;
+    border-right: 1px solid #3a77b4 !important;
+    background-color: #3a77b4 !important;
+    color: white !important;
+  }
+  i {
+    color: #fff;
+  }
+  i:active {
+    color: #ffd04b;
+  }
 }
 </style>

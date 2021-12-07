@@ -20,7 +20,7 @@
               <i class="iconfont icon-kaoshizuoda"></i>
               <span>考试</span>
             </template>
-            <el-menu-item index="/addExam">考试管理</el-menu-item>
+            <el-menu-item index="/examInfoList">考试管理</el-menu-item>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">
@@ -37,9 +37,7 @@
               ><i class="iconfont icon-navicon-rqfz"></i
               ><span>分组</span></template
             >
-            <el-menu-item index="/groupInfoManage">
-              分组管理
-            </el-menu-item>
+            <el-menu-item index="/groupInfoList"> 分组管理 </el-menu-item>
           </el-submenu>
         </el-menu>
         <div class="teacherName-right" @click="gotoTeacherInfo()">
@@ -56,26 +54,26 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       teacherUserName: "",
     };
   },
   computed: {},
-  mounted: function() {
+  mounted: function () {
     this.getTeacherUserInfo();
   },
   methods: {
     //跳转界面
-    handleSelect(key, keyPath) {
+    handleSelect (key, keyPath) {
       this.$router.push(key);
     },
     //跳转到教师信息
-    gotoTeacherInfo() {
+    gotoTeacherInfo () {
       this.$router.push("/teacherInfo");
     },
     //获取教师用户信息
-    getTeacherUserInfo() {
+    getTeacherUserInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -129,24 +127,26 @@ export default {
   padding: 0 20px 0 10px;
   background: #3a77b4;
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
+}
+
+.el-menu {
+  height: 100%;
 }
 .el-menu {
-  height:100%;
-}
-.el-menu{
-  .backOJ{
+  .backOJ {
     padding: 0 20px 0 0px;
-    font-size:1em;
+    font-size: 1em;
   }
   .el-menu-item {
+    background-color: #3a77b4;
     padding: 0 20px 0 10px;
-    border-right: 1px solid white;
+    border-right: 1px solid #3a77b4;
   }
-  i{
+  i {
     color: #fff;
   }
-  i:active{
+  i:active {
     color: #ffd04b;
   }
   .el-submenu {

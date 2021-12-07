@@ -13,14 +13,18 @@
         :collapse-transition="true"
       >
         <el-submenu index="1">
-          <template slot="title"><i class="el-icon-monitor"></i>Online Judge</template>
+          <template slot="title"
+            ><i class="el-icon-monitor"></i>Online Judge</template
+          >
           <el-menu-item index="/faq">F.A.Q</el-menu-item>
           <el-menu-item index="1-2">Hand In Hand</el-menu-item>
           <el-menu-item index="1-3">Online Acmers</el-menu-item>
           <el-menu-item index="/managerLogin">管理员登陆</el-menu-item>
         </el-submenu>
         <el-submenu index="2">
-          <template slot="title"><i class="iconfont icon-exercise"></i>Online Exercise</template>
+          <template slot="title"
+            ><i class="iconfont icon-exercise"></i>Online Exercise</template
+          >
           <el-menu-item @click="goToExerciseList()" index="2-1"
             >ExerciseList</el-menu-item
           >
@@ -32,7 +36,9 @@
           >
         </el-submenu>
         <el-submenu index="3">
-          <template slot="title"><i class="iconfont icon-exam"></i>Online Teaching</template>
+          <template slot="title"
+            ><i class="iconfont icon-exam"></i>Online Teaching</template
+          >
           <el-menu-item @click="goToExamList()" index="3-1"
             >Exam List</el-menu-item
           >
@@ -44,7 +50,9 @@
           >
         </el-submenu>
         <el-submenu index="4" v-if="this.userIdentity == 'teacher'">
-          <template slot="title"><i class="iconfont icon-teacher"></i>Teacher</template>
+          <template slot="title"
+            ><i class="iconfont icon-teacher"></i>Teacher</template
+          >
           <el-menu-item @click="goToTeacherManager()" index="4-1"
             >TeacherManager</el-menu-item
           >
@@ -71,21 +79,21 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       userName: "",
       userId: "",
       userIdentity: "",
     };
   },
-  mounted: function() {
+  mounted: function () {
     sessionStorage.setItem("isPublish", "false");
     this.getUserInfo();
   },
 
   methods: {
     //跳转到测试列表界面
-    goToTestList() {
+    goToTestList () {
       if (this.userId == "") {
         this.$message.error("请先登录用户");
         this.$router.push("/userLogin");
@@ -93,11 +101,11 @@ export default {
         this.$router.push({ path: "/testList" });
       }
     },
-    goToTeacherManager() {
-      this.$router.push("/addExam");
+    goToTeacherManager () {
+      this.$router.push("/examInfoList");
     },
     //跳转到用户排行榜 保存返回值
-    gotoUserRankList() {
+    gotoUserRankList () {
       if (this.$route.path != "/userRankList") {
         sessionStorage.setItem("isPublish", "true");
         this.$router.push("/userRankList");
@@ -105,14 +113,14 @@ export default {
     },
 
     //跳转到习题实时状态界面 保存返回值用
-    goToExerciseRealTimeStatus() {
+    goToExerciseRealTimeStatus () {
       if (this.$route.path != "/exerciseRealTimeStatus") {
         sessionStorage.setItem("isPublish", "true");
         this.$router.push("/exerciseRealTimeStatus");
       }
     },
     //跳转到习题列表界面 保存返回值用
-    goToExerciseList() {
+    goToExerciseList () {
       if (this.$route.path != "/exerciseList") {
         sessionStorage.setItem("isPublish", "true");
         this.$router.push("/exerciseList");
@@ -121,7 +129,7 @@ export default {
 
     //跳转到考试列表界面
 
-    goToExamList() {
+    goToExamList () {
       if (this.$route.path != "/examList") {
         if (this.userId == "") {
           this.$message.error("请先登录用户");
@@ -137,7 +145,7 @@ export default {
       }
     },
     //跳转到考试排行榜界面
-    goToExamRankList() {
+    goToExamRankList () {
       if (this.$route.path != "/examRankList") {
         if (this.userId == "") {
           this.$message.error("请先登录用户");
@@ -145,17 +153,17 @@ export default {
         } else if (this.userIdentity == "student") {
           this.$router.push("/examRankList");
         } else if (this.userIdentity == "teacher") {
-          this.$router.push("/addExam");
+          this.$router.push("/examInfoList");
         }
       }
     },
     //跳转到用户登录界面
-    userLogin() {
+    userLogin () {
       sessionStorage.setItem("isPublish", "true");
       this.$router.push("/userLogin");
     },
     //获取用户信息
-    getUserInfo() {
+    getUserInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -177,10 +185,10 @@ export default {
         });
     },
     //跳转到用户信息界面
-    gotoUserInfo() {
+    gotoUserInfo () {
       this.$router.push({ path: "/userInfo", query: { userId: this.userId } });
     },
-    exitLogin() {
+    exitLogin () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -223,20 +231,20 @@ export default {
   padding: 0;
   background: #3a77b4;
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
 }
 .el-header {
   .el-menu {
     padding: 0 20px;
-    height:100%;
+    height: 100%;
   }
   .el-submenu {
     margin-right: 20px;
   }
   .el-submenu {
-    i{
-      color:white;
-      margin-right:10px;
+    i {
+      color: white;
+      margin-right: 10px;
     }
   }
   .loginbutton {
