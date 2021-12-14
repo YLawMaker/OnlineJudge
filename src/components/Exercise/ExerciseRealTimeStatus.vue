@@ -159,7 +159,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       exerciseRealTimeInfo: [
         {
@@ -221,14 +221,14 @@ export default {
   },
 
   computed: {
-    data() {
+    data () {
       return this.exerciseRealTimeInfo.slice(
         (this.currentPage - 1) * this.pageSize,
         this.currentPage * this.pageSize
       );
     },
   },
-  mounted: function() {
+  mounted: function () {
     //获取用户信息
     this.getUserInfo();
     if (sessionStorage.getItem("isPublish") == "false") {
@@ -259,7 +259,7 @@ export default {
 
   methods: {
     //查看用户是否登录 若登录成功则获取userId
-    getUserInfo() {
+    getUserInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -282,7 +282,7 @@ export default {
         });
     },
     //查询习题实时状态
-    searchExerciseRealTimeInfo() {
+    searchExerciseRealTimeInfo () {
       //查询之后返回第一页 查询后保存页码为1
       this.currentPage = 1;
       this.setContextData("exerciseRealTimeStatusCurrentPage", 1);
@@ -310,7 +310,7 @@ export default {
       this.getExerciseRealTimeInfo();
     },
     //给sessionStorage存值
-    setContextData: function(key, value) {
+    setContextData: function (key, value) {
       if (typeof value == "string") {
         sessionStorage.setItem(key, value);
       } else {
@@ -318,7 +318,7 @@ export default {
       }
     },
     // 从sessionStorage取值
-    getContextData: function(key) {
+    getContextData: function (key) {
       const str = sessionStorage.getItem(key);
       if (typeof str == "string") {
         try {
@@ -330,12 +330,12 @@ export default {
       return;
     },
     //页面变换
-    handleCurrent(val) {
+    handleCurrent (val) {
       this.currentPage = val;
       this.setContextData("exerciseRealTimeStatusCurrentPage", val);
     },
     //获取习题实时数据
-    async getExerciseRealTimeInfo() {
+    async getExerciseRealTimeInfo () {
       let params = new URLSearchParams();
 
       if (this.select_exerciseId != "") {
@@ -415,7 +415,7 @@ export default {
         });
     },
     // 只能输入数字且只有一位小数
-    proving() {
+    proving () {
       this.select_exerciseId = this.select_exerciseId.replace(/[^\d]/g, "");
     },
   },

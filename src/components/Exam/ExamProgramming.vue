@@ -113,13 +113,13 @@
 import Vue from "vue";
 export default {
   computed: {
-    hourString() {
+    hourString () {
       return this.hour < 10 ? "0" + this.hour : "" + this.hour;
     },
-    minuteString() {
+    minuteString () {
       return this.minute < 10 ? "0" + this.minute : "" + this.minute;
     },
-    secondString() {
+    secondString () {
       return this.second < 10 ? "0" + this.second : "" + this.second;
     },
   },
@@ -174,7 +174,7 @@ export default {
     });
   },
   name: "app",
-  data() {
+  data () {
     return {
       //倒计小时
       hour: "",
@@ -213,10 +213,10 @@ export default {
   },
   methods: {
     //时间结束自动退出考试
-    forceToSubmitExam() {
+    forceToSubmitExam () {
       this.$router.replace({ path: "/examList", query: { userId: this.userId } });
     },
-    submitExam() {
+    submitExam () {
       this.$confirm("是否确定提交本场考试？", "确认提交试卷", {
         distinguishCancelAndClose: true,
         confirmButtonText: "提交",
@@ -243,7 +243,7 @@ export default {
               //   path: "/examList",
               //   query: { userId: this.userId },
               // });
-              this.$router.replace( {path:'/examDetail' ,query:{userId:this.userId,choiceStatus:0,completionStatus:0,programmingStatus:0,examId:this.examId}});
+              this.$router.replace({ path: '/examDetail', query: { userId: this.userId, choiceStatus: 0, completionStatus: 0, programmingStatus: 0, examId: this.examId } });
             })
             .catch((err) => {
               this.$message.error("提交考试信息失败");
@@ -256,7 +256,7 @@ export default {
           });
         });
     },
-    countDowm() {
+    countDowm () {
       let self = this;
       clearInterval(this.promiseTimer);
       this.promiseTimer = setInterval(function () {
@@ -288,7 +288,7 @@ export default {
         }
       }, 1000);
     },
-    getExamProgrammingInfo() {
+    getExamProgrammingInfo () {
       let params = new URLSearchParams();
       params.append("examId", this.examId);
       this.$axios({
@@ -310,9 +310,9 @@ export default {
           this.$message.error("编程题信息读取失败");
         });
     },
-    submit(examQuestionId, code) {
+    submit (examQuestionId, code) {
       for (var i = 0; i < this.exerciseInfo.length; i++) {
-        if(!code){
+        if (!code) {
           this.$message.warning("请输入代码");
           return;
         }
@@ -404,7 +404,7 @@ export default {
           }
         })
         .catch((err) => {
-            this.$message.error("查询学生信息失败");
+          this.$message.error("查询学生信息失败");
         });
     },
   },

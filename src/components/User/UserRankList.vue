@@ -33,7 +33,7 @@
             placement="right"
           >
             <router-link
-            style="text-decoration: none; color: black"
+              style="text-decoration: none; color: black"
               :to="{
                 path: 'userInfo',
                 query: {
@@ -70,7 +70,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       userInfo: [
         {
@@ -90,7 +90,7 @@ export default {
     };
   },
   computed: {
-    data() {
+    data () {
       return this.selectUserInfo.slice(
         (this.currentPage - 1) * this.pageSize,
         this.currentPage * this.pageSize
@@ -98,7 +98,7 @@ export default {
     },
   },
   watch: {
-    select_word: function() {
+    select_word: function () {
       if (this.select_word == "") {
         this.selectUserInfo = this.UserInfo;
       } else {
@@ -114,7 +114,7 @@ export default {
       }
     },
   },
-  mounted: function() {
+  mounted: function () {
     if (sessionStorage.getItem("isPublish") == "false") {
       if (sessionStorage.getItem("userRankListCurrentPage") != null) {
         this.currentPage = Number(
@@ -131,12 +131,12 @@ export default {
   },
   methods: {
     //改变页码
-    handleCurrent(val) {
+    handleCurrent (val) {
       sessionStorage.setItem("userRankListCurrentPage", val);
       this.currentPage = val;
     },
     //获取用户信息
-    getUserInfo() {
+    getUserInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -158,7 +158,7 @@ export default {
         });
     },
     //获取比例
-    getAcceptRate(exerciseCorrectTimes, exerciseSubmitTimes) {
+    getAcceptRate (exerciseCorrectTimes, exerciseSubmitTimes) {
       if (
         !(
           exerciseCorrectTimes / exerciseSubmitTimes ==

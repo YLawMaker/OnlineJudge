@@ -26,12 +26,12 @@
             <p style="width: 300px; float: left">
               结束时间{{ exam.examEndTime }}
             </p>
-            <p 
-              @click="
-                gotoExamRankList(exam.examId,exam.examEndTime)"
-                style="width:300px;float:right">
-                考试排行榜
-              </p>
+            <p
+              @click="gotoExamRankList(exam.examId, exam.examEndTime)"
+              style="width: 300px; float: right"
+            >
+              考试排行榜
+            </p>
           </el-card>
         </el-timeline-item>
       </el-timeline>
@@ -83,13 +83,13 @@ export default {
       this.getExamInfo();
     },
     //去考试排行榜界面
-    gotoExamRankList(examId,examEndTime){
+    gotoExamRankList (examId, examEndTime) {
       var date = new Date();
       var now = date.getTime();
       var enddate = new Date(examEndTime);
       var end = enddate.getTime();
       if (now > end) {
-        this.$router.push({ path: '/examRankList',query:{ examId:examId} });
+        this.$router.push({ path: '/examRankList', query: { examId: examId } });
       } else {
         this.$message.error("考试未结束");
       }
