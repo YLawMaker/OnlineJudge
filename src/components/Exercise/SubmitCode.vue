@@ -19,6 +19,7 @@
         v-model="code"
         :rows="20"
         placeholder="请输入代码"
+      
       >
       </el-input>
       <el-button type="primary" @click="submitCode()">提交</el-button>
@@ -60,6 +61,8 @@ export default {
   methods: {
     //提交代码
     submitCode () {
+      
+      
       let params = new URLSearchParams();
       this.$axios({
         method: 'post',
@@ -69,42 +72,63 @@ export default {
         url: '/user/queryUserInfo',
         data: params
       })
-        .then((res) => {
+      .then((res) => {
+          //先判断user是否登录
           if (res.data != 0) {
-            if (this.code.trim().length < 20) {
-              this.$message.warning('代码长度过短');
-            }
-            else {
-              let yy = new Date().getFullYear();
-              let mm = new Date().getMonth() + 1;
-              let dd = new Date().getDate();
-              let hh = new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours();
-              let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes();
-              var time = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf;
               let params = new URLSearchParams();
-              params.append('exerciseId', this.exercise.exerciseId);
-              params.append('exerciseSubmitLanguage', this.value);
-              params.append('exerciseCode', this.code);
-              params.append('exerciseSubmitTime', time);
+              params.append('exerciseId',this.exercise.exerciseId);
               this.$axios({
                 method: 'post',
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded"
                 },
-                url: '/exerciseHistory/addCodeInfo',
+                url: '/exercise/queryExerciseInfoIsExit',
                 data: params
               })
-                .then((res) => {
-                  if (res.data == true) {
-                    this.$message.success('提交成功');
-                    this.$router.push('exerciseRealTimeStatus');
+              .then((res) => {
+                   //再判断exercise是否存在
+                  if(res.data==true){
+                      if (this.code.trim().length < 20) {
+                        this.$message.warning('代码长度过短');
+                     }
+                    else {
+                      let yy = new Date().getFullYear();
+                      let mm = new Date().getMonth() + 1;
+                      let dd = new Date().getDate();
+                      let hh = new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours();
+                      let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes();
+                      var time = yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf;
+                      let params = new URLSearchParams();
+                      params.append('exerciseId', this.exercise.exerciseId);
+                      params.append('exerciseSubmitLanguage', this.value);
+                      params.append('exerciseCode', this.code);
+                      params.append('exerciseSubmitTime', time);
+                      this.$axios({
+                        method: 'post',
+                        headers: {
+                          "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        url: '/exerciseHistory/addCodeInfo',
+                        data: params
+                      })
+                        .then((res) => {
+                          if (res.data == true) {
+                            this.$message.success('提交成功');
+                            this.$router.push('exerciseRealTimeStatus');
+                          }
+                        })
+                        .catch((err) => {
+                          this.$message.error('提交失败');
+                        })
+                      }
                   }
-                })
-                .catch((err) => {
-                  this.$message.error('提交失败');
-                })
-            }
-
+                  else{
+                    this.$message.error('习题不存在');
+                  }
+              })
+              .catch((err) => {
+                  this.$message.error('查询习题是否存在错误');
+              })
           } else {
             this.$message('请先登录');
             this.$router.push('/userLogin');
@@ -136,7 +160,8 @@ export default {
         .catch((err) => {
           this.$message.error('查看代码失败');
         })
-    }
+    },
+    
 
 
 
@@ -157,8 +182,11 @@ export default {
   text-align-last: center;
 }
 .submitText {
-  resize: none;
+  
   width: 600px;
   height: 500px;
+}
+.submitText .el-textarea__inner{
+  resize : none;
 }
 </style>

@@ -11,7 +11,7 @@
           active-text-color="#ffd04b"
           @select="handleSelect"
         >
-          <el-menu-item class="backOJ" index="/faq">
+          <el-menu-item class="backOJ" index="/userMainInterface">
             <i class="el-icon-back"></i>
             <span style="">返回OJ</span>
           </el-menu-item>

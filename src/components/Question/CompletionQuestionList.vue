@@ -8,7 +8,7 @@
         </el-button>
       </el-col>
       <el-col :span="21">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true"  class="demo-form-inline">
           <!-- 选择章节按钮 -->
           <el-form-item class="章节">
             <el-select
@@ -231,6 +231,7 @@
     <el-dialog
       title="添加填空题"
       :visible.sync="addCompletionQuestionInfoVisible"
+      :close-on-click-modal="false"
       center
     >
       <el-form
@@ -387,6 +388,7 @@
       <el-dialog
         title="填空题详情"
         :visible.sync="showCompletionQuestionInfoVisible"
+        :close-on-click-modal="false"
         center
       >
         <!-- 上下分离 -->
@@ -526,6 +528,7 @@
     <el-dialog
       title="修改填空题"
       :visible.sync="editCompletionQuestionInfoVisible"
+      :close-on-click-modal="false"
       center
     >
       <el-form
@@ -667,9 +670,9 @@
       <div slot="footer" class="dialog-footer">
         <el-button
           type="primary"
-          style="width: 300px; font-size: 1.3em"
+          style="width: 100px; font-size: 1.3em"
           @click="editCompletionQuestionInfo('eCompletionQuestionInfo')"
-          >确 定</el-button
+          >修 改</el-button
         >
         <el-button
           style="font-size: 1.3em; margin-left: 50px"
@@ -1496,6 +1499,7 @@ export default {
     },
     //控制修改弹出框显示
     handleEdit (row) {
+      alert(row.completionQuestionId);
       //先清空数据
       this.eCompletionQuestionInfo.questionLabels = [];
       //详情弹出框显示 赋值  不能直接赋值row row类似一个指针直接指向row了

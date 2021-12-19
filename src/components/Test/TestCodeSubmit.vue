@@ -47,11 +47,11 @@ export default {
                     }
                     else{
                         let yy = new Date().getFullYear();
-                    　　let mm = new Date().getMonth()+1;
-                    　　let dd = new Date().getDate();
-                    　　let hh = new Date().getHours()<10?'0'+new Date().getHours():new Date().getHours();
-                    　　let mf = new Date().getMinutes()<10 ? '0'+new Date().getMinutes() : new Date().getMinutes();
-                    　　var time = yy+'-'+mm+'-'+dd+' '+hh+':'+mf;
+                        let mm = new Date().getMonth()+1;
+                        let dd = new Date().getDate();
+                        let hh = new Date().getHours()<10?'0'+new Date().getHours():new Date().getHours();
+                        let mf = new Date().getMinutes()<10 ? '0'+new Date().getMinutes() : new Date().getMinutes();
+                        var time = yy+'-'+mm+'-'+dd+' '+hh+':'+mf;
                         let params=new URLSearchParams();
                         params.append('testProgrammingQuestionId',this.testProgrammingQuestionId);
                         params.append('testProgrammingCode',this.code);

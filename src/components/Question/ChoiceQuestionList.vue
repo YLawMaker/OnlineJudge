@@ -8,7 +8,7 @@
         >
       </el-col>
       <el-col :span="21">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true"  >
           <!-- 选择章节按钮 -->
           <el-form-item label="章节">
             <el-select
@@ -231,6 +231,7 @@
     <el-dialog
       title="添加选择题"
       :visible.sync="addChoiceQuestionVisible"
+      :close-on-click-modal="false"
       center
     >
       <el-form
@@ -406,6 +407,7 @@
     <el-dialog
       title="修改选择题"
       :visible.sync="editChoiceQuestionVisible"
+      :close-on-click-modal="false"
       center
     >
       <el-form
@@ -568,9 +570,9 @@
       <div slot="footer" class="dialog-footer">
         <el-button
           type="primary"
-          style="width: 300px; font-size: 1.3em"
+          style="width: 100px; font-size: 1.3em"
           @click="editChoiceQuestionInfo('eChoiceQuestionInfo')"
-          >确定修改</el-button
+          >修 改</el-button
         >
         <el-button
           style="font-size: 1.3em; margin-left: 50px"
@@ -585,6 +587,7 @@
       <el-dialog
         title="选择题详情"
         :visible.sync="choiceQuestionShowVisible"
+        :close-on-click-modal="false"
         center
       >
         <el-form
@@ -674,7 +677,7 @@
             </el-tag>
           </el-form-item>
           <el-form
-            inline="true"
+            :inline="true"
             label-width="120px"
             label-position="right"
             class="choiceQuestionShowFormButtom"
@@ -1048,6 +1051,7 @@ export default {
       })
         .then((res) => {
           this.currentPage = 1;
+          console.log(res.data);
           this.choiceQuestionList = res.data;
         })
         .catch((err) => {
@@ -1392,6 +1396,8 @@ export default {
     },
     //控制修改弹出框 获取对应信息并赋值
     handleEdit (row) {
+      
+      
       //清空数据
       this.chapterChoice = "";
       this.choice[0].input = "";

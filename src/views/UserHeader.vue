@@ -16,9 +16,7 @@
           <template slot="title"
             ><i class="el-icon-monitor"></i>Online Judge</template
           >
-          <el-menu-item index="/faq">F.A.Q</el-menu-item>
-          <el-menu-item index="1-2">Hand In Hand</el-menu-item>
-          <el-menu-item index="1-3">Online Acmers</el-menu-item>
+
           <el-menu-item index="/managerLogin">管理员登陆</el-menu-item>
         </el-submenu>
         <el-submenu index="2">
@@ -199,6 +197,7 @@ export default {
         data: params,
       })
         .then((res) => {
+          this.$router.push({ path: "/userMainInterface"});
           alert("退出成功");
           this.userName = "";
           this.userIdentity = "";
