@@ -34,8 +34,14 @@
       <el-table-column
         prop="secondKnowledgePoint"
         label="二级知识点"
-        width="650"
+        width="250"
       >
+      </el-table-column>
+      <el-table-column prop="important" label="是否为重点" width="400">
+        <template slot-scope="scope">
+          <div v-if="scope.row.important == false">否</div>
+          <div v-if="scope.row.important == true">是</div>
+        </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -144,11 +150,13 @@ export default {
         chapter: '',
         firstKnowledgePoint: '',
         secondKnowledgePoint: '',
+        important: ''
       },
       addQuestionLabelData: {
         chapter: '',
         firstKnowledgePoint: '',
         secondKnowledgePoint: '',
+        important: ''
       },
       addRules: {
         chapter: [
@@ -208,6 +216,7 @@ export default {
       this.edittableData.chapter = row.chapter
       this.edittableData.firstKnowledgePoint = row.firstKnowledgePoint
       this.edittableData.secondKnowledgePoint = row.secondKnowledgePoint
+      this.edittableData.important = row.important
       // console.log(row.secondPoint);
     },
     handleCurrent (val) {
@@ -233,6 +242,7 @@ export default {
       }).then(function (resp) {
         that.questionLabel = resp.data;
         that.searchData = resp.data;
+        console.log(resp.data);
       }).catch((res) => {
         console.log(res);
       })
@@ -248,7 +258,7 @@ export default {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        url: '/questionLabel/updateQuestionLabelInfo',
+        url: '/questionLabel/modifyQuestionLabelInfo',
         data: params
       }).then((res) => {
         if (res.data == true) {

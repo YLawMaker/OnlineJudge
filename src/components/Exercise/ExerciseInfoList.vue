@@ -450,7 +450,7 @@ export default {
       edittableDataRules: {
         exerciseTitle: [
           { required: true, message: '请输入题目标题', trigger: 'blur' },
-          { min: 1, max: 30, message: '长度为1~30', trigger: 'blur' }
+          { min: 1, max: 50, message: '长度为1~50', trigger: 'blur' }
         ],
         exerciseDescription: [
           { required: true, message: '请输入题目描述', trigger: 'blur' },
@@ -481,11 +481,11 @@ export default {
       edittableDataVisible_info: false,
       edit: true,
       currentPage: 1,
-      pagesize: 9,
+      pagesize: 8,
       addRules: {
         exerciseTitle: [
           { required: true, message: '请输入题目标题', trigger: 'blur' },
-          { min: 1, max: 30, message: '长度为1~30', trigger: 'blur' }
+          { min: 1, max: 50, message: '长度为1~50', trigger: 'blur' }
         ],
         exerciseDescription: [
           { required: true, message: '请输入题目描述', trigger: 'blur' },
@@ -701,7 +701,7 @@ export default {
           params.append('exerciseInput', this.addexerciseData.exerciseInput);
           params.append('exerciseOutPut', this.addexerciseData.exerciseOutPut);
           params.append('exerciseSampleInput', this.addexerciseData.exerciseSampleInput);
-          params.append('exerciseSampleOutput', this.addexerciseData.exerciseSampleOuput);
+          params.append('exerciseSampleOutput', this.addexerciseData.exerciseSampleOutput);
           params.append('questionLabelId', this.addexerciseData.questionLabelId[2])
 
           this.$axios({
@@ -834,9 +834,9 @@ export default {
 <style >
 .el-tooltip__popper {
   max-width: 50%;
-  background: white !important;
+  background: black !important;
   color: white !important;
-  opacity: 0 !important; /*背景色透明度*/
+  opacity: 100 !important; /*背景色透明度*/
   white-space: pre-line !important;
 }
 .el-table .cell {
