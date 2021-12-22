@@ -7,51 +7,64 @@
       {{ user.userProfile }}
     </p>
     <p style="text-align: center">
-      <el-button @click="dialogUserInfo=true">修改信息</el-button>
-      <el-dialog title="修改信息" :visible.sync="dialogUserInfo">
-            <el-form
-            ref="UserInfo"
-            :model="user"
-            class="UserInfoform"
-            :rules="rules">
-              <el-form-item label="新用户名"  prop="newuserName">
-                <el-input  v-model="user.newuserName"></el-input>
-              </el-form-item>
-              <el-form-item label="个人简介" prop="newuserProfile">
-                <el-input  v-model="user.newuserProfile"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button @click="dialogUserInfo=false">取 消</el-button>
-                <el-button type="primary" @click="submitUserInfo()">确 定</el-button>
-              </el-form-item>
-            </el-form>
+      <el-button @click="dialogUserInfo = true">修改信息</el-button>
+      <el-dialog
+        title="修改信息"
+        :visible.sync="dialogUserInfo"
+        :close-on-click-modal="false"
+      >
+        <el-form
+          ref="UserInfo"
+          :model="user"
+          class="UserInfoform"
+          :rules="rules"
+        >
+          <el-form-item label="新用户名" prop="newuserName">
+            <el-input v-model="user.newuserName"></el-input>
+          </el-form-item>
+          <el-form-item label="个人简介" prop="newuserProfile">
+            <el-input v-model="user.newuserProfile"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="dialogUserInfo = false">取 消</el-button>
+            <el-button type="primary" @click="submitUserInfo()"
+              >确 定</el-button
+            >
+          </el-form-item>
+        </el-form>
       </el-dialog>
     </p>
 
     <div style="text-align: center">
-      <el-button @click="dialogUserPwd=true">修改密码</el-button>
+      <el-button @click="dialogUserPwd = true">修改密码</el-button>
       <p v-show="dialogUserPwd" style="position: center">
-          <el-dialog title="修改密码" :visible.sync="dialogUserPwd">
-            <el-form 
-            ref="UserPwd"
-            :model="user"
-            :rules="rules">
-              <el-form-item label="原密码" prop="userPassword">
-                <el-input  type="password" v-model="user.userPassword"></el-input>
-              </el-form-item>
-              <el-form-item label="新密码" prop="newuserPassword">
-                <el-input type="password" v-model="user.newuserPassword"></el-input>
-              </el-form-item>
-              <el-form-item label="确认密码" prop="newuserPasswordR">
-                <el-input type="password" v-model="user.newuserPasswordR"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogUserPwd=false">取 消</el-button>
-              <el-button type="primary" @click="submitUserPwd()" >确 定</el-button>
-            </div>
-          </el-dialog>
-
+        <el-dialog
+          title="修改密码"
+          :visible.sync="dialogUserPwd"
+          :close-on-click-modal="false"
+        >
+          <el-form ref="UserPwd" :model="user" :rules="rules">
+            <el-form-item label="原密码" prop="userPassword">
+              <el-input type="password" v-model="user.userPassword"></el-input>
+            </el-form-item>
+            <el-form-item label="新密码" prop="newuserPassword">
+              <el-input
+                type="password"
+                v-model="user.newuserPassword"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="newuserPasswordR">
+              <el-input
+                type="password"
+                v-model="user.newuserPasswordR"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogUserPwd = false">取 消</el-button>
+            <el-button type="primary" @click="submitUserPwd()">确 定</el-button>
+          </div>
+        </el-dialog>
       </p>
     </div>
 
@@ -72,7 +85,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       user: {
         userId: "",
@@ -89,8 +102,8 @@ export default {
       exerciseInfo: [],
       editUserInfo: false,
       editUserPwd: false,
-      dialogUserInfo:false,
-      dialogUserPwd:false,
+      dialogUserInfo: false,
+      dialogUserPwd: false,
 
       rules: {
         newuserName: [
@@ -150,7 +163,7 @@ export default {
   },
   methods: {
     //跳转至习题详情界面
-    gotoExerciseDetail(item) {
+    gotoExerciseDetail (item) {
       this.$router.push({
         path: "/exerciseDetail",
         query: {
@@ -159,93 +172,93 @@ export default {
       });
     },
     //取消修改信息
-    cancelModify() {
+    cancelModify () {
       this.editUserInfo = false;
       this.editUserPwd = false;
     },
     //开始修改信息
-    modifyUserInfo() {
+    modifyUserInfo () {
       this.editUserInfo = true;
     },
-    modifyUserPwd() {
+    modifyUserPwd () {
       this.editUserPwd = true;
     },
     //提交修改信息
-    submitUserInfo(){
-            let params = new URLSearchParams();
-            params.append("userName", this.user.newuserName);
-            params.append("userProfile", this.user.newuserProfile);
-            params.append("userId", this.user.userId);
-            this.$axios({
-              method: "post",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-              url: "/user/modifyUserInfo",
-              data: params,
-            })
-              .then((res) =>{
-                this.$message.success("修改学生信息成功");
-                this.user.userName=this.user.newuserName;
-                this.user.userProfile=this.user.newuserProfile;
-              })
-              .catch((err) => {
-              this.$message.error("修改学生信息失败");
-            });
-    },
-    submitUserPwd(){
+    submitUserInfo () {
       let params = new URLSearchParams();
-          this.$axios({
-            method: "post",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            url: "/user/queryUserInfo",
-            data: params,
-          })
-            .then((res) => {
-              if (res.data != 0) {
-                if (res.data.userPassword != this.user.userPassword)
-                  this.$message.error("密码错误");
-                else if (this.user.newuserPassword == this.user.newuserPasswordR) {
-                  this.user.userPassword = this.user.newuserPassword;
-                  let params = new URLSearchParams();
-                  params.append("userId", this.user.userId);
-                  params.append("userPassword", this.user.userPassword);
-                  this.$axios({
-                    method: "post",
-                    headers: {
-                      "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    url: "/user/modifyPassword",
-                    data: params,
-                  })
-                    .then((res) => {
-                      if (res.data == "0") {
-                        this.$message.error("修改失败");
-                      } else {
-                        this.$message.success("修改成功");
-                        this.$router.go(-1);
-                      }
-                    })
-                    .catch((res) => {
-                      console.log(res);
-                    });
-                } else {
-                  //2次密码不
-                  alert("密码不符");
-                }
-              } else {
-                this.$message("请先登录");
-                this.$router.push("/userLogin");
-              }
-            })
-            .catch((err) => {
-              this.$message.error("查询学生信息失败");
-            });
+      params.append("userName", this.user.newuserName);
+      params.append("userProfile", this.user.newuserProfile);
+      params.append("userId", this.user.userId);
+      this.$axios({
+        method: "post",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        url: "/user/modifyUserInfo",
+        data: params,
+      })
+        .then((res) => {
+          this.$message.success("修改学生信息成功");
+          this.user.userName = this.user.newuserName;
+          this.user.userProfile = this.user.newuserProfile;
+        })
+        .catch((err) => {
+          this.$message.error("修改学生信息失败");
+        });
+    },
+    submitUserPwd () {
+      let params = new URLSearchParams();
+      this.$axios({
+        method: "post",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        url: "/user/queryUserInfo",
+        data: params,
+      })
+        .then((res) => {
+          if (res.data != 0) {
+            if (res.data.userPassword != this.user.userPassword)
+              this.$message.error("密码错误");
+            else if (this.user.newuserPassword == this.user.newuserPasswordR) {
+              this.user.userPassword = this.user.newuserPassword;
+              let params = new URLSearchParams();
+              params.append("userId", this.user.userId);
+              params.append("userPassword", this.user.userPassword);
+              this.$axios({
+                method: "post",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                url: "/user/modifyPassword",
+                data: params,
+              })
+                .then((res) => {
+                  if (res.data == "0") {
+                    this.$message.error("修改失败");
+                  } else {
+                    this.$message.success("修改成功");
+                    this.$router.go(-1);
+                  }
+                })
+                .catch((res) => {
+                  console.log(res);
+                });
+            } else {
+              //2次密码不
+              alert("密码不符");
+            }
+          } else {
+            this.$message("请先登录");
+            this.$router.push("/userLogin");
+          }
+        })
+        .catch((err) => {
+          this.$message.error("查询学生信息失败");
+        });
     },
     //获取用户信息
-    getUserInfo() {
+    getUserInfo () {
       let params = new URLSearchParams();
       params.append("userId", this.user.userId);
       this.$axios({
@@ -265,7 +278,7 @@ export default {
         });
     },
     //获取用户系统信息
-    getUserExerciseInfo() {
+    getUserExerciseInfo () {
       let params = new URLSearchParams();
       params.append("userId", this.user.userId);
       this.$axios({
