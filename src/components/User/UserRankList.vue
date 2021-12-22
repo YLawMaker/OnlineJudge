@@ -91,16 +91,13 @@ export default {
   },
   computed: {
     data () {
-      return this.selectUserInfo.slice(
-        (this.currentPage - 1) * this.pageSize,
-        this.currentPage * this.pageSize
-      );
+      return this.selectUserInfo.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pageSize);
     },
   },
   watch: {
     select_word: function () {
-      if (this.select_word == "") {
-        this.selectUserInfo = this.UserInfo;
+      if (this.select_word == '') {
+        this.selectUserInfo = this.userInfo;
       } else {
         this.selectUserInfo = [];
         for (let item of this.userInfo) {

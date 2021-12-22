@@ -128,6 +128,20 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
+          <el-radio
+            v-model="addQuestionLabelData.important"
+            label="false"
+            @change="getValue()"
+            >非重点</el-radio
+          >
+          <el-radio
+            v-model="addQuestionLabelData.important"
+            label="true"
+            @change="getValue()"
+            >重点</el-radio
+          >
+        </el-form-item>
+        <el-form-item>
           <el-button type="primary" @click="add('addQuestionLabel')"
             >添加</el-button
           >
@@ -231,6 +245,9 @@ export default {
     addDialogvisiable () {
       this.edittableDataVisible_add = true
     },
+    getValue () {
+      console.log(this.addQuestionLabelData.important);
+    },
     getQuestionLabel () {
       const that = this
       this.$axios({
@@ -242,7 +259,7 @@ export default {
       }).then(function (resp) {
         that.questionLabel = resp.data;
         that.searchData = resp.data;
-        console.log(resp.data);
+        // console.log(resp.data);
       }).catch((res) => {
         console.log(res);
       })
@@ -328,6 +345,7 @@ export default {
           params.append('chapter', this.addQuestionLabelData.chapter);
           params.append('firstKnowledgePoint', this.addQuestionLabelData.firstKnowledgePoint);
           params.append('secondKnowledgePoint', this.addQuestionLabelData.secondKnowledgePoint);
+          params.append('important', this.addQuestionLabelData.important);
           this.$axios({
             method: 'post',
             headers: {

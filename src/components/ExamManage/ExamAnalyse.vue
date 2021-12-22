@@ -122,7 +122,8 @@ export default {
         percent4: 0,
         percent5: 0,
       },
-      examUserJoin: {}
+      examUserJoin: {},
+      history: [],
     }
   },
   mounted: function () {
@@ -131,6 +132,7 @@ export default {
     this.anaylseScoreAndSection()
     this.getExamExerciseScore()
     this.getExamUserJoinInfo()
+    this.getHistory()
   },
   methods: {
     anaylseScoreAndSection () {
@@ -396,7 +398,22 @@ export default {
       }
       return bytes.buffer;
     },
-
+    getHistory () {
+      const that = this
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      // console.log(this.examId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examHistory/queryExamHistoryInfo',
+        data: params
+      }).then(function (resp) {
+        console.log(resp.data);
+      })
+    }
   }
 }
 </script>

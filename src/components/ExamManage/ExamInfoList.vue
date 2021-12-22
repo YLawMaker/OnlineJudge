@@ -76,7 +76,7 @@
       :visible.sync="edittableDataVisible_add"
       :before-close="handleClose"
       :close-on-click-modal="false"
-      width="850px"
+      width="900px"
     >
       <el-form
         ref="addExam"
@@ -136,6 +136,7 @@
             ><el-form-item
               label="选择题分值(每题)"
               prop="examChoiceQuestionScore"
+              label-width="150px"
             >
               <el-input
                 v-model="exam_add.examChoiceQuestionScore"
@@ -145,6 +146,7 @@
             <el-form-item
               label="填空题分值(每题)"
               prop="examCompletionQuestionScore"
+              label-width="150px"
             >
               <el-input
                 v-model="exam_add.examCompletionQuestionScore"
@@ -152,7 +154,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="编程题分值(每题)" prop="examProgrammingScore">
+            <el-form-item
+              label="编程题分值(每题)"
+              prop="examProgrammingScore"
+              label-width="150px"
+            >
               <el-input v-model="exam_add.examProgrammingScore"></el-input>
             </el-form-item>
           </el-col>
@@ -169,6 +175,7 @@
       :visible.sync="edittableDataVisible_modify"
       :before-close="handleClose"
       :close-on-click-modal="false"
+      width="900px"
     >
       <el-form :model="exam_modify" ref="exam_modify">
         <el-form-item label="考试名称" prop="examName">
@@ -290,7 +297,23 @@ export default {
       groupList: [],
       language: [{ value: 'C', label: 'C' }, { value: 'C++', label: 'C++' }, { value: 'Java', label: 'Java' }],
       addExamData: {},
-      addRules: {},
+      addRules: {
+        examChoiceQuestionScore: [
+          { required: true, message: '请输入选择题成绩', trigger: 'blur' },
+          { min: 1, max: 50, message: '长度为1~50', trigger: 'blur' },
+          { pattern: /^([1-9][0-9]*)$/, message: '成绩为整数' }
+        ],
+        examCompletionQuestionScore: [
+          { required: true, message: '请输入填空题成绩', trigger: 'blur' },
+          { min: 1, max: 50, message: '长度为1~50', trigger: 'blur' },
+          { pattern: /^([1-9][0-9]*)$/, message: '成绩为整数' }
+        ],
+        examProgrammingScore: [
+          { required: true, message: '请输入编程题成绩', trigger: 'blur' },
+          { min: 1, max: 50, message: '长度为1~50', trigger: 'blur' },
+          { pattern: /^([1-9][0-9]*)$/, message: '成绩为整数' }
+        ],
+      },
       examList: [],
       edittableDataVisible_add: false,
       edittableDataVisible_modify: false,
@@ -322,7 +345,6 @@ export default {
     data () {
       return this.searchData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize);
     }
-
   },
   watch: {
     select_word: function () {
