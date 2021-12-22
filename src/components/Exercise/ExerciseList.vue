@@ -279,7 +279,7 @@ export default {
         .then((res) => {
           this.selectExercise = res.data;
           this.exercise = res.data;
-          this.select_word = this.selectBackWord;
+     
         })
         .catch((err) => {
           this.$message.error("习题列表加载失败");

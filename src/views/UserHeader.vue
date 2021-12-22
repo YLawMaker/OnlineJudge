@@ -23,13 +23,13 @@
           <template slot="title"
             ><i class="iconfont icon-exercise"></i>Online Exercise</template
           >
-          <el-menu-item @click="goToExerciseList()" index="2-1"
+          <el-menu-item  index="/exerciseList"
             >ExerciseList</el-menu-item
           >
-          <el-menu-item @click="goToExerciseRealTimeStatus()" index="2-2"
+          <el-menu-item  index="/exerciseRealTimeStatus"
             >Realtime Judge Status</el-menu-item
           >
-          <el-menu-item @click="gotoUserRankList()" index="2-3"
+          <el-menu-item  index="/userRankList"
             >UserRankList</el-menu-item
           >
         </el-submenu>
@@ -37,13 +37,29 @@
           <template slot="title"
             ><i class="iconfont icon-exam"></i>Online Teaching</template
           >
-          <el-menu-item @click="goToExamList()" index="3-1"
+          <el-menu-item 
+            v-if="userId==''"
+            index="/userLogin"
             >Exam List</el-menu-item
           >
-          <el-menu-item @click="goToExamRankList()" index="3-2"
-            >Exam Statistics</el-menu-item
+          <el-menu-item 
+            v-else
+            index="/examList"
+            >Exam List</el-menu-item
           >
-          <el-menu-item @click="goToTestList()" index="3-3"
+          <el-menu-item 
+          v-if="userId==''"
+           index="/userLogin"
+          
+            >Personal ExamHistory</el-menu-item
+          >
+          <el-menu-item 
+            v-else
+           index="/personalExamHistory"
+          
+            >Personal ExamHistory</el-menu-item
+          >
+          <el-menu-item  index="/testList"
             >Test List</el-menu-item
           >
         </el-submenu>
@@ -51,7 +67,7 @@
           <template slot="title"
             ><i class="iconfont icon-teacher"></i>Teacher</template
           >
-          <el-menu-item @click="goToTeacherManager()" index="4-1"
+          <el-menu-item  index="/examInfoList"
             >TeacherManager</el-menu-item
           >
         </el-submenu>
@@ -90,6 +106,7 @@ export default {
   },
 
   methods: {
+    
     //跳转到测试列表界面
     goToTestList () {
       if (this.userId == "") {
@@ -99,7 +116,7 @@ export default {
         this.$router.push({ path: "/testList" });
       }
     },
-    goToTeacherManager () {
+    goToTeacherManage () {
       this.$router.push("/examInfoList");
     },
     //跳转到用户排行榜 保存返回值
@@ -128,19 +145,20 @@ export default {
     //跳转到考试列表界面
 
     goToExamList () {
-      if (this.$route.path != "/examList") {
+      
         if (this.userId == "") {
           this.$message.error("请先登录用户");
-          this.$router.push("/userLogin");
-        } else if (this.userIdentity == "student") {
-          this.$router.push({
-            path: "/examList",
-            query: { userId: this.userId },
-          });
-        } else if (this.userIdentity == "teacher") {
-          this.$router.push("/examInfoList");
+          this.$router.replace("/userLogin");
         }
-      }
+        //  else if (this.userIdentity == "student") {
+        //   this.$router.push({
+        //     path: "/examList",
+        //     query: { userId: this.userId },
+        //   });
+        // } else if (this.userIdentity == "teacher") {
+        //   this.$router.push("/examInfoList");
+        // }
+      
     },
     //跳转到考试排行榜界面
     goToExamRankList () {

@@ -102,6 +102,20 @@
         :row-style="{ height: '20px' }"
         :cell-style="{ padding: '0px' }"
       >
+      <div>
+        <el-table-column
+          width="100px"
+          label="选择题"
+          align="center"
+        >
+          <template slot-scope="scope">
+          <div v-if="getChoiceIsExam(scope.row.choiceQuestionId)">
+              2
+          </div>
+        </template>
+        </el-table-column>
+      
+      </div>
         <el-table-column
           prop="choiceQuestionId"
           width="100px"
@@ -1777,6 +1791,25 @@ export default {
           this.$message.error("查询填空题错误");
         });
     },
+    //判断选择题在不在考试中
+    getChoiceIsExam(choiceQuestionId){
+       let params = new URLSearchParams();
+       params.append("choiceQuestionId",choiceQuestionId);
+      this.$axios({
+        method: "post",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        url: "/choiceQuestion/queryChoiceQuestionIsExamByChoiceQuestionId",
+        data: params,
+      })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          this.$message.error("查询填空题错误");
+        });
+    }
   },
 };
 </script>
