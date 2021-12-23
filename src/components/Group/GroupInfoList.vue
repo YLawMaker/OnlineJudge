@@ -48,6 +48,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="user.userName" label="创建者"></el-table-column>
+        <el-table-column prop="status" label="状态" width="100px">
+          考试中
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
@@ -56,6 +59,7 @@
               size="small"
               >详情</el-button
             >
+            <el-button type="primary" size="small">修改</el-button>
             <el-button
               type="danger"
               @click.native.prevent="deleteConfirm(scope.row)"

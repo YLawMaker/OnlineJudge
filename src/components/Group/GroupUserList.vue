@@ -50,12 +50,13 @@
         <el-form
           ref="addGroupUser"
           :model="addGroupUserData"
+          :rules="addRules"
           class="addGroupUserForm"
         >
           <div>
             将学生学号整列复制过来，然后要求他们用学号做UserAccount注册,请保证在一列显示
           </div>
-          <el-form-item>
+          <el-form-item prop="groupUserList">
             <el-input
               type="textarea"
               :rows="12"
@@ -87,6 +88,11 @@ export default {
       edittableDataVisible_add: false,
       addGroupUserData: {
         groupUserList: ''
+      },
+      addRules: {
+        groupUserList: [
+          { required: true, message: '请输入用户账号', trigger: 'blur' },
+        ]
       },
     }
   },
@@ -159,12 +165,13 @@ export default {
             url: '/userGroup/addUserGroupInfo',
             data: params
           }).then((res) => {
+            console.log(res.data);
             if (res.data == '0') {
               // console.log(res.data);
-              this.$message.error('用户添加失败');
+              this.$message.error('请输入用户账号');
               this.edittableDataVisible_add = false;
               this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage);
-            } else {
+            } else if (res.data == true) {
               this.$message.success('用户添加成功');
               this.edittableDataVisible_add = false;
               this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage);

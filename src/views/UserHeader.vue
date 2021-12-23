@@ -23,53 +23,33 @@
           <template slot="title"
             ><i class="iconfont icon-exercise"></i>Online Exercise</template
           >
-          <el-menu-item  index="/exerciseList"
-            >ExerciseList</el-menu-item
-          >
-          <el-menu-item  index="/exerciseRealTimeStatus"
+          <el-menu-item index="/exerciseList">ExerciseList</el-menu-item>
+          <el-menu-item index="/exerciseRealTimeStatus"
             >Realtime Judge Status</el-menu-item
           >
-          <el-menu-item  index="/userRankList"
-            >UserRankList</el-menu-item
-          >
+          <el-menu-item index="/userRankList">UserRankList</el-menu-item>
         </el-submenu>
         <el-submenu index="3">
           <template slot="title"
             ><i class="iconfont icon-exam"></i>Online Teaching</template
           >
-          <el-menu-item 
-            v-if="userId==''"
-            index="/userLogin"
+          <el-menu-item v-if="userId == ''" index="/userLogin"
             >Exam List</el-menu-item
           >
-          <el-menu-item 
-            v-else
-            index="/examList"
-            >Exam List</el-menu-item
-          >
-          <el-menu-item 
-          v-if="userId==''"
-           index="/userLogin"
-          
+          <el-menu-item v-else index="/examList">Exam List</el-menu-item>
+          <el-menu-item v-if="userId == ''" index="/userLogin"
             >Personal ExamHistory</el-menu-item
           >
-          <el-menu-item 
-            v-else
-           index="/personalExamHistory"
-          
+          <el-menu-item v-else index="/personalExamHistory"
             >Personal ExamHistory</el-menu-item
           >
-          <el-menu-item  index="/testList"
-            >Test List</el-menu-item
-          >
+          <el-menu-item index="/testList">Test List</el-menu-item>
         </el-submenu>
         <el-submenu index="4" v-if="this.userIdentity == 'teacher'">
           <template slot="title"
             ><i class="iconfont icon-teacher"></i>Teacher</template
           >
-          <el-menu-item  index="/examInfoList"
-            >TeacherManager</el-menu-item
-          >
+          <el-menu-item index="/examInfoList">TeacherManager</el-menu-item>
         </el-submenu>
       </el-menu>
       <div class="loginbutton">
@@ -106,7 +86,7 @@ export default {
   },
 
   methods: {
-    
+
     //跳转到测试列表界面
     goToTestList () {
       if (this.userId == "") {
@@ -145,20 +125,20 @@ export default {
     //跳转到考试列表界面
 
     goToExamList () {
-      
-        if (this.userId == "") {
-          this.$message.error("请先登录用户");
-          this.$router.replace("/userLogin");
-        }
-        //  else if (this.userIdentity == "student") {
-        //   this.$router.push({
-        //     path: "/examList",
-        //     query: { userId: this.userId },
-        //   });
-        // } else if (this.userIdentity == "teacher") {
-        //   this.$router.push("/examInfoList");
-        // }
-      
+
+      if (this.userId == "") {
+        this.$message.error("请先登录用户");
+        this.$router.replace("/userLogin");
+      }
+      //  else if (this.userIdentity == "student") {
+      //   this.$router.push({
+      //     path: "/examList",
+      //     query: { userId: this.userId },
+      //   });
+      // } else if (this.userIdentity == "teacher") {
+      //   this.$router.push("/examInfoList");
+      // }
+
     },
     //跳转到考试排行榜界面
     goToExamRankList () {
@@ -215,7 +195,7 @@ export default {
         data: params,
       })
         .then((res) => {
-          this.$router.push({ path: "/userMainInterface"});
+          this.$router.push({ path: "/userMainInterface" });
           alert("退出成功");
           this.userName = "";
           this.userIdentity = "";

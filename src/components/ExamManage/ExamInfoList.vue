@@ -177,7 +177,7 @@
       :close-on-click-modal="false"
       width="900px"
     >
-      <el-form :model="exam_modify" ref="exam_modify">
+      <el-form :model="exam_modify" ref="exam_modify" label-width="120px">
         <el-form-item label="考试名称" prop="examName">
           <el-input v-model="exam_modify.examName"></el-input>
         </el-form-item>
