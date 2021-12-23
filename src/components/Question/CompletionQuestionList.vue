@@ -101,6 +101,17 @@
       :row-style="{ height: '20px' }"
       :cell-style="{ padding: '0px' }"
     >
+     <el-table-column
+          width="100px"
+          label="在考试中"
+          align="center"
+        >
+          <template slot-scope="scope">
+          <div v-if="scope.row.isExam==true">
+              √
+          </div>
+        </template>
+        </el-table-column>
       <el-table-column
         prop="completionQuestionId"
         label="填空题编号"
@@ -1223,11 +1234,8 @@ export default {
         if (valid) {
           // 如果校验通过，请求接口，允许提交表单
           let params = new URLSearchParams();
-          for (
-            var i = 0;
-            i < this.aCompletionQuestionInfo.questionLabels.length;
-            i++
-          ) {
+          for (var i = 0;i < this.aCompletionQuestionInfo.questionLabels.length;i++) 
+          {
             var questionLabel = new Object();
             questionLabel.questionLabelId = this.aCompletionQuestionInfo.questionLabels[
               i
@@ -1235,10 +1243,7 @@ export default {
             this.aCompletionQuestionInfo.questionLabels[i] = questionLabel;
           }
           this.aCompletionQuestionInfo.user = this.user;
-          params.append(
-            "completionQuestionInfo",
-            JSON.stringify(this.aCompletionQuestionInfo)
-          );
+          params.append("completionQuestionInfo",JSON.stringify(this.aCompletionQuestionInfo));
           this.$axios({
             method: "post",
             headers: {
@@ -1311,12 +1316,16 @@ export default {
     //获取填空题信息
     getCompletionQuestionInfo () {
       let params = new URLSearchParams();
+      params.append("userId", 0);
+      params.append("chapter", "");
+      params.append("firstKnowledge", "");
+      params.append("questionLabelId", 0);
       this.$axios({
         method: "post",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        url: "/completionQuestion/queryCompletionQuestionInfoByUserId",
+        url: "/completionQuestion/queryCompletionQuestionInfoBySearchInfo",
         data: params,
       })
         .then((res) => {

@@ -102,7 +102,7 @@
         :row-style="{ height: '20px' }"
         :cell-style="{ padding: '0px' }"
       >
-      <div>
+      
         <el-table-column
           width="100px"
           label="在考试中"
@@ -110,12 +110,11 @@
         >
           <template slot-scope="scope">
           <div v-if="scope.row.isExam==true">
-              2
+              √
           </div>
         </template>
         </el-table-column>
       
-      </div>
         <el-table-column
           prop="choiceQuestionId"
           width="100px"
@@ -1025,33 +1024,18 @@ export default {
         params.append("userId", this.searchTeacherUserId);
       }
       if (
-        (this.searchChapterChoice == "" && this.searchChapterChoice != "0") ||
-        this.searchChapterChoice == " "
-      ) {
+        (this.searchChapterChoice == "" && this.searchChapterChoice != "0") ||this.searchChapterChoice == " ") {
         params.append("chapter", "");
       } else {
-        params.append(
-          "chapter",
-          this.searchChapterOptions[this.searchChapterChoice].label
-        );
+        params.append("chapter",this.searchChapterOptions[this.searchChapterChoice].label);
       }
-      if (
-        (this.searchFirstKnowledgeChoice == "" &&
-          this.searchFirstKnowledgeChoice != "0") ||
-        this.searchFirstKnowledgeChoice == " "
-      ) {
-        params.append("firstKnowledge", "");
-      } else {
-        params.append(
-          "firstKnowledge",
-          this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice]
-            .label
-        );
-      }
-      if (
-        this.searchSecondKnowledgeChoice == "" ||
-        this.searchSecondKnowledgeChoice == " "
-      ) {
+      if ((this.searchFirstKnowledgeChoice == "" &&this.searchFirstKnowledgeChoice != "0") ||this.searchFirstKnowledgeChoice == " ") 
+        {
+           params.append("firstKnowledge", "");
+         } else {
+            params.append("firstKnowledge",this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice].label);
+         }
+      if (this.searchSecondKnowledgeChoice == "" ||this.searchSecondKnowledgeChoice == " ") {
         params.append("questionLabelId", 0);
       } else {
         params.append("questionLabelId", this.searchSecondKnowledgeChoice);
@@ -1774,15 +1758,19 @@ export default {
           this.$message.error("获取第二知识点错误");
         });
     },
-    //获取选择题信息
+    //获取选择题信息用查询的方法
     getChoiceQuestionInfo () {
       let params = new URLSearchParams();
+      params.append("userId", 0);
+      params.append("chapter", "");
+      params.append("firstKnowledge", "");
+      params.append("questionLabelId", 0);
       this.$axios({
         method: "post",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        url: "/choiceQuestion/queryChoiceQuestionInfo",
+        url: "/choiceQuestion/queryChoiceQuestionInfoBySearchInfo",
         data: params,
       })
         .then((res) => {
