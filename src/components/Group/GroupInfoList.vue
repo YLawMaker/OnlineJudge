@@ -1,124 +1,131 @@
 <template>
-  <div>
+  <el-card>
     <div>
-      <div class="topBar_GroupInfoManage">
-        <el-input
-          v-model="select_word"
-          size="mini"
-          class="search_input"
-          placeholder="请输入关键字"
-          style="width: 200px"
-          clearable
-        ></el-input>
-        <el-button
-          size="small"
-          type="primary"
-          class="addButton_GroupInfoManage"
-          icon="el-icon-document-add"
-          round
-          plain
-          @click="addDialogvisiable()"
-          >添加分组</el-button
-        >
+      <div>
+        <div class="topBar_GroupInfoManage">
+          <el-input
+            v-model="select_word"
+            size="mini"
+            class="search_input"
+            placeholder="请输入关键字"
+            style="width: 200px"
+            clearable
+          ></el-input>
+          <el-button
+            size="small"
+            type="primary"
+            class="addButton_GroupInfoManage"
+            icon="el-icon-document-add"
+            round
+            plain
+            @click="addDialogvisiable()"
+            >添加分组</el-button
+          >
+        </div>
       </div>
-    </div>
-    <div>
-      <el-table
-        :data="data"
-        style="width: 100%"
-        :row-style="{ height: '20px' }"
-        stripe
-      >
-        <el-table-column
-          prop="groupId"
-          label="编号"
-          width="200"
-        ></el-table-column>
-        <el-table-column prop="groupName" label="分组名称">
-          <template slot-scope="scope">
-            <router-link
-              :to="{
-                /* path: 'ExerciseAnswerManage',
+      <div>
+        <el-table
+          :data="data"
+          style="width: 100%"
+          :row-style="{ height: '20px' }"
+          stripe
+        >
+          <el-table-column
+            prop="groupId"
+            label="编号"
+            width="200"
+          ></el-table-column>
+          <el-table-column prop="groupName" label="分组名称">
+            <template slot-scope="scope">
+              <router-link
+                :to="{
+                  /* path: 'ExerciseAnswerManage',
                 query: {
                   exerciseIdfromManage: scope.row.exerciseId,
                   page: currentPage,
                   searchKey: select_word,
                 },*/
-              }"
-            >
-              {{ scope.row.groupName }}
-            </router-link>
-          </template>
-        </el-table-column>
-        <el-table-column prop="user.userName" label="创建者"></el-table-column>
-        <el-table-column prop="status" label="状态" width="100px">
-          考试中
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              @click.native.prevent="GroupInfoDialog(scope.row)"
-              size="small"
-              icon="el-icon-info"
-              round
-              plain
-              >详情</el-button
-            >
-            <el-button
-              type="primary"
-              size="small"
-              icon="el-icon-edit-outline"
-              round
-              plain
-              >修改</el-button
-            >
-            <el-button
-              type="danger"
-              @click.native.prevent="deleteConfirm(scope.row)"
-              size="small"
-              icon="el-icon-delete-solid"
-              round
-              plain
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="block">
-        <el-pagination
-          @current-change="handleCurrent"
-          :current-page.sync="currentPage"
-          :page-size="pagesize"
-          layout="total,prev, pager, next"
-          :total="this.searchData.length"
-          v-if="this.searchData.length != 0"
+                }"
+              >
+                {{ scope.row.groupName }}
+              </router-link>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="user.userName"
+            label="创建者"
+          ></el-table-column>
+          <el-table-column prop="status" label="状态" width="100px">
+            考试中
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                type="primary"
+                @click.native.prevent="GroupInfoDialog(scope.row)"
+                size="small"
+                icon="el-icon-info"
+                round
+                plain
+                >详情</el-button
+              >
+              <el-button
+                type="primary"
+                size="small"
+                icon="el-icon-edit-outline"
+                round
+                plain
+                >修改</el-button
+              >
+              <el-button
+                type="danger"
+                @click.native.prevent="deleteConfirm(scope.row)"
+                size="small"
+                icon="el-icon-delete-solid"
+                round
+                plain
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrent"
+            :current-page.sync="currentPage"
+            :page-size="pagesize"
+            layout="total,prev, pager, next"
+            :total="this.searchData.length"
+            v-if="this.searchData.length != 0"
+          >
+          </el-pagination>
+        </div>
+        <el-dialog
+          title="添加分组"
+          :visible.sync="edittableDataVisible_add"
+          :before-close="handleClose"
+          :close-on-click-modal="false"
         >
-        </el-pagination>
+          <el-form
+            ref="addGroup"
+            :model="addGroupData"
+            :rules="addRules"
+            class="addGroupForm"
+          >
+            <el-form-item label="名称" prop="groupName">
+              <el-input v-model="addGroupData.groupName"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="add('addGroup')"
+                >添加</el-button
+              >
+              <el-button @click="handleClose">取消</el-button>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
       </div>
-      <el-dialog
-        title="添加分组"
-        :visible.sync="edittableDataVisible_add"
-        :before-close="handleClose"
-        :close-on-click-modal="false"
-      >
-        <el-form
-          ref="addGroup"
-          :model="addGroupData"
-          :rules="addRules"
-          class="addGroupForm"
-        >
-          <el-form-item label="名称" prop="groupName">
-            <el-input v-model="addGroupData.groupName"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="add('addGroup')">添加</el-button>
-            <el-button @click="handleClose">取消</el-button>
-          </el-form-item>
-        </el-form>
-      </el-dialog>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -307,14 +314,7 @@ export default {
 .el-table .cell {
   white-space: pre-line;
 }
-.el-main {
-  display: block;
-  flex: 1;
-  flex-basis: auto;
-  overflow: auto;
-  box-sizing: border-box;
-  padding: 0px;
-}
+
 .topBar_GroupInfoManage {
   margin-top: 10px;
 }

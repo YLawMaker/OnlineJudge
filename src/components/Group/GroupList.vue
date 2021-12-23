@@ -1,83 +1,94 @@
 <template>
-  <div>
+  <el-card>
     <div>
-      <div class="topBar_GroupManage">
-        <el-input
-          v-model="select_word"
-          size="mini"
-          class="search_input"
-          placeholder="请输入关键字"
-          style="width: 200px"
-          clearable
-        ></el-input>
+      <div>
+        <div class="topBar_GroupManage">
+          <el-input
+            v-model="select_word"
+            size="mini"
+            class="search_input"
+            placeholder="请输入关键字"
+            style="width: 200px"
+            clearable
+          ></el-input>
+        </div>
       </div>
-    </div>
-    <div>
-      <el-table
-        :data="data"
-        style="width: 100%"
-        :row-style="{ height: '20px' }"
-        stripe
-      >
-        <el-table-column
-          prop="groupId"
-          label="编号"
-          width="200"
-        ></el-table-column>
-        <el-table-column prop="groupName" label="分组名称">
-          <template slot-scope="scope">
-            <router-link
-              :to="{
-                /* path: 'ExerciseAnswerManage',
+      <div>
+        <el-table
+          :data="data"
+          style="width: 100%"
+          :row-style="{ height: '20px' }"
+          stripe
+        >
+          <el-table-column
+            prop="groupId"
+            label="编号"
+            width="200"
+          ></el-table-column>
+          <el-table-column prop="groupName" label="分组名称">
+            <template slot-scope="scope">
+              <router-link
+                :to="{
+                  /* path: 'ExerciseAnswerManage',
                 query: {
                   exerciseIdfromManage: scope.row.exerciseId,
                   page: currentPage,
                   searchKey: select_word,
                 },*/
-              }"
-            >
-              {{ scope.row.groupName }}
-            </router-link>
-          </template>
-        </el-table-column>
-        <el-table-column prop="user.userName" label="创建者"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              @click.native.prevent="GroupInfoDialog(scope.row)"
-              size="small"
-              >详情</el-button
-            >
-            <el-button
-              type="danger"
-              @click.native.prevent="deleteConfirm(scope.row)"
-              size="small"
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="block">
-        <el-pagination
-          @current-change="handleCurrent"
-          :current-page.sync="currentPage"
-          :page-size="pagesize"
-          layout="total,prev, pager, next"
-          :total="this.searchData.length"
-          v-if="this.searchData.length != 0"
+                }"
+              >
+                {{ scope.row.groupName }}
+              </router-link>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="user.userName"
+            label="创建者"
+          ></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                type="primary"
+                @click.native.prevent="GroupInfoDialog(scope.row)"
+                size="small"
+                icon="el-icon-info"
+                round
+                plain
+                >详情</el-button
+              >
+              <el-button
+                type="danger"
+                icon="el-icon-delete-solid"
+                round
+                plain
+                @click.native.prevent="deleteConfirm(scope.row)"
+                size="small"
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrent"
+            :current-page.sync="currentPage"
+            :page-size="pagesize"
+            layout="total,prev, pager, next"
+            :total="this.searchData.length"
+            v-if="this.searchData.length != 0"
+          >
+          </el-pagination>
+        </div>
+        <el-dialog
+          title="详情"
+          :visible.sync="edittableDataVisible_info"
+          :before-close="handleClose"
+          :close-on-click-modal="false"
         >
-        </el-pagination>
+        </el-dialog>
       </div>
-      <el-dialog
-        title="详情"
-        :visible.sync="edittableDataVisible_info"
-        :before-close="handleClose"
-        :close-on-click-modal="false"
-      >
-      </el-dialog>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -155,14 +166,6 @@ export default {
 <style>
 .el-table .cell {
   white-space: pre-line;
-}
-.el-main {
-  display: block;
-  flex: 1;
-  flex-basis: auto;
-  overflow: auto;
-  box-sizing: border-box;
-  padding: 0px;
 }
 .topBar_GroupManage {
   margin-top: 10px;

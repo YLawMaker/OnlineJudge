@@ -1,88 +1,93 @@
 <template>
-  <div>
-    <div id="chart" style="display: none"></div>
-
-    <div class="topBar_analyse">
-      <el-button
-        type="primary"
-        size="small"
-        icon="el-icon-download"
-        round
-        plain
-        @click.native.prevent="importWord()"
-        >导出分析</el-button
-      >
-    </div>
-    <br />
-    <br />
-    <el-row>
-      <el-col :span="8" class="examUserInfo"
-        >应考人数:{{ this.examUserJoin.examUser }}</el-col
-      >
-      <el-col :span="8" class="examUserInfo"
-        >实考人数:{{ this.examUserJoin.examSubmitUser }}</el-col
-      >
-      <el-col :span="8" class="examUserInfo"
-        >缺考人数:{{ this.examUserJoin.examNotSubmitUser }}</el-col
-      >
-    </el-row>
+  <el-card>
     <div>
-      <el-table :data="averageScore">
-        <el-table-column label="各题型平均分" align="center">
-          <el-table-column
-            label="选择题"
-            prop="averageChoice"
-          ></el-table-column>
-          <el-table-column
-            label="填空题"
-            prop="averageCompletion"
-          ></el-table-column>
-          <el-table-column
-            label="程序设计题"
-            prop="averageProgramming"
-          ></el-table-column>
-          <el-table-column
-            label="考试平均分"
-            prop="averageTotal"
-          ></el-table-column>
-        </el-table-column>
-      </el-table>
+      <div id="chart" style="display: none"></div>
+
+      <div class="topBar_analyse">
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-search"
+          round
+          plain
+          @click.native.prevent="importWord()"
+          >导出分析</el-button
+        >
+      </div>
       <br />
-      <el-table :data="numberInEachSection">
-        <el-table-column label="各分段人数" align="center">
-          <el-table-column label="60以下" prop="below60"></el-table-column>
-          <el-table-column
-            label="60~69"
-            prop="between60and69"
-          ></el-table-column>
-          <el-table-column
-            label="70~79"
-            prop="between70and79"
-          ></el-table-column>
-          <el-table-column
-            label="80~89"
-            prop="between80and89"
-          ></el-table-column>
-          <el-table-column label="90及以上" prop="above89"></el-table-column>
-        </el-table-column>
-      </el-table>
       <br />
-      <el-table :data="examExerciseScore">
-        <el-table-column label="各程序设计题平均分" align="center">
-          <el-table-column
-            label="序号"
-            type="index"
-            width="100"
-          ></el-table-column>
-          <el-table-column label="题目" prop="exerciseTitle"></el-table-column>
-          <el-table-column
-            label="平均分"
-            prop="avgExamProgrammingScore"
-          ></el-table-column>
-        </el-table-column>
-      </el-table>
+      <el-row>
+        <el-col :span="8" class="examUserInfo"
+          >应考人数:{{ this.examUserJoin.examUser }}</el-col
+        >
+        <el-col :span="8" class="examUserInfo"
+          >实考人数:{{ this.examUserJoin.examSubmitUser }}</el-col
+        >
+        <el-col :span="8" class="examUserInfo"
+          >缺考人数:{{ this.examUserJoin.examNotSubmitUser }}</el-col
+        >
+      </el-row>
+      <div>
+        <el-table :data="averageScore">
+          <el-table-column label="各题型平均分" align="center">
+            <el-table-column
+              label="选择题"
+              prop="averageChoice"
+            ></el-table-column>
+            <el-table-column
+              label="填空题"
+              prop="averageCompletion"
+            ></el-table-column>
+            <el-table-column
+              label="程序设计题"
+              prop="averageProgramming"
+            ></el-table-column>
+            <el-table-column
+              label="考试平均分"
+              prop="averageTotal"
+            ></el-table-column>
+          </el-table-column>
+        </el-table>
+        <br />
+        <el-table :data="numberInEachSection">
+          <el-table-column label="各分段人数" align="center">
+            <el-table-column label="60以下" prop="below60"></el-table-column>
+            <el-table-column
+              label="60~69"
+              prop="between60and69"
+            ></el-table-column>
+            <el-table-column
+              label="70~79"
+              prop="between70and79"
+            ></el-table-column>
+            <el-table-column
+              label="80~89"
+              prop="between80and89"
+            ></el-table-column>
+            <el-table-column label="90及以上" prop="above89"></el-table-column>
+          </el-table-column>
+        </el-table>
+        <br />
+        <el-table :data="examExerciseScore">
+          <el-table-column label="各程序设计题平均分" align="center">
+            <el-table-column
+              label="序号"
+              type="index"
+              width="100"
+            ></el-table-column>
+            <el-table-column
+              label="题目"
+              prop="exerciseTitle"
+            ></el-table-column>
+            <el-table-column
+              label="平均分"
+              prop="avgExamProgrammingScore"
+            ></el-table-column>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script>

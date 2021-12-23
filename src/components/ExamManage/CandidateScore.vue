@@ -1,88 +1,90 @@
 <template>
-  <div>
-    <div></div>
+  <el-card>
     <div>
-      <el-table
-        :data="data"
-        style="width: 100%"
-        :row-style="{ height: '20px' }"
-        stripe
-      >
-        <el-table-column
-          label="Rank"
-          type="index"
-          :index="indexMethod"
-          width="80"
+      <div></div>
+      <div>
+        <el-table
+          :data="data"
+          style="width: 100%"
+          :row-style="{ height: '20px' }"
+          stripe
         >
-        </el-table-column>
-        <el-table-column label="账号" prop="user.userAccount" width="">
-        </el-table-column>
-        <el-table-column label="姓名" prop="user.userName">
-          <template slot-scope="scope">
-            <div
-              class="userScoreHistory"
-              @click="userScoreHistoryDialog(scope.row)"
-            >
-              {{ scope.row.user.userName }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="选择题"
-          prop="examChoiceQuestionTotals"
-          sortable
-        >
-        </el-table-column>
-        <el-table-column
-          label="填空题"
-          prop="examCompletionQuestionTotals"
-          sortable
-        >
-        </el-table-column>
-        <el-table-column label="编程题" prop="examProgrammingTotals" sortable>
-        </el-table-column>
-        <el-table-column label="总成绩" prop="examTotals" sortable>
-        </el-table-column>
-      </el-table>
-      <div class="block">
-        <el-pagination
-          @current-change="handleCurrent"
-          :current-page.sync="currentPage"
-          :page-size="pagesize"
-          layout="total,prev, pager, next"
-          :total="this.examHistory.length"
-          v-if="this.examHistory.length != 0"
-        >
-        </el-pagination>
-      </div>
-      <el-dialog
-        :visible.sync="edittableDataVisible_info"
-        :before-close="handleClose"
-        :close-on-click-modal="false"
-      >
-        <div class="userScoreTopBar">{{ this.userName }}历史成绩表</div>
-        <el-table :data="userScoreHistory">
           <el-table-column
-            prop="exam.examName"
-            label="考试名称"
-          ></el-table-column>
+            label="Rank"
+            type="index"
+            :index="indexMethod"
+            width="80"
+          >
+          </el-table-column>
+          <el-table-column label="账号" prop="user.userAccount" width="">
+          </el-table-column>
+          <el-table-column label="姓名" prop="user.userName">
+            <template slot-scope="scope">
+              <div
+                class="userScoreHistory"
+                @click="userScoreHistoryDialog(scope.row)"
+              >
+                {{ scope.row.user.userName }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
+            label="选择题"
             prop="examChoiceQuestionTotals"
-            label="选择题成绩"
-          ></el-table-column>
+            sortable
+          >
+          </el-table-column>
           <el-table-column
+            label="填空题"
             prop="examCompletionQuestionTotals"
-            label="填空题成绩"
-          ></el-table-column>
-          <el-table-column
-            prop="examProgrammingTotals"
-            label="编程题成绩"
-          ></el-table-column>
-          <el-table-column prop="examTotals" label="总分"></el-table-column>
+            sortable
+          >
+          </el-table-column>
+          <el-table-column label="编程题" prop="examProgrammingTotals" sortable>
+          </el-table-column>
+          <el-table-column label="总成绩" prop="examTotals" sortable>
+          </el-table-column>
         </el-table>
-      </el-dialog>
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrent"
+            :current-page.sync="currentPage"
+            :page-size="pagesize"
+            layout="total,prev, pager, next"
+            :total="this.examHistory.length"
+            v-if="this.examHistory.length != 0"
+          >
+          </el-pagination>
+        </div>
+        <el-dialog
+          :visible.sync="edittableDataVisible_info"
+          :before-close="handleClose"
+          :close-on-click-modal="false"
+        >
+          <div class="userScoreTopBar">{{ this.userName }}历史成绩表</div>
+          <el-table :data="userScoreHistory">
+            <el-table-column
+              prop="exam.examName"
+              label="考试名称"
+            ></el-table-column>
+            <el-table-column
+              prop="examChoiceQuestionTotals"
+              label="选择题成绩"
+            ></el-table-column>
+            <el-table-column
+              prop="examCompletionQuestionTotals"
+              label="填空题成绩"
+            ></el-table-column>
+            <el-table-column
+              prop="examProgrammingTotals"
+              label="编程题成绩"
+            ></el-table-column>
+            <el-table-column prop="examTotals" label="总分"></el-table-column>
+          </el-table>
+        </el-dialog>
+      </div>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script>

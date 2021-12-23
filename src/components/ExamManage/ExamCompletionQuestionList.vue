@@ -1,209 +1,213 @@
 <template>
-  <div>
+  <el-card>
     <div>
-      <span class="span-label">章节</span>
-      <el-select
-        placeholder="请选择"
-        size="mini"
-        class="handle-select"
-        style="margin-left: 1%"
-        v-model="searchChapterChoice"
-        @change="searchChapterChange()"
-      >
-        <el-option
-          v-for="(item, index) in searchChapterOptions"
-          :key="index"
-          :label="item"
-          :value="index"
+      <div>
+        <span class="span-label">章节</span>
+        <el-select
+          placeholder="请选择"
+          size="mini"
+          class="handle-select"
+          style="margin-left: 1%"
+          v-model="searchChapterChoice"
+          @change="searchChapterChange()"
         >
-        </el-option>
-      </el-select>
-      <span class="span-label">第一知识点</span>
-      <el-select
-        placeholder="请选择"
-        size="mini"
-        class="handle-select"
-        style="margin-left: 1%"
-        v-model="searchFirstKnowledgeChoice"
-        :disabled="searchFirstKnowledgePointVisiable"
-        @change="searchFirstPointChange()"
-      >
-        <el-option
-          v-for="(item, index) in searchFirstKnowledgePointOptions"
-          :key="index"
-          :label="item"
-          :value="index"
+          <el-option
+            v-for="(item, index) in searchChapterOptions"
+            :key="index"
+            :label="item"
+            :value="index"
+          >
+          </el-option>
+        </el-select>
+        <span class="span-label">第一知识点</span>
+        <el-select
+          placeholder="请选择"
+          size="mini"
+          class="handle-select"
+          style="margin-left: 1%"
+          v-model="searchFirstKnowledgeChoice"
+          :disabled="searchFirstKnowledgePointVisiable"
+          @change="searchFirstPointChange()"
         >
-        </el-option>
-      </el-select>
-      <span class="span-label">第二知识点</span>
-      <el-select
-        placeholder="请选择"
-        size="mini"
-        class="handle-select"
-        style="margin-left: 1%"
-        v-model="searchSecondKnowledgeChoice"
-        :disabled="searchSecondKnowledgePointVisiable"
-      >
-        <el-option
-          v-for="item in searchSecondKnowledgePointOptions"
-          :key="item.questionLabelId"
-          :label="item.secondKnowledgePoint"
-          :value="item.questionLabelId"
+          <el-option
+            v-for="(item, index) in searchFirstKnowledgePointOptions"
+            :key="index"
+            :label="item"
+            :value="index"
+          >
+          </el-option>
+        </el-select>
+        <span class="span-label">第二知识点</span>
+        <el-select
+          placeholder="请选择"
+          size="mini"
+          class="handle-select"
+          style="margin-left: 1%"
+          v-model="searchSecondKnowledgeChoice"
+          :disabled="searchSecondKnowledgePointVisiable"
         >
-        </el-option>
-      </el-select>
-      <span class="span-label">教师用户姓名</span>
-      <el-select
-        placeholder="请选择"
-        size="mini"
-        class="handle-select"
-        style="margin-left: 1%"
-        v-model="searchTeacherUserId"
-      >
-        <el-option
-          v-for="item in teacherUserList"
-          :key="item.userId"
-          :label="item.userName"
-          :value="item.userId"
-        >
-        </el-option>
-      </el-select>
-
-      <el-button
-        type="primary"
-        size="mini"
-        icon="el-icon-search"
-        round
-        plain
-        @click="searchCompletionQuestionInfo()"
-        style="margin-left: 2%"
-        >查询</el-button
-      >
-    </div>
-    <el-table
-      :data="data"
-      style="width: 100%; font-size: 12px"
-      class="tableclass"
-      stripe
-      :header-cell-style="{ 'text-align': 'center' }"
-      :row-style="{ height: '20px' }"
-      :cell-style="{ padding: '0px' }"
-    >
-      <el-table-column
-        prop="completionQuestionId"
-        label="填空题编号"
-        align="center"
-        width="100px"
-      >
-      </el-table-column>
-      <el-table-column prop="user.userName" label="创建人" align="center">
-      </el-table-column>
-      <el-table-column
-        prop="completionQuestionDescription"
-        label="填空题描述"
-        :show-overflow-tooltip="true"
-        align="center"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="questionLabels[0].chapter"
-        label="填空题章节"
-        align="center"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="questionLabels[0].firstKnowledgePoint"
-        label="填空题一级知识点"
-        align="center"
-      >
-      </el-table-column>
-      <el-table-column
-        label="填空题二级知识点"
-        min-width="100%"
-        :show-overflow-tooltip="true"
-      >
-        <template slot-scope="scope">
-          <div
-            v-for="(item, index) in scope.row.questionLabels"
+          <el-option
+            v-for="item in searchSecondKnowledgePointOptions"
             :key="item.questionLabelId"
+            :label="item.secondKnowledgePoint"
+            :value="item.questionLabelId"
           >
-            <p
-              v-if="index == 3"
-              align="center"
-              style="margin-top:0px;margin-bottom:0px;display;"
-            >
-              ...
-            </p>
-            <p
-              v-if="index < 3"
-              align="center"
-              style="margin-top:0px;margin-bottom:0px;display;"
-            >
-              {{ item.secondKnowledgePoint }}
-            </p>
-            <p
-              v-if="index > 3"
-              style="margin-top:0px;margin-bottom:0px;display;"
-            ></p>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="completionQuestionDifficulty"
-        label="填空题难度"
-        align="center"
-      >
-      </el-table-column>
-      <el-table-column prop="isPrivate" label="是否私有">
-        <template slot-scope="scope">
-          <p v-if="scope.row.isPrivate === true" align="center">私有</p>
-          <p v-if="scope.row.isPrivate === false" align="center">公有</p>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="300px" align="center">
-        <template slot-scope="scope">
-          <div
-            v-for="(item, i) in completionQuestionStatus"
-            :key="item.completionQuestionId"
+          </el-option>
+        </el-select>
+        <span class="span-label">教师用户姓名</span>
+        <el-select
+          placeholder="请选择"
+          size="mini"
+          class="handle-select"
+          style="margin-left: 1%"
+          v-model="searchTeacherUserId"
+        >
+          <el-option
+            v-for="item in teacherUserList"
+            :key="item.userId"
+            :label="item.userName"
+            :value="item.userId"
           >
-            <el-button
-              class="operate"
-              type="text"
-              icon="el-icon-plus"
-              v-if="
-                item.status == 0 &&
-                item.completionQuestionId == scope.row.completionQuestionId
-              "
-              @click="cilckAddButtonEvent(scope.row.completionQuestionId, i)"
-            ></el-button>
-            <el-button
-              class="operate"
-              type="text"
-              icon="el-icon-close"
-              v-if="
-                item.status == 1 &&
-                item.completionQuestionId == scope.row.completionQuestionId
-              "
-              @click="cilckDeleteButtonEvent(scope.row.completionQuestionId, i)"
-            ></el-button>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+          </el-option>
+        </el-select>
 
-    <div class="pagination">
-      <el-pagination
-        layout="total,prev,pager,next"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="completionQuestionInfoList.length"
-        @current-change="handleCurrent"
-        v-if="completionQuestionInfoList.length != 0"
+        <el-button
+          type="primary"
+          size="mini"
+          icon="el-icon-search"
+          round
+          plain
+          @click="searchCompletionQuestionInfo()"
+          style="margin-left: 2%"
+          >查询</el-button
+        >
+      </div>
+      <el-table
+        :data="data"
+        style="width: 100%; font-size: 12px"
+        class="tableclass"
+        stripe
+        :header-cell-style="{ 'text-align': 'center' }"
+        :row-style="{ height: '20px' }"
+        :cell-style="{ padding: '0px' }"
       >
-      </el-pagination>
+        <el-table-column
+          prop="completionQuestionId"
+          label="填空题编号"
+          align="center"
+          width="100px"
+        >
+        </el-table-column>
+        <el-table-column prop="user.userName" label="创建人" align="center">
+        </el-table-column>
+        <el-table-column
+          prop="completionQuestionDescription"
+          label="填空题描述"
+          :show-overflow-tooltip="true"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="questionLabels[0].chapter"
+          label="填空题章节"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="questionLabels[0].firstKnowledgePoint"
+          label="填空题一级知识点"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          label="填空题二级知识点"
+          min-width="100%"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">
+            <div
+              v-for="(item, index) in scope.row.questionLabels"
+              :key="item.questionLabelId"
+            >
+              <p
+                v-if="index == 3"
+                align="center"
+                style="margin-top:0px;margin-bottom:0px;display;"
+              >
+                ...
+              </p>
+              <p
+                v-if="index < 3"
+                align="center"
+                style="margin-top:0px;margin-bottom:0px;display;"
+              >
+                {{ item.secondKnowledgePoint }}
+              </p>
+              <p
+                v-if="index > 3"
+                style="margin-top:0px;margin-bottom:0px;display;"
+              ></p>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="completionQuestionDifficulty"
+          label="填空题难度"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column prop="isPrivate" label="是否私有">
+          <template slot-scope="scope">
+            <p v-if="scope.row.isPrivate === true" align="center">私有</p>
+            <p v-if="scope.row.isPrivate === false" align="center">公有</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="300px" align="center">
+          <template slot-scope="scope">
+            <div
+              v-for="(item, i) in completionQuestionStatus"
+              :key="item.completionQuestionId"
+            >
+              <el-button
+                class="operate"
+                type="text"
+                icon="el-icon-plus"
+                v-if="
+                  item.status == 0 &&
+                  item.completionQuestionId == scope.row.completionQuestionId
+                "
+                @click="cilckAddButtonEvent(scope.row.completionQuestionId, i)"
+              ></el-button>
+              <el-button
+                class="operate"
+                type="text"
+                icon="el-icon-close"
+                v-if="
+                  item.status == 1 &&
+                  item.completionQuestionId == scope.row.completionQuestionId
+                "
+                @click="
+                  cilckDeleteButtonEvent(scope.row.completionQuestionId, i)
+                "
+              ></el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div class="pagination">
+        <el-pagination
+          layout="total,prev,pager,next"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :total="completionQuestionInfoList.length"
+          @current-change="handleCurrent"
+          v-if="completionQuestionInfoList.length != 0"
+        >
+        </el-pagination>
+      </div>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script>

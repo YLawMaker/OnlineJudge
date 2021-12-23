@@ -1,125 +1,141 @@
 <template>
-  <div>
-    <div class="topBar_answer">
-      <el-button
-        size="small"
-        type="primary"
-        @click.native.prevent="goBack(currentPage, searchKey)"
+  <el-card>
+    <div>
+      <div class="topBar_answer">
+        <el-button
+          size="small"
+          type="primary"
+          icon="el-icon-back"
+          round
+          plain
+          @click.native.prevent="goBack(currentPage, searchKey)"
+        >
+          返回
+        </el-button>
+        <el-button
+          size="small"
+          type="primary"
+          icon="el-icon-document-add"
+          round
+          plain
+          @click.native.prevent="addExerciseAnswerDialog()"
+          >添加答案</el-button
+        >
+      </div>
+      <el-table :data="exerciseAnswer" style="width: 100%">
+        <el-table-column prop="exerciseAnswerId" label="ID" width="180">
+        </el-table-column>
+        <el-table-column prop="exerciseAnswerInput" label="答案输入">
+          <template slot-scope="scope">
+            <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
+              {{ scope.row.exerciseAnswerInput }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="exerciseAnswerOutput" label="答案输出">
+          <template slot-scope="scope">
+            <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
+              {{ scope.row.exerciseAnswerOutput }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              icon="el-icon-edit-outline"
+              round
+              plain
+              size="small"
+              @click.native.prevent="modifyExercise(scope.row)"
+              >修改</el-button
+            >
+            <el-button
+              type="danger"
+              icon="el-icon-delete-solid"
+              round
+              plain
+              size="small"
+              @click.native.prevent="deleteConfirm(scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-dialog
+        title="添加答案"
+        :visible.sync="edittableDataVisible_add"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
       >
-        返回
-      </el-button>
-      <el-button
-        size="small"
-        type="primary"
-        @click.native.prevent="addExerciseAnswerDialog()"
-        >添加答案</el-button
+        <el-form
+          :model="edittableData"
+          :rules="edittableDataRules"
+          ref="edittableData"
+        >
+          <el-form-item label="答案输入" prop="exerciseAnswerInput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseAnswerInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="答案输出" prop="exerciseAnswerOutput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseAnswerOutput"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button type="primary" @click="addExerciseAnswer('edittableData')"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
+      <el-dialog
+        title="修改答案"
+        :visible.sync="edittableDataVisible_modify"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
       >
+        <el-form
+          :model="edittableData"
+          :rules="edittableDataRules"
+          ref="edittableData"
+        >
+          <el-form-item label="答案编号" prop="exerciseAnswerId">
+            <el-input
+              v-model="edittableData.exerciseAnswerId"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="答案输入" prop="exerciseAnswerInput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseAnswerInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="答案输出" prop="exerciseAnswerOutput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseAnswerOutput"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button type="primary" @click="modifyExerciseDialog()"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
     </div>
-    <el-table :data="exerciseAnswer" style="width: 100%">
-      <el-table-column prop="exerciseAnswerId" label="ID" width="180">
-      </el-table-column>
-      <el-table-column prop="exerciseAnswerInput" label="答案输入">
-        <template slot-scope="scope">
-          <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
-            {{ scope.row.exerciseAnswerInput }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="exerciseAnswerOutput" label="答案输出">
-        <template slot-scope="scope">
-          <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
-            {{ scope.row.exerciseAnswerOutput }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button
-            type="primary"
-            @click.native.prevent="modifyExercise(scope.row)"
-            >修改</el-button
-          >
-          <el-button
-            type="danger"
-            @click.native.prevent="deleteConfirm(scope.row)"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-dialog
-      title="添加答案"
-      :visible.sync="edittableDataVisible_add"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        :model="edittableData"
-        :rules="edittableDataRules"
-        ref="edittableData"
-      >
-        <el-form-item label="答案输入" prop="exerciseAnswerInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseAnswerInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="答案输出" prop="exerciseAnswerOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseAnswerOutput"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="addExerciseAnswer('edittableData')"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="修改答案"
-      :visible.sync="edittableDataVisible_modify"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        :model="edittableData"
-        :rules="edittableDataRules"
-        ref="edittableData"
-      >
-        <el-form-item label="答案编号" prop="exerciseAnswerId">
-          <el-input
-            v-model="edittableData.exerciseAnswerId"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="答案输入" prop="exerciseAnswerInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseAnswerInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="答案输出" prop="exerciseAnswerOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseAnswerOutput"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="modifyExerciseDialog()"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
-  </div>
+  </el-card>
 </template>
 <script>
 export default {
@@ -314,8 +330,9 @@ export default {
   text-align: center;
 }
 .topBar_answer {
-  text-align: right;
+  text-align: left;
   margin-top: 10px;
   margin-right: 25px;
+  margin-left: 10px;
 }
 </style>

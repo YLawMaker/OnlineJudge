@@ -1,101 +1,114 @@
 <template>
-  <div>
+  <el-card>
     <div>
-      <div class="topBar_Teacher">
-        <el-button
-          class="addButton_Teacher"
-          type="primary"
-          size="small"
-          @click.native.prevent="addDialogvisiable()"
-          >添加教师</el-button
-        >
-      </div>
-    </div>
-
-    <el-table :data="teachers" style="width: 100%" stripe>
-      <el-table-column prop="userAccount" label="账号" width="180">
-      </el-table-column>
-      <el-table-column prop="userName" label="姓名" width="180">
-      </el-table-column>
-      <el-table-column
-        prop="userPassword"
-        label="密码"
-        width="180"
-        :formatter="passwordFormat"
-      >
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
+      <div>
+        <div class="topBar_Teacher">
           <el-button
+            class="addButton_Teacher"
             type="primary"
-            @click.native.prevent="modifyTeacher(scope.row)"
-            >修改</el-button
+            size="small"
+            icon="el-icon-document-add"
+            round
+            plain
+            @click.native.prevent="addDialogvisiable()"
+            >添加教师</el-button
           >
-          <el-button
-            type="danger"
-            @click.native.prevent="deleteConfirm(scope.row)"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-dialog
-      title="修改教师信息"
-      :visible.sync="edittableDataVisible_modify"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-    >
-      <el-form :model="edittableData" ref="edittableData">
-        <el-form-item label="账号" prop="userAccount">
-          <el-input
-            v-model="edittableData.userAccount"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="姓名" prop="userName">
-          <el-input v-model="edittableData.userName"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="userPassword">
-          <el-input v-model="edittableData.userPassword"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="modifyTeacherInfoDialog()"
-          >确 定</el-button
+        </div>
+      </div>
+
+      <el-table :data="teachers" style="width: 100%" stripe>
+        <el-table-column prop="userAccount" label="账号" width="180">
+        </el-table-column>
+        <el-table-column prop="userName" label="姓名" width="180">
+        </el-table-column>
+        <el-table-column
+          prop="userPassword"
+          label="密码"
+          width="180"
+          :formatter="passwordFormat"
         >
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="添加教师"
-      :visible.sync="edittableDataVisible_add"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="addTeacher"
-        :model="addTeacherData"
-        :rules="addRules"
-        class="addTeacherForm"
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-edit-outline"
+              round
+              plain
+              @click.native.prevent="modifyTeacher(scope.row)"
+              >修改</el-button
+            >
+            <el-button
+              type="danger"
+              size="small"
+              icon="el-icon-delete-solid"
+              round
+              plain
+              @click.native.prevent="deleteConfirm(scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-dialog
+        title="修改教师信息"
+        :visible.sync="edittableDataVisible_modify"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
       >
-        <el-form-item label="教师账号" prop="account">
-          <el-input v-model="addTeacherData.account"></el-input>
-        </el-form-item>
-        <el-form-item label="教师姓名" prop="name">
-          <el-input v-model="addTeacherData.name"></el-input>
-        </el-form-item>
-        <el-form-item label="教师密码" prop="password">
-          <el-input v-model="addTeacherData.password"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="addTeacher('addTeacher')"
-            >添加</el-button
+        <el-form :model="edittableData" ref="edittableData">
+          <el-form-item label="账号" prop="userAccount">
+            <el-input
+              v-model="edittableData.userAccount"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="姓名" prop="userName">
+            <el-input v-model="edittableData.userName"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="userPassword">
+            <el-input v-model="edittableData.userPassword"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button type="primary" @click="modifyTeacherInfoDialog()"
+            >确 定</el-button
           >
-          <el-button @click="handleClose">返回</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-  </div>
+        </span>
+      </el-dialog>
+      <el-dialog
+        title="添加教师"
+        :visible.sync="edittableDataVisible_add"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
+      >
+        <el-form
+          ref="addTeacher"
+          :model="addTeacherData"
+          :rules="addRules"
+          class="addTeacherForm"
+        >
+          <el-form-item label="教师账号" prop="account">
+            <el-input v-model="addTeacherData.account"></el-input>
+          </el-form-item>
+          <el-form-item label="教师姓名" prop="name">
+            <el-input v-model="addTeacherData.name"></el-input>
+          </el-form-item>
+          <el-form-item label="教师密码" prop="password">
+            <el-input v-model="addTeacherData.password"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="addTeacher('addTeacher')"
+              >添加</el-button
+            >
+            <el-button @click="handleClose">返回</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+    </div>
+  </el-card>
 </template>
 
   <script>

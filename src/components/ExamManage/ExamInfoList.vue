@@ -1,274 +1,282 @@
 <template>
-  <div>
+  <el-card>
     <div>
-      <div class="topBar_Teacher">
-        <el-input
-          v-model="select_word"
-          size="mini"
-          class="search_input"
-          placeholder="请输入考试名称"
-          style="width: 200px"
-          clearable
-        ></el-input>
-        <el-button
-          class="addButton_Exam"
-          type="primary"
-          size="small"
-          icon="el-icon-document-add"
-          round
-          plain
-          @click.native.prevent="addDialogvisiable()"
-          >添加考试</el-button
-        >
-      </div>
-    </div>
-    <el-table :data="data" style="width: 100%" stripe>
-      <el-table-column prop="examName" label="考试名称" width="180">
-        <template slot-scope="scope">
-          <router-link
-            :to="{
-              path: 'ExamInfoHeader',
-              query: {
-                examIdfromManage: scope.row.examId,
-                examManageCurrentPage: currentPage,
-              },
-            }"
-          >
-            {{ scope.row.examName }}
-          </router-link>
-        </template>
-      </el-table-column>
-      <el-table-column prop="examStartTime" label="开始时间" width="180">
-      </el-table-column>
-      <el-table-column prop="examEndTime" label="结束时间" width="180">
-      </el-table-column>
-      <el-table-column prop="examStatus" label="考试状态" width="180">
-      </el-table-column>
-      <el-table-column prop="examLanguage" label="代码语言" width="80">
-      </el-table-column>
-      <el-table-column prop="group.groupName" label="考试分组" width="80">
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
+      <div>
+        <div class="topBar_Teacher">
+          <el-input
+            v-model="select_word"
+            size="mini"
+            class="search_input"
+            placeholder="请输入考试名称"
+            style="width: 200px"
+            clearable
+          ></el-input>
           <el-button
+            class="addButton_Exam"
             type="primary"
-            icon="el-icon-edit-outline"
-            size="mini"
+            size="small"
+            icon="el-icon-document-add"
             round
             plain
-            @click.native.prevent="modifyExamDialog(scope.row)"
-            >修改</el-button
+            @click.native.prevent="addDialogvisiable()"
+            >添加考试</el-button
           >
-          <el-button
-            type="danger"
-            icon="el-icon-delete-solid"
-            size="mini"
-            round
-            plain
-            @click.native.prevent="deleteConfirm(scope.row)"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="block">
-      <el-pagination
-        @current-change="handleCurrent"
-        :current-page.sync="currentPage"
-        :page-size="pagesize"
-        layout="total,prev, pager, next"
-        :total="this.searchData.length"
-        v-if="this.searchData.length != 0"
+        </div>
+      </div>
+      <el-table :data="data" style="width: 100%" stripe>
+        <el-table-column prop="examName" label="考试名称" width="180">
+          <template slot-scope="scope">
+            <router-link
+              :to="{
+                path: 'ExamInfoHeader',
+                query: {
+                  examIdfromManage: scope.row.examId,
+                  examManageCurrentPage: currentPage,
+                },
+              }"
+            >
+              {{ scope.row.examName }}
+            </router-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="examStartTime" label="开始时间" width="180">
+        </el-table-column>
+        <el-table-column prop="examEndTime" label="结束时间" width="180">
+        </el-table-column>
+        <el-table-column prop="examStatus" label="考试状态" width="180">
+        </el-table-column>
+        <el-table-column prop="examLanguage" label="代码语言" width="80">
+        </el-table-column>
+        <el-table-column prop="group.groupName" label="考试分组" width="80">
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              icon="el-icon-edit-outline"
+              size="mini"
+              round
+              plain
+              @click.native.prevent="modifyExamDialog(scope.row)"
+              >修改</el-button
+            >
+            <el-button
+              type="danger"
+              icon="el-icon-delete-solid"
+              size="mini"
+              round
+              plain
+              @click.native.prevent="deleteConfirm(scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block">
+        <el-pagination
+          @current-change="handleCurrent"
+          :current-page.sync="currentPage"
+          :page-size="pagesize"
+          layout="total,prev, pager, next"
+          :total="this.searchData.length"
+          v-if="this.searchData.length != 0"
+        >
+        </el-pagination>
+      </div>
+
+      <el-dialog
+        title="添加考试"
+        :visible.sync="edittableDataVisible_add"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
+        width="900px"
       >
-      </el-pagination>
+        <el-form
+          ref="addExam"
+          :model="exam_add"
+          :rules="addRules"
+          class="addExamForm"
+          label-width="120px"
+        >
+          <el-form-item label="考试名称" prop="examName">
+            <el-input v-model="exam_add.examName"></el-input>
+          </el-form-item>
+          <el-form-item label="开始时间" prop="examStartTime">
+            <el-date-picker
+              v-model="exam_add.examStartTime"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm"
+              placeholder="选择日期时间"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="结束时间" prop="examEndTime">
+            <el-date-picker
+              v-model="exam_add.examEndTime"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm"
+              placeholder="选择日期时间"
+            >
+            </el-date-picker>
+          </el-form-item>
+
+          <el-form-item label="语言类型" prop="examLanguage">
+            <el-select v-model="exam_add.examLanguage" placeholder="请选择">
+              <el-option
+                v-for="item in language"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="考试分组" prop="groupId">
+            <el-select v-model="exam_add.groupId" placeholder="请选择">
+              <el-option
+                v-for="item in groupList"
+                :key="item.groupId"
+                :label="item.groupName"
+                :value="item.groupId"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-row>
+            <el-col :span="8"
+              ><el-form-item
+                label="选择题分值(每题)"
+                prop="examChoiceQuestionScore"
+                label-width="150px"
+              >
+                <el-input
+                  v-model="exam_add.examChoiceQuestionScore"
+                ></el-input> </el-form-item
+            ></el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="填空题分值(每题)"
+                prop="examCompletionQuestionScore"
+                label-width="150px"
+              >
+                <el-input
+                  v-model="exam_add.examCompletionQuestionScore"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="编程题分值(每题)"
+                prop="examProgrammingScore"
+                label-width="150px"
+              >
+                <el-input v-model="exam_add.examProgrammingScore"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-form-item class="addDialogButton">
+            <el-button type="primary" @click="addExam('addExam')"
+              >添加</el-button
+            >
+            <el-button @click="handleClose">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+      <el-dialog
+        title="修改考试信息"
+        :visible.sync="edittableDataVisible_modify"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
+        width="900px"
+      >
+        <el-form :model="exam_modify" ref="exam_modify" label-width="120px">
+          <el-form-item label="考试名称" prop="examName">
+            <el-input v-model="exam_modify.examName"></el-input>
+          </el-form-item>
+          <el-form-item label="开始时间" prop="examStartTime">
+            <el-date-picker
+              v-model="exam_modify.examStartTime"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm"
+              placeholder="选择日期时间"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="结束时间" prop="examEndTime">
+            <el-date-picker
+              v-model="exam_modify.examEndTime"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm"
+              placeholder="选择日期时间"
+            >
+            </el-date-picker>
+          </el-form-item>
+
+          <el-form-item label="语言类型" prop="examLanguage">
+            <el-select v-model="exam_modify.examLanguage" placeholder="请选择">
+              <el-option
+                v-for="item in language"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="考试分组" prop="groupId">
+            <el-select v-model="exam_modify.groupId" placeholder="请选择">
+              <el-option
+                v-for="item in groupList"
+                :key="item.groupId"
+                :label="item.groupName"
+                :value="item.groupId"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-row>
+            <el-col :span="8"
+              ><el-form-item
+                label="选择题分值(每题)"
+                prop="examChoiceQuestionScore"
+              >
+                <el-input
+                  v-model="exam_modify.examChoiceQuestionScore"
+                ></el-input> </el-form-item
+            ></el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="填空题分值(每题)"
+                prop="examCompletionQuestionScore"
+              >
+                <el-input
+                  v-model="exam_modify.examCompletionQuestionScore"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="编程题分值(每题)"
+                prop="examProgrammingScore"
+              >
+                <el-input v-model="exam_modify.examProgrammingScore"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-form-item>
+            <el-button type="primary" @click="modifyExamInfo()">提交</el-button>
+            <el-button @click="handleClose">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </div>
-    <el-dialog
-      title="添加考试"
-      :visible.sync="edittableDataVisible_add"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-      width="900px"
-    >
-      <el-form
-        ref="addExam"
-        :model="exam_add"
-        :rules="addRules"
-        class="addExamForm"
-        label-width="120px"
-      >
-        <el-form-item label="考试名称" prop="examName">
-          <el-input v-model="exam_add.examName"></el-input>
-        </el-form-item>
-        <el-form-item label="开始时间" prop="examStartTime">
-          <el-date-picker
-            v-model="exam_add.examStartTime"
-            type="datetime"
-            format="yyyy-MM-dd HH:mm"
-            value-format="yyyy-MM-dd HH:mm"
-            placeholder="选择日期时间"
-          >
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束时间" prop="examEndTime">
-          <el-date-picker
-            v-model="exam_add.examEndTime"
-            type="datetime"
-            format="yyyy-MM-dd HH:mm"
-            value-format="yyyy-MM-dd HH:mm"
-            placeholder="选择日期时间"
-          >
-          </el-date-picker>
-        </el-form-item>
-
-        <el-form-item label="语言类型" prop="examLanguage">
-          <el-select v-model="exam_add.examLanguage" placeholder="请选择">
-            <el-option
-              v-for="item in language"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="考试分组" prop="groupId">
-          <el-select v-model="exam_add.groupId" placeholder="请选择">
-            <el-option
-              v-for="item in groupList"
-              :key="item.groupId"
-              :label="item.groupName"
-              :value="item.groupId"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-row>
-          <el-col :span="8"
-            ><el-form-item
-              label="选择题分值(每题)"
-              prop="examChoiceQuestionScore"
-              label-width="150px"
-            >
-              <el-input
-                v-model="exam_add.examChoiceQuestionScore"
-              ></el-input> </el-form-item
-          ></el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="填空题分值(每题)"
-              prop="examCompletionQuestionScore"
-              label-width="150px"
-            >
-              <el-input
-                v-model="exam_add.examCompletionQuestionScore"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="编程题分值(每题)"
-              prop="examProgrammingScore"
-              label-width="150px"
-            >
-              <el-input v-model="exam_add.examProgrammingScore"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-form-item class="addDialogButton">
-          <el-button type="primary" @click="addExam('addExam')">添加</el-button>
-          <el-button @click="handleClose">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <el-dialog
-      title="修改考试信息"
-      :visible.sync="edittableDataVisible_modify"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-      width="900px"
-    >
-      <el-form :model="exam_modify" ref="exam_modify" label-width="120px">
-        <el-form-item label="考试名称" prop="examName">
-          <el-input v-model="exam_modify.examName"></el-input>
-        </el-form-item>
-        <el-form-item label="开始时间" prop="examStartTime">
-          <el-date-picker
-            v-model="exam_modify.examStartTime"
-            type="datetime"
-            format="yyyy-MM-dd HH:mm"
-            value-format="yyyy-MM-dd HH:mm"
-            placeholder="选择日期时间"
-          >
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束时间" prop="examEndTime">
-          <el-date-picker
-            v-model="exam_modify.examEndTime"
-            type="datetime"
-            format="yyyy-MM-dd HH:mm"
-            value-format="yyyy-MM-dd HH:mm"
-            placeholder="选择日期时间"
-          >
-          </el-date-picker>
-        </el-form-item>
-
-        <el-form-item label="语言类型" prop="examLanguage">
-          <el-select v-model="exam_modify.examLanguage" placeholder="请选择">
-            <el-option
-              v-for="item in language"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="考试分组" prop="groupId">
-          <el-select v-model="exam_modify.groupId" placeholder="请选择">
-            <el-option
-              v-for="item in groupList"
-              :key="item.groupId"
-              :label="item.groupName"
-              :value="item.groupId"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-row>
-          <el-col :span="8"
-            ><el-form-item
-              label="选择题分值(每题)"
-              prop="examChoiceQuestionScore"
-            >
-              <el-input
-                v-model="exam_modify.examChoiceQuestionScore"
-              ></el-input> </el-form-item
-          ></el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="填空题分值(每题)"
-              prop="examCompletionQuestionScore"
-            >
-              <el-input
-                v-model="exam_modify.examCompletionQuestionScore"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="编程题分值(每题)" prop="examProgrammingScore">
-              <el-input v-model="exam_modify.examProgrammingScore"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-form-item>
-          <el-button type="primary" @click="modifyExamInfo()">提交</el-button>
-          <el-button @click="handleClose">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-  </div>
+  </el-card>
 </template>
 
 <script>

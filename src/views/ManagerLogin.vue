@@ -21,7 +21,9 @@
         ></el-input>
       </el-form-item>
       <el-form-item class="btn">
-        <el-button type="primary" @click="login('loginForm')">登录 </el-button>
+        <el-button type="primary" round @click="login('loginForm')"
+          >登录
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -50,42 +52,42 @@ export default {
   methods: {
     login (loginForm) {
       this.$refs[loginForm].validate((valid) => {
-         if (valid) {
-            if (this.admin.adminAccount.length == 6) {
-              let params = new URLSearchParams();
-              params.append('adminAccount', this.admin.adminAccount);
-              this.$axios({
-                method: 'post',
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded"
-                },
-                url: '/admin/adminLogin',
-                data: params
-              })
-                .then((res) => {
-                  if (res.data == "") {
-                    this.$message.error('账号或密码错误');
+        if (valid) {
+          if (this.admin.adminAccount.length == 6) {
+            let params = new URLSearchParams();
+            params.append('adminAccount', this.admin.adminAccount);
+            this.$axios({
+              method: 'post',
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+              },
+              url: '/admin/adminLogin',
+              data: params
+            })
+              .then((res) => {
+                if (res.data == "") {
+                  this.$message.error('账号或密码错误');
+                } else {
+                  if (this.admin.adminPassword == res.data) {
+                    this.$router.push('/AdminBackground')
+                    this.$message.success('管理登录成功');
                   } else {
-                    if (this.admin.adminPassword == res.data) {
-                      this.$router.push('/AdminBackground')
-                      this.$message.success('管理登录成功');
-                    } else {
-                      this.$message.error('账号或密码错误');
-                    }
+                    this.$message.error('账号或密码错误');
                   }
+                }
 
 
-                })
-                .catch((err) => {
-                  this.$message.error('系统错误请稍后再尝试');
+              })
+              .catch((err) => {
+                this.$message.error('系统错误请稍后再尝试');
 
-                })
-            }
-          }else{
-            this.$message.error('输入不符合规范');
+              })
           }
+        } else {
+          this.$message.error('输入不符合规范');
+        }
       })
-      
+
 
     }
   }

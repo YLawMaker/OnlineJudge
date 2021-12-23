@@ -1,90 +1,96 @@
 <template>
-  <div>
-    <div class="topBar_GroupUser">
-      <el-button
-        size="small"
-        type="primary"
-        icon="el-icon-back"
-        round
-        plain
-        @click.native.prevent="
-          goBack(pageFromInfoManage, searchKeyFromInfoManage)
-        "
-      >
-        返回
-      </el-button>
-      <el-button
-        size="small"
-        type="primary"
-        icon="el-icon-document-add"
-        round
-        plain
-        @click="addDialogvisiable()"
-        >添加用户</el-button
-      >
-    </div>
+  <el-card>
     <div>
-      <el-table :data="data">
-        <el-table-column type="index" label="序号" width="80"></el-table-column>
-        <el-table-column prop="userAccount" label="Account"></el-table-column>
-        <el-table-column prop="userName" label="Name"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-              type="danger"
-              @click.native.prevent="deleteConfirm(scope.row)"
-              size="small"
-              icon="el-icon-delete-solid"
-              round
-              plain
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="block">
-        <el-pagination
-          @current-change="handleCurrent"
-          :current-page.sync="currentPage"
-          :page-size="pagesize"
-          layout="total,prev, pager, next"
-          :total="this.groupUserList.length"
-          v-if="this.groupUserList.length != 0"
+      <div class="topBar_GroupUser">
+        <el-button
+          size="small"
+          type="primary"
+          icon="el-icon-back"
+          round
+          plain
+          @click.native.prevent="
+            goBack(pageFromInfoManage, searchKeyFromInfoManage)
+          "
         >
-        </el-pagination>
+          返回
+        </el-button>
+        <el-button
+          size="small"
+          type="primary"
+          icon="el-icon-document-add"
+          round
+          plain
+          @click="addDialogvisiable()"
+          >添加用户</el-button
+        >
       </div>
-      <el-dialog
-        title="添加用户"
-        :visible.sync="edittableDataVisible_add"
-        :before-close="handleClose"
-        :close-on-click-modal="false"
-      >
-        <el-form
-          ref="addGroupUser"
-          :model="addGroupUserData"
-          :rules="addRules"
-          class="addGroupUserForm"
+      <div>
+        <el-table :data="data">
+          <el-table-column
+            type="index"
+            label="序号"
+            width="80"
+          ></el-table-column>
+          <el-table-column prop="userAccount" label="Account"></el-table-column>
+          <el-table-column prop="userName" label="Name"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                type="danger"
+                @click.native.prevent="deleteConfirm(scope.row)"
+                size="small"
+                icon="el-icon-delete-solid"
+                round
+                plain
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrent"
+            :current-page.sync="currentPage"
+            :page-size="pagesize"
+            layout="total,prev, pager, next"
+            :total="this.groupUserList.length"
+            v-if="this.groupUserList.length != 0"
+          >
+          </el-pagination>
+        </div>
+        <el-dialog
+          title="添加用户"
+          :visible.sync="edittableDataVisible_add"
+          :before-close="handleClose"
+          :close-on-click-modal="false"
         >
-          <div>
-            将学生学号整列复制过来，然后要求他们用学号做UserAccount注册,请保证在一列显示
-          </div>
-          <el-form-item prop="groupUserList">
-            <el-input
-              type="textarea"
-              :rows="12"
-              v-model="addGroupUserData.groupUserList"
-            ></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="add('addGroupUser')"
-              >添加</el-button
-            >
-            <el-button @click="handleClose">取消</el-button>
-          </el-form-item>
-        </el-form>
-      </el-dialog>
+          <el-form
+            ref="addGroupUser"
+            :model="addGroupUserData"
+            :rules="addRules"
+            class="addGroupUserForm"
+          >
+            <div>
+              将学生学号整列复制过来，然后要求他们用学号做UserAccount注册,请保证在一列显示
+            </div>
+            <el-form-item prop="groupUserList">
+              <el-input
+                type="textarea"
+                :rows="12"
+                v-model="addGroupUserData.groupUserList"
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="add('addGroupUser')"
+                >添加</el-button
+              >
+              <el-button @click="handleClose">取消</el-button>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
+      </div>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script>

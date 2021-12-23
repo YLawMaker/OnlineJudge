@@ -1,376 +1,402 @@
 <template>
-  <div>
+  <el-card>
     <div>
-      <div class="topBar_Exercise">
-        <el-input
-          v-model="select_word"
-          size="mini"
-          class="search_input"
-          placeholder="请输入习题标题"
-          style="width: 200px"
-          clearable
-        ></el-input>
-        <el-button
-          size="small"
-          type="primary"
-          class="addButton_Exercise"
-          @click="addDialogvisiable()"
-          >添加习题</el-button
-        >
+      <div>
+        <div class="topBar_Exercise">
+          <el-input
+            v-model="select_word"
+            size="mini"
+            class="search_input"
+            placeholder="请输入习题标题"
+            style="width: 200px"
+            clearable
+          ></el-input>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-document-add"
+            round
+            plain
+            class="addButton_Exercise"
+            @click="addDialogvisiable()"
+            >添加习题</el-button
+          >
+        </div>
       </div>
-    </div>
-    <el-table
-      :data="data"
-      style="width: 100%"
-      :row-style="{ height: '20px' }"
-      stripe
-    >
-      <el-table-column prop="exerciseId" label="编号" width="80">
-      </el-table-column>
-      <el-table-column
-        prop="exerciseTitle"
-        label="标题"
-        width="120"
-        :show-overflow-tooltip="true"
+      <el-table
+        :data="data"
+        style="width: 100%"
+        :row-style="{ height: '20px' }"
+        stripe
       >
-        <template slot-scope="scope">
-          <router-link
-            :to="{
-              path: 'ExerciseAnswerList',
-              query: {
-                exerciseIdfromManage: scope.row.exerciseId,
-                page: currentPage,
-                searchKey: select_word,
-              },
-            }"
-          >
-            {{ scope.row.exerciseTitle }}
-          </router-link>
-        </template>
-      </el-table-column>
-      <el-table-column prop="exerciseCorrectTimes" label="AC次数" width="90">
-      </el-table-column>
-      <el-table-column prop="exerciseSubmitTimes" label="提交次数" width="90">
-      </el-table-column>
-      <el-table-column
-        prop="exerciseDescription"
-        label="问题描述"
-        width="180"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="exerciseInput"
-        label="问题输入"
-        width="180"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="exerciseOutPut"
-        label="问题输出"
-        width="180"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
+        <el-table-column prop="exerciseId" label="编号" width="60">
+        </el-table-column>
+        <el-table-column
+          prop="exerciseTitle"
+          label="标题"
+          width="120"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">
+            <router-link
+              :to="{
+                path: 'ExerciseAnswerList',
+                query: {
+                  exerciseIdfromManage: scope.row.exerciseId,
+                  page: currentPage,
+                  searchKey: select_word,
+                },
+              }"
+            >
+              {{ scope.row.exerciseTitle }}
+            </router-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="exerciseCorrectTimes" label="AC次数" width="80">
+        </el-table-column>
+        <el-table-column prop="exerciseSubmitTimes" label="提交次数" width="80">
+        </el-table-column>
+        <el-table-column
+          prop="exerciseDescription"
+          label="问题描述"
+          width="180"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="exerciseInput"
+          label="问题输入"
+          width="180"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="exerciseOutPut"
+          label="问题输出"
+          width="180"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
 
-      <el-table-column prop="exerciseSampleInput" label="样例输入" width="180">
-        <template slot-scope="scope">
-          <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
-            {{ scope.row.exerciseSampleInput }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="exerciseSampleOutput" label="样例输出" width="180">
-        <template slot-scope="scope">
-          <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
-            {{ scope.row.exerciseSampleOutput }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button
-            type="primary"
-            @click.native.prevent="exerciseInfoDialog(scope.row)"
-            size="small"
-            >详情</el-button
-          >
-          <el-button
-            type="primary"
-            @click.native.prevent="modifyExercise(scope.row)"
-            size="small"
-            >修改</el-button
-          >
-          <el-button
-            type="danger"
-            @click.native.prevent="deleteConfirm(scope.row)"
-            size="small"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="block">
-      <el-pagination
-        @current-change="handleCurrent"
-        :current-page.sync="currentPage"
-        :page-size="pagesize"
-        layout="total,prev, pager, next"
-        :total="this.searchData.length"
-        v-if="this.searchData.length != 0"
+        <el-table-column
+          prop="exerciseSampleInput"
+          label="样例输入"
+          width="160"
+        >
+          <template slot-scope="scope">
+            <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
+              {{ scope.row.exerciseSampleInput }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="exerciseSampleOutput"
+          label="样例输出"
+          width="160"
+        >
+          <template slot-scope="scope">
+            <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
+              {{ scope.row.exerciseSampleOutput }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              icon="el-icon-info"
+              round
+              plain
+              @click.native.prevent="exerciseInfoDialog(scope.row)"
+              size="mini"
+              >详情</el-button
+            >
+            <el-button
+              type="primary"
+              icon="el-icon-edit-outline"
+              round
+              plain
+              @click.native.prevent="modifyExercise(scope.row)"
+              size="mini"
+              >修改</el-button
+            >
+            <el-button
+              type="danger"
+              icon="el-icon-delete-solid"
+              round
+              plain
+              @click.native.prevent="deleteConfirm(scope.row)"
+              size="mini"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block">
+        <el-pagination
+          @current-change="handleCurrent"
+          :current-page.sync="currentPage"
+          :page-size="pagesize"
+          layout="total,prev, pager, next"
+          :total="this.searchData.length"
+          v-if="this.searchData.length != 0"
+        >
+        </el-pagination>
+      </div>
+      <!-- 修改 -->
+      <el-dialog
+        title="修改习题信息"
+        :visible.sync="edittableDataVisible_modify"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
       >
-      </el-pagination>
+        <el-form
+          :model="edittableData"
+          :rules="edittableDataRules"
+          ref="edittableData"
+        >
+          <el-form-item label="题目编号" prop="exerciseId">
+            <el-input
+              v-model="edittableData.exerciseId"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="标题" prop="exerciseTitle">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseTitle"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="问题描述" prop="exerciseDescription">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseDescription"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="问题输入" prop="exerciseInput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="问题输出" prop="exerciseOutPut">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseOutPut"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="样例输入" prop="exerciseSampleInput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseSampleInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="样例输出" prop="exerciseSampleOutput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="edittableData.exerciseSampleOutput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="习题标签" prop="questionLabel">
+            <el-cascader
+              :options="options"
+              collapse-tags
+              v-model="edittableData.questionLabel.questionLabelId"
+              clearable
+            ></el-cascader>
+          </el-form-item>
+        </el-form>
+        <span slot="footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="modifyExerciseInfoDialog('edittableData')"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
+      <!-- 添加 -->
+      <el-dialog
+        title="添加习题"
+        :visible.sync="edittableDataVisible_add"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
+      >
+        <el-form
+          ref="addExercise"
+          :model="addexerciseData"
+          :rules="addRules"
+          class="addExerciseForm"
+        >
+          <el-form-item label="题目" prop="exerciseTitle">
+            <el-input v-model="addexerciseData.exerciseTitle"></el-input>
+          </el-form-item>
+          <el-form-item label="题目描述" prop="exerciseDescription">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="addexerciseData.exerciseDescription"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="问题输入" prop="exerciseInput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="addexerciseData.exerciseInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="问题输出" prop="exerciseOutPut">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="addexerciseData.exerciseOutPut"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="样例输入" prop="exerciseSampleInput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="addexerciseData.exerciseSampleInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="样例输出" prop="exerciseSampleOutput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="addexerciseData.exerciseSampleOutput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="习题标签" prop="questionLabelId">
+            <el-cascader
+              :options="options"
+              collapse-tags
+              v-model="addexerciseData.questionLabelId"
+              clearable
+            ></el-cascader>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="addExercise('addExercise')"
+              >添加</el-button
+            >
+            <el-button @click="handleClose">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+      <!-- 详情 -->
+      <el-dialog
+        title="详情"
+        :visible.sync="edittableDataVisible_info"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
+      >
+        <el-form :model="showexerciseData" ref="showexerciseData">
+          <el-form-item label="题目编号" prop="exerciseId">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="showexerciseData.exerciseId"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="标题" prop="exerciseTitle">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="showexerciseData.exerciseTitle"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="问题描述" prop="exerciseDescription">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="showexerciseData.exerciseDescription"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="问题输入" prop="exerciseInput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="showexerciseData.exerciseInput"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="问题输出" prop="exerciseOutPut">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="showexerciseData.exerciseOutPut"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="样例输入" prop="exerciseSampleInput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="showexerciseData.exerciseSampleInput"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="样例输出" prop="exerciseSampleOutput">
+            <el-input
+              type="textarea"
+              :autosize="true"
+              v-model="showexerciseData.exerciseSampleOutput"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="chapter" label="所属章节" size="mini">
+            <el-input
+              v-model="showexerciseData.questionLabel.chapter"
+              placeholder="所属章节"
+              type="textarea"
+              :autosize="true"
+              :disabled="edit"
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item
+            prop="firstKnowledgePoint"
+            label="第一知识点"
+            size="mini"
+          >
+            <el-input
+              v-model="showexerciseData.questionLabel.firstKnowledgePoint"
+              placeholder="第一知识点"
+              type="textarea"
+              :autosize="true"
+              :disabled="edit"
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item
+            prop="secondKnowledgePoint"
+            label="第二知识点"
+            size="mini"
+          >
+            <el-input
+              v-model="showexerciseData.questionLabel.secondKnowledgePoint"
+              placeholder="第二知识点"
+              type="textarea"
+              :autosize="true"
+              :disabled="edit"
+            >
+            </el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer">
+          <el-button type="primary" @click="handleClose">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
-    <!-- 修改 -->
-    <el-dialog
-      title="修改习题信息"
-      :visible.sync="edittableDataVisible_modify"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        :model="edittableData"
-        :rules="edittableDataRules"
-        ref="edittableData"
-      >
-        <el-form-item label="题目编号" prop="exerciseId">
-          <el-input
-            v-model="edittableData.exerciseId"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="标题" prop="exerciseTitle">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseTitle"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题描述" prop="exerciseDescription">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseDescription"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输入" prop="exerciseInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输出" prop="exerciseOutPut">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseOutPut"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输入" prop="exerciseSampleInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseSampleInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输出" prop="exerciseSampleOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="edittableData.exerciseSampleOutput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="习题标签" prop="questionLabel">
-          <el-cascader
-            :options="options"
-            collapse-tags
-            v-model="edittableData.questionLabel.questionLabelId"
-            clearable
-          ></el-cascader>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="modifyExerciseInfoDialog('edittableData')"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
-    <!-- 添加 -->
-    <el-dialog
-      title="添加习题"
-      :visible.sync="edittableDataVisible_add"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="addExercise"
-        :model="addexerciseData"
-        :rules="addRules"
-        class="addExerciseForm"
-      >
-        <el-form-item label="题目" prop="exerciseTitle">
-          <el-input v-model="addexerciseData.exerciseTitle"></el-input>
-        </el-form-item>
-        <el-form-item label="题目描述" prop="exerciseDescription">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addexerciseData.exerciseDescription"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输入" prop="exerciseInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addexerciseData.exerciseInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输出" prop="exerciseOutPut">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addexerciseData.exerciseOutPut"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输入" prop="exerciseSampleInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addexerciseData.exerciseSampleInput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输出" prop="exerciseSampleOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="addexerciseData.exerciseSampleOutput"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="习题标签" prop="questionLabelId">
-          <el-cascader
-            :options="options"
-            collapse-tags
-            v-model="addexerciseData.questionLabelId"
-            clearable
-          ></el-cascader>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="addExercise('addExercise')"
-            >添加</el-button
-          >
-          <el-button @click="handleClose">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <!-- 详情 -->
-    <el-dialog
-      title="详情"
-      :visible.sync="edittableDataVisible_info"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-    >
-      <el-form :model="showexerciseData" ref="showexerciseData">
-        <el-form-item label="题目编号" prop="exerciseId">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="showexerciseData.exerciseId"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="标题" prop="exerciseTitle">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="showexerciseData.exerciseTitle"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题描述" prop="exerciseDescription">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="showexerciseData.exerciseDescription"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输入" prop="exerciseInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="showexerciseData.exerciseInput"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="问题输出" prop="exerciseOutPut">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="showexerciseData.exerciseOutPut"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输入" prop="exerciseSampleInput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="showexerciseData.exerciseSampleInput"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样例输出" prop="exerciseSampleOutput">
-          <el-input
-            type="textarea"
-            :autosize="true"
-            v-model="showexerciseData.exerciseSampleOutput"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item prop="chapter" label="所属章节" size="mini">
-          <el-input
-            v-model="showexerciseData.questionLabel.chapter"
-            placeholder="所属章节"
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="firstKnowledgePoint" label="第一知识点" size="mini">
-          <el-input
-            v-model="showexerciseData.questionLabel.firstKnowledgePoint"
-            placeholder="第一知识点"
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item
-          prop="secondKnowledgePoint"
-          label="第二知识点"
-          size="mini"
-        >
-          <el-input
-            v-model="showexerciseData.questionLabel.secondKnowledgePoint"
-            placeholder="第二知识点"
-            type="textarea"
-            :autosize="true"
-            :disabled="edit"
-          >
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button type="primary" @click="handleClose">确 定</el-button>
-      </span>
-    </el-dialog>
-  </div>
+  </el-card>
 </template>
 
 <script>

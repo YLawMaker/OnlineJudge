@@ -1,155 +1,168 @@
 <template>
-  <div>
+  <el-card>
     <div>
-      <div class="topBar_Class">
-        <el-input
-          v-model="select_word"
-          size="mini"
-          class="search_input"
-          placeholder="请输入章节关键字"
-          style="width: 200px"
-          clearable
-        ></el-input>
-        <el-button
-          class="addButton_Class"
-          size="small"
-          type="primary"
-          @click.native.prevent="addDialogvisiable()"
-          >新建标签</el-button
-        >
-      </div>
-    </div>
-
-    <el-table :data="data" style="width: 100%" stripe>
-      <el-table-column prop="questionLabelId" label="ID" width="180">
-      </el-table-column>
-      <el-table-column prop="chapter" label="章节" width="250">
-      </el-table-column>
-      <el-table-column
-        prop="firstKnowledgePoint"
-        label="一级知识点"
-        width="250"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="secondKnowledgePoint"
-        label="二级知识点"
-        width="250"
-      >
-      </el-table-column>
-      <el-table-column prop="important" label="是否为重点" width="400">
-        <template slot-scope="scope">
-          <div v-if="scope.row.important == false">否</div>
-          <div v-if="scope.row.important == true">是</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
+      <div>
+        <div class="topBar_Class">
+          <el-input
+            v-model="select_word"
+            size="mini"
+            class="search_input"
+            placeholder="请输入章节关键字"
+            style="width: 200px"
+            clearable
+          ></el-input>
           <el-button
+            class="addButton_Class"
+            size="small"
             type="primary"
-            @click.native.prevent="modifyQuestionLabel(scope.row)"
-            >修改</el-button
+            icon="el-icon-document-add"
+            round
+            plain
+            @click.native.prevent="addDialogvisiable()"
+            >新建标签</el-button
           >
-          <el-button
-            type="danger"
-            @click.native.prevent="deleteConfirm(scope.row)"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="block">
-      <el-pagination
-        @current-change="handleCurrent"
-        :current-page.sync="currentPage"
-        :page-size="pagesize"
-        layout="total,prev, pager, next"
-        :total="this.searchData.length"
-        v-if="this.searchData.length != 0"
-      >
-      </el-pagination>
-    </div>
-    <el-dialog
-      title="修改标签信息"
-      :visible.sync="edittableDataVisible_modify"
-      :before-close="handleClose"
-    >
-      <el-form
-        :model="edittableData"
-        :rules="edittableDataRules"
-        ref="edittableData"
-      >
-        <el-form-item label="编号" prop="questionLabelId">
-          <el-input
-            v-model="edittableData.questionLabelId"
-            :disabled="edit"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="章节" prop="chapter">
-          <el-input v-model="edittableData.chapter"></el-input>
-        </el-form-item>
-        <el-form-item label="一级知识点" prop="firstKnowledgePoint">
-          <el-input v-model="edittableData.firstKnowledgePoint"></el-input>
-        </el-form-item>
-        <el-form-item label="二级知识点" prop="secondKnowledgePoint">
-          <el-input v-model="edittableData.secondKnowledgePoint"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="modifyQuestionLabelInfoDialog()"
-          >确 定</el-button
+        </div>
+      </div>
+
+      <el-table :data="data" style="width: 100%" stripe>
+        <el-table-column prop="questionLabelId" label="ID" width="80">
+        </el-table-column>
+        <el-table-column prop="chapter" label="章节" width="250">
+        </el-table-column>
+        <el-table-column
+          prop="firstKnowledgePoint"
+          label="一级知识点"
+          width="250"
         >
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="添加知识点"
-      :visible.sync="edittableDataVisible_add"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="addQuestionLabel"
-        :model="addQuestionLabelData"
-        :rules="addRules"
-        class="addQuestionLabelForm"
+        </el-table-column>
+        <el-table-column
+          prop="secondKnowledgePoint"
+          label="二级知识点"
+          width="250"
+        >
+        </el-table-column>
+        <el-table-column prop="important" label="是否为重点" width="400">
+          <template slot-scope="scope">
+            <div v-if="scope.row.important == false">否</div>
+            <div v-if="scope.row.important == true">是</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              icon="el-icon-edit-outline"
+              round
+              plain
+              size="small"
+              @click.native.prevent="modifyQuestionLabel(scope.row)"
+              >修改</el-button
+            >
+            <el-button
+              type="danger"
+              icon="el-icon-delete-solid"
+              round
+              plain
+              size="small"
+              @click.native.prevent="deleteConfirm(scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block">
+        <el-pagination
+          @current-change="handleCurrent"
+          :current-page.sync="currentPage"
+          :page-size="pagesize"
+          layout="total,prev, pager, next"
+          :total="this.searchData.length"
+          v-if="this.searchData.length != 0"
+        >
+        </el-pagination>
+      </div>
+      <el-dialog
+        title="修改标签信息"
+        :visible.sync="edittableDataVisible_modify"
+        :before-close="handleClose"
       >
-        <el-form-item label="章节" prop="chapter">
-          <el-input v-model="addQuestionLabelData.chapter"></el-input>
-        </el-form-item>
-        <el-form-item label="一级知识点" prop="firstKnowledgePoint">
-          <el-input
-            v-model="addQuestionLabelData.firstKnowledgePoint"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="二级知识点" prop="secondKnowledgePoint">
-          <el-input
-            v-model="addQuestionLabelData.secondKnowledgePoint"
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-radio
-            v-model="addQuestionLabelData.important"
-            label="false"
-            @change="getValue()"
-            >非重点</el-radio
+        <el-form
+          :model="edittableData"
+          :rules="edittableDataRules"
+          ref="edittableData"
+        >
+          <el-form-item label="编号" prop="questionLabelId">
+            <el-input
+              v-model="edittableData.questionLabelId"
+              :disabled="edit"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="章节" prop="chapter">
+            <el-input v-model="edittableData.chapter"></el-input>
+          </el-form-item>
+          <el-form-item label="一级知识点" prop="firstKnowledgePoint">
+            <el-input v-model="edittableData.firstKnowledgePoint"></el-input>
+          </el-form-item>
+          <el-form-item label="二级知识点" prop="secondKnowledgePoint">
+            <el-input v-model="edittableData.secondKnowledgePoint"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button type="primary" @click="modifyQuestionLabelInfoDialog()"
+            >确 定</el-button
           >
-          <el-radio
-            v-model="addQuestionLabelData.important"
-            label="true"
-            @change="getValue()"
-            >重点</el-radio
-          >
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="add('addQuestionLabel')"
-            >添加</el-button
-          >
-          <el-button @click="handleClose">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-  </div>
+        </span>
+      </el-dialog>
+      <el-dialog
+        title="添加知识点"
+        :visible.sync="edittableDataVisible_add"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
+      >
+        <el-form
+          ref="addQuestionLabel"
+          :model="addQuestionLabelData"
+          :rules="addRules"
+          class="addQuestionLabelForm"
+        >
+          <el-form-item label="章节" prop="chapter">
+            <el-input v-model="addQuestionLabelData.chapter"></el-input>
+          </el-form-item>
+          <el-form-item label="一级知识点" prop="firstKnowledgePoint">
+            <el-input
+              v-model="addQuestionLabelData.firstKnowledgePoint"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="二级知识点" prop="secondKnowledgePoint">
+            <el-input
+              v-model="addQuestionLabelData.secondKnowledgePoint"
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-radio
+              v-model="addQuestionLabelData.important"
+              label="false"
+              @change="getValue()"
+              >非重点</el-radio
+            >
+            <el-radio
+              v-model="addQuestionLabelData.important"
+              label="true"
+              @change="getValue()"
+              >重点</el-radio
+            >
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="add('addQuestionLabel')"
+              >添加</el-button
+            >
+            <el-button @click="handleClose">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+    </div>
+  </el-card>
 </template>
 
 <script>

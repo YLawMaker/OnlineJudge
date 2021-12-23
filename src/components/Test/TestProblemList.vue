@@ -1,144 +1,146 @@
 <template>
-  <div>
-    <div class="topBar_programming">
-      <el-button
-        size="small"
-        type="primary"
-        icon="el-icon-back"
-        round
-        plain
-        @click.native.prevent="goBack(managePage)"
-        >返回</el-button
-      >
-      <el-button
-        size="small"
-        type="primary"
-        icon="el-icon-document-add"
-        round
-        plain
-        @click.native.prevent="addDialogvisiable()"
-        >添加</el-button
-      >
-    </div>
-    <el-table
-      :data="data"
-      style="width: 100%"
-      :row-style="{ height: '20px' }"
-      stripe
-    >
-      <el-table-column prop="exercise.exerciseTitle" label="标题" width="180">
-      </el-table-column>
-      <el-table-column
-        prop="exercise.exerciseDescription"
-        label="描述"
-        width="180"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="exercise.exerciseInput"
-        label="问题输入"
-        width="180"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="exercise.exerciseOutPut"
-        label="问题输出"
-        width="180"
-        :show-overflow-tooltip="true"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="exercise.exerciseSampleInput"
-        label="样例输入"
-        width="180"
-      >
-      </el-table-column>
-      <el-table-column prop="exercise.exerciseSampleOutput" label="样例输出">
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button
-            type="danger"
-            @click.native.prevent="deleteConfirm(scope.row)"
-            size="small"
-            icon="el-icon-delete-solid"
-            round
-            plain
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="block">
-      <el-pagination
-        @current-change="handleCurrent"
-        :current-page.sync="currentPage"
-        :page-size="pagesize"
-        layout="total,prev, pager, next"
-        :total="this.programmingList.length"
-        v-if="this.programmingList.length != 0"
-      >
-      </el-pagination>
-    </div>
-    <el-dialog
-      title="添加编程题"
-      :visible.sync="edittableDataVisible_add"
-      v-if="edittableDataVisible_add"
-      :before-close="handleClose"
-      :close-on-click-modal="false"
-      width="850px"
-    >
-      <el-input
-        v-model="select_word"
-        size="mini"
-        class="search_input"
-        placeholder="请输入习题标题关键字"
-        style="width: 200px"
-        clearable
-      ></el-input>
+  <el-card>
+    <div>
+      <div class="topBar_programming">
+        <el-button
+          size="small"
+          type="primary"
+          icon="el-icon-back"
+          round
+          plain
+          @click.native.prevent="goBack(managePage)"
+          >返回</el-button
+        >
+        <el-button
+          size="small"
+          type="primary"
+          icon="el-icon-document-add"
+          round
+          plain
+          @click.native.prevent="addDialogvisiable()"
+          >添加</el-button
+        >
+      </div>
       <el-table
-        :data="data_dialog"
-        @selection-change="handleSelectionChange"
-        :row-key="getRowKey"
+        :data="data"
+        style="width: 100%"
+        :row-style="{ height: '20px' }"
+        stripe
       >
-        <el-table-column
-          label="编号"
-          prop="exerciseId"
-          :show-overflow-tooltip="true"
-          width="80"
-        >
+        <el-table-column prop="exercise.exerciseTitle" label="标题" width="180">
         </el-table-column>
         <el-table-column
-          label="标题"
-          prop="exerciseTitle"
+          prop="exercise.exerciseDescription"
+          label="描述"
+          width="180"
           :show-overflow-tooltip="true"
         >
         </el-table-column>
-        <el-table-column type="selection" :reserve-selection="true">
+        <el-table-column
+          prop="exercise.exerciseInput"
+          label="问题输入"
+          width="180"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="exercise.exerciseOutPut"
+          label="问题输出"
+          width="180"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="exercise.exerciseSampleInput"
+          label="样例输入"
+          width="180"
+        >
+        </el-table-column>
+        <el-table-column prop="exercise.exerciseSampleOutput" label="样例输出">
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="danger"
+              @click.native.prevent="deleteConfirm(scope.row)"
+              size="small"
+              icon="el-icon-delete-solid"
+              round
+              plain
+              >删除</el-button
+            >
+          </template>
         </el-table-column>
       </el-table>
-      <div class="block_addDialog">
+      <div class="block">
         <el-pagination
-          @current-change="handleCurrent_dialog"
-          :current-page.sync="currentPage_dialog"
-          :page-size="pagesize_dialog"
+          @current-change="handleCurrent"
+          :current-page.sync="currentPage"
+          :page-size="pagesize"
           layout="total,prev, pager, next"
-          :total="this.searchData.length"
-          v-if="this.searchData.length != 0"
+          :total="this.programmingList.length"
+          v-if="this.programmingList.length != 0"
         >
         </el-pagination>
       </div>
-      <el-button
-        class="addProgrammingDialog_button"
-        size="small"
-        type="primary"
-        @click="addProgramming_dialog('')"
-        >添加</el-button
+      <el-dialog
+        title="添加编程题"
+        :visible.sync="edittableDataVisible_add"
+        v-if="edittableDataVisible_add"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
+        width="850px"
       >
-    </el-dialog>
-  </div>
+        <el-input
+          v-model="select_word"
+          size="mini"
+          class="search_input"
+          placeholder="请输入习题标题关键字"
+          style="width: 200px"
+          clearable
+        ></el-input>
+        <el-table
+          :data="data_dialog"
+          @selection-change="handleSelectionChange"
+          :row-key="getRowKey"
+        >
+          <el-table-column
+            label="编号"
+            prop="exerciseId"
+            :show-overflow-tooltip="true"
+            width="80"
+          >
+          </el-table-column>
+          <el-table-column
+            label="标题"
+            prop="exerciseTitle"
+            :show-overflow-tooltip="true"
+          >
+          </el-table-column>
+          <el-table-column type="selection" :reserve-selection="true">
+          </el-table-column>
+        </el-table>
+        <div class="block_addDialog">
+          <el-pagination
+            @current-change="handleCurrent_dialog"
+            :current-page.sync="currentPage_dialog"
+            :page-size="pagesize_dialog"
+            layout="total,prev, pager, next"
+            :total="this.searchData.length"
+            v-if="this.searchData.length != 0"
+          >
+          </el-pagination>
+        </div>
+        <el-button
+          class="addProgrammingDialog_button"
+          size="small"
+          type="primary"
+          @click="addProgramming_dialog('')"
+          >添加</el-button
+        >
+      </el-dialog>
+    </div>
+  </el-card>
 </template>
 
 <script>

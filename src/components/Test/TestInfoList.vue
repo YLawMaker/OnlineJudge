@@ -1,210 +1,215 @@
 <template>
-  <div>
+  <el-card>
     <div>
-      <div class="topBar_Test">
-        <el-input
-          v-model="select_word"
-          size="mini"
-          class="search_input"
-          placeholder="请输入考试名称"
-          style="width: 200px"
-          clearable
-        ></el-input>
-        <el-button
-          class="addButton_Test"
-          size="small"
-          type="primary"
-          icon="el-icon-document-add"
-          round
-          plain
-          @click.native.prevent="addDialogvisiable()"
-          >新建测试</el-button
-        >
-      </div>
       <div>
-        <el-table :data="data">
-          <el-table-column
-            prop="testId"
-            label="ID"
-            width="80"
-          ></el-table-column>
-          <el-table-column prop="testName" label="Title"
-            ><template slot-scope="scope">
-              <router-link
-                :to="{
-                  path: 'TestProblemList',
-                  query: {
-                    testIdfromManage: scope.row.testId,
-                    managePage: currentPage,
-                  },
-                }"
-              >
-                {{ scope.row.testName }}
-              </router-link>
-            </template></el-table-column
+        <div class="topBar_Test">
+          <el-input
+            v-model="select_word"
+            size="mini"
+            class="search_input"
+            placeholder="请输入考试名称"
+            style="width: 200px"
+            clearable
+          ></el-input>
+          <el-button
+            class="addButton_Test"
+            size="small"
+            type="primary"
+            icon="el-icon-document-add"
+            round
+            plain
+            @click.native.prevent="addDialogvisiable()"
+            >新建测试</el-button
           >
-          <el-table-column
-            prop="testStartTime"
-            label="StartTime"
-          ></el-table-column>
-          <el-table-column prop="testEndTime" label="EndTime"></el-table-column>
-          <el-table-column prop="testStatus" label="Status"></el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-edit-outline"
-                round
-                plain
-                @click.native.prevent="modifyTestDialog(scope.row)"
-                >修改</el-button
-              >
-              <el-button
-                type="danger"
-                size="small"
-                icon="el-icon-delete-solid"
-                round
-                plain
-                @click.native.prevent="deleteConfirm(scope.row)"
-                >删除</el-button
-              >
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="block">
-          <el-pagination
-            @current-change="handleCurrent"
-            :current-page.sync="currentPage"
-            :page-size="pagesize"
-            layout="total,prev, pager, next"
-            :total="this.searchData.length"
-            v-if="this.searchData.length != 0"
-          >
-          </el-pagination>
         </div>
-        <el-dialog
-          title="添加测试"
-          :visible.sync="edittableDataVisible_add"
-          :before-close="handleClose"
-          :close-on-click-modal="false"
-          width="850px"
-        >
-          <el-form
-            ref="addTest"
-            :model="test_add"
-            class="addTestForm"
-            label-width="120px"
-          >
-            <el-form-item label="测试名称" prop="testName">
-              <el-input v-model="test_add.testName"></el-input>
-            </el-form-item>
-
-            <el-form-item label="开始时间" prop="testStartTime">
-              <el-date-picker
-                v-model="test_add.testStartTime"
-                type="datetime"
-                format="yyyy-MM-dd HH:mm"
-                value-format="yyyy-MM-dd HH:mm"
-                placeholder="选择日期时间"
-              >
-              </el-date-picker> </el-form-item
-            ><el-form-item label="结束时间" prop="testEndTime">
-              <el-date-picker
-                v-model="test_add.testEndTime"
-                type="datetime"
-                format="yyyy-MM-dd HH:mm"
-                value-format="yyyy-MM-dd HH:mm"
-                placeholder="选择日期时间"
-              >
-              </el-date-picker>
-            </el-form-item>
-
-            <el-form-item label="考试分组" prop="groupId">
-              <el-select
-                v-model="test_add.groupId"
-                filterable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in groupList"
-                  :key="item.groupId"
-                  :label="item.groupName"
-                  :value="item.groupId"
+        <div>
+          <el-table :data="data">
+            <el-table-column
+              prop="testId"
+              label="ID"
+              width="80"
+            ></el-table-column>
+            <el-table-column prop="testName" label="Title"
+              ><template slot-scope="scope">
+                <router-link
+                  :to="{
+                    path: 'TestProblemList',
+                    query: {
+                      testIdfromManage: scope.row.testId,
+                      managePage: currentPage,
+                    },
+                  }"
                 >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item class="addDialogButton">
-              <el-button type="primary" @click="addTest('addTest')"
-                >添加</el-button
-              >
-              <el-button @click="handleClose">取消</el-button>
-            </el-form-item>
-          </el-form>
-        </el-dialog>
-        <el-dialog
-          title="修改"
-          :visible.sync="edittableDataVisible_modify"
-          :before-close="handleClose"
-          :close-on-click-modal="false"
-          width="850px"
-        >
-          <el-form
-            ref="modifyTest"
-            :model="test_modify"
-            class="modifyTestForm"
-            label-width="120px"
-          >
-            <el-form-item label="测试名称" prop="testName">
-              <el-input v-model="test_modify.testName"></el-input>
-            </el-form-item>
-
-            <el-form-item label="开始时间" prop="testStartTime">
-              <el-date-picker
-                v-model="test_modify.testStartTime"
-                type="datetime"
-                format="yyyy-MM-dd HH:mm"
-                value-format="yyyy-MM-dd HH:mm"
-                placeholder="选择日期时间"
-              >
-              </el-date-picker> </el-form-item
-            ><el-form-item label="结束时间" prop="testEndTime">
-              <el-date-picker
-                v-model="test_modify.testEndTime"
-                type="datetime"
-                format="yyyy-MM-dd HH:mm"
-                value-format="yyyy-MM-dd HH:mm"
-                placeholder="选择日期时间"
-              >
-              </el-date-picker>
-            </el-form-item>
-            <el-form-item label="测试分组" prop="groupId">
-              <el-select
-                v-model="test_modify.groupId"
-                filterable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in groupList"
-                  :key="item.groupId"
-                  :label="item.groupName"
-                  :value="item.groupId"
+                  {{ scope.row.testName }}
+                </router-link>
+              </template></el-table-column
+            >
+            <el-table-column
+              prop="testStartTime"
+              label="StartTime"
+            ></el-table-column>
+            <el-table-column
+              prop="testEndTime"
+              label="EndTime"
+            ></el-table-column>
+            <el-table-column prop="testStatus" label="Status"></el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button
+                  type="primary"
+                  size="small"
+                  icon="el-icon-edit-outline"
+                  round
+                  plain
+                  @click.native.prevent="modifyTestDialog(scope.row)"
+                  >修改</el-button
                 >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item class="addDialogButton">
-              <el-button type="primary" @click="modifyTest('modifyTest')"
-                >修改</el-button
-              >
-              <el-button @click="handleClose">取消</el-button>
-            </el-form-item>
-          </el-form>
-        </el-dialog>
+                <el-button
+                  type="danger"
+                  size="small"
+                  icon="el-icon-delete-solid"
+                  round
+                  plain
+                  @click.native.prevent="deleteConfirm(scope.row)"
+                  >删除</el-button
+                >
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="block">
+            <el-pagination
+              @current-change="handleCurrent"
+              :current-page.sync="currentPage"
+              :page-size="pagesize"
+              layout="total,prev, pager, next"
+              :total="this.searchData.length"
+              v-if="this.searchData.length != 0"
+            >
+            </el-pagination>
+          </div>
+          <el-dialog
+            title="添加测试"
+            :visible.sync="edittableDataVisible_add"
+            :before-close="handleClose"
+            :close-on-click-modal="false"
+            width="850px"
+          >
+            <el-form
+              ref="addTest"
+              :model="test_add"
+              class="addTestForm"
+              label-width="120px"
+            >
+              <el-form-item label="测试名称" prop="testName">
+                <el-input v-model="test_add.testName"></el-input>
+              </el-form-item>
+
+              <el-form-item label="开始时间" prop="testStartTime">
+                <el-date-picker
+                  v-model="test_add.testStartTime"
+                  type="datetime"
+                  format="yyyy-MM-dd HH:mm"
+                  value-format="yyyy-MM-dd HH:mm"
+                  placeholder="选择日期时间"
+                >
+                </el-date-picker> </el-form-item
+              ><el-form-item label="结束时间" prop="testEndTime">
+                <el-date-picker
+                  v-model="test_add.testEndTime"
+                  type="datetime"
+                  format="yyyy-MM-dd HH:mm"
+                  value-format="yyyy-MM-dd HH:mm"
+                  placeholder="选择日期时间"
+                >
+                </el-date-picker>
+              </el-form-item>
+
+              <el-form-item label="考试分组" prop="groupId">
+                <el-select
+                  v-model="test_add.groupId"
+                  filterable
+                  placeholder="请选择"
+                >
+                  <el-option
+                    v-for="item in groupList"
+                    :key="item.groupId"
+                    :label="item.groupName"
+                    :value="item.groupId"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item class="addDialogButton">
+                <el-button type="primary" @click="addTest('addTest')"
+                  >添加</el-button
+                >
+                <el-button @click="handleClose">取消</el-button>
+              </el-form-item>
+            </el-form>
+          </el-dialog>
+          <el-dialog
+            title="修改"
+            :visible.sync="edittableDataVisible_modify"
+            :before-close="handleClose"
+            :close-on-click-modal="false"
+            width="850px"
+          >
+            <el-form
+              ref="modifyTest"
+              :model="test_modify"
+              class="modifyTestForm"
+              label-width="120px"
+            >
+              <el-form-item label="测试名称" prop="testName">
+                <el-input v-model="test_modify.testName"></el-input>
+              </el-form-item>
+
+              <el-form-item label="开始时间" prop="testStartTime">
+                <el-date-picker
+                  v-model="test_modify.testStartTime"
+                  type="datetime"
+                  format="yyyy-MM-dd HH:mm"
+                  value-format="yyyy-MM-dd HH:mm"
+                  placeholder="选择日期时间"
+                >
+                </el-date-picker> </el-form-item
+              ><el-form-item label="结束时间" prop="testEndTime">
+                <el-date-picker
+                  v-model="test_modify.testEndTime"
+                  type="datetime"
+                  format="yyyy-MM-dd HH:mm"
+                  value-format="yyyy-MM-dd HH:mm"
+                  placeholder="选择日期时间"
+                >
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="测试分组" prop="groupId">
+                <el-select
+                  v-model="test_modify.groupId"
+                  filterable
+                  placeholder="请选择"
+                >
+                  <el-option
+                    v-for="item in groupList"
+                    :key="item.groupId"
+                    :label="item.groupName"
+                    :value="item.groupId"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item class="addDialogButton">
+                <el-button type="primary" @click="modifyTest('modifyTest')"
+                  >修改</el-button
+                >
+                <el-button @click="handleClose">取消</el-button>
+              </el-form-item>
+            </el-form>
+          </el-dialog>
+        </div>
       </div>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script>
