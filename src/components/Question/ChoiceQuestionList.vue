@@ -105,11 +105,11 @@
       <div>
         <el-table-column
           width="100px"
-          label="选择题"
+          label="在考试中"
           align="center"
         >
           <template slot-scope="scope">
-          <div v-if="getChoiceIsExam(scope.row.choiceQuestionId)">
+          <div v-if="scope.row.isExam==true">
               2
           </div>
         </template>
@@ -763,6 +763,7 @@ export default {
         choiceQuestionCorrectOption: "",
         choiceQuestionDifficulty: "",
         isPrivate: "",
+        isExam:"",
         user: {
           userId: "",
           userName: "",
@@ -1773,7 +1774,7 @@ export default {
           this.$message.error("获取第二知识点错误");
         });
     },
-    //获取填空题信息
+    //获取选择题信息
     getChoiceQuestionInfo () {
       let params = new URLSearchParams();
       this.$axios({
@@ -1791,26 +1792,8 @@ export default {
           this.$message.error("查询填空题错误");
         });
     },
-    //判断选择题在不在考试中
-    getChoiceIsExam(choiceQuestionId){
-       let params = new URLSearchParams();
-       params.append("choiceQuestionId",choiceQuestionId);
-      this.$axios({
-        method: "post",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        url: "/choiceQuestion/queryChoiceQuestionIsExamByChoiceQuestionId",
-        data: params,
-      })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          this.$message.error("查询填空题错误");
-        });
-    }
-  },
+  }
+    
 };
 </script>
 

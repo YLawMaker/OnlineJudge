@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="block">
+    <div >
       <el-timeline>
         <el-timeline-item
           v-for="exam in pageExamInfo"

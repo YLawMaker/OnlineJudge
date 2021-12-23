@@ -45,12 +45,13 @@
           <el-menu-item 
             v-else
             index="/examList"
+            :route="{path:'/examList',query:{userId:this.userId}}"
             >Exam List</el-menu-item
           >
           <el-menu-item 
           v-if="userId==''"
            index="/userLogin"
-          
+          :route="{path:'/examList',query:{userId:this.userId}}"
             >Personal ExamHistory</el-menu-item
           >
           <el-menu-item 
