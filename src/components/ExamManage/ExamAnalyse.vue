@@ -6,6 +6,9 @@
       <el-button
         type="primary"
         size="small"
+        icon="el-icon-download"
+        round
+        plain
         @click.native.prevent="importWord()"
         >导出分析</el-button
       >

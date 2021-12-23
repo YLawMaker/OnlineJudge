@@ -56,6 +56,8 @@
             <el-button
               type="primary"
               icon="el-icon-search"
+              round
+              plain
               @click="searchExerciseRealTimeInfo()"
               >查询</el-button
             >

@@ -5,7 +5,6 @@
         <el-input v-model="select_word" placeholder="习题标题"> </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="wwChange()">标签</el-button>
         <div v-if="ww" class="label">
           <div v-for="(i, o) in options" :key="o" style="float: left">
             <span style="margin-right: 500px">
@@ -83,7 +82,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       exercise: [
         {
@@ -111,7 +110,7 @@ export default {
   },
   watch: {
     immediate: true,
-    select_word: function() {
+    select_word: function () {
       if (this.select_word == "") {
         this.selectExercise = this.exercise;
       } else {
@@ -129,7 +128,7 @@ export default {
     },
   },
   computed: {
-    data() {
+    data () {
       return this.selectExercise.slice(
         (this.currentPage - 1) * this.pageSize,
         this.currentPage * this.pageSize
@@ -137,7 +136,7 @@ export default {
     },
   },
 
-  mounted: function() {
+  mounted: function () {
     if (sessionStorage.getItem("isPublish") == "false") {
       if (sessionStorage.getItem("exerciseListCurrentPage") != null) {
         this.currentPage = Number(
@@ -159,7 +158,7 @@ export default {
 
   methods: {
     //点击标签
-    labelClick(secondPoint) {
+    labelClick (secondPoint) {
       var i = 0;
       for (var o = 0; o < this.labelChoice.length; o++) {
         if (this.labelChoice[o].secondPoint == secondPoint) {
@@ -209,11 +208,11 @@ export default {
           });
       }
     },
-    wwChange() {
+    wwChange () {
       this.ww = !this.ww;
     },
     //给sessionStorage存值
-    setContextData: function(key, value) {
+    setContextData: function (key, value) {
       if (typeof value == "string") {
         sessionStorage.setItem(key, value);
       } else {
@@ -221,7 +220,7 @@ export default {
       }
     },
     // 从sessionStorage取值
-    getContextData: function(key) {
+    getContextData: function (key) {
       const str = sessionStorage.getItem(key);
       if (typeof str == "string") {
         try {
@@ -232,13 +231,13 @@ export default {
       }
       return;
     },
-    handleCurrent(val) {
+    handleCurrent (val) {
       //保存页码信息
       sessionStorage.setItem("exerciseListCurrentPage", val);
       this.currentPage = val;
     },
     //获得习题比率
-    getAcceptRate(exerciseCorrectTimes, exerciseSubmitTimes) {
+    getAcceptRate (exerciseCorrectTimes, exerciseSubmitTimes) {
       if (
         !(
           exerciseCorrectTimes / exerciseSubmitTimes ==
@@ -266,7 +265,7 @@ export default {
       return acceptRate;
     },
     //获取习题列表
-    getExercise() {
+    getExercise () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -279,14 +278,14 @@ export default {
         .then((res) => {
           this.selectExercise = res.data;
           this.exercise = res.data;
-     
+
         })
         .catch((err) => {
           this.$message.error("习题列表加载失败");
         });
     },
     //获取第一点
-    getFirstPointInfo() {
+    getFirstPointInfo () {
       let params = new URLSearchParams();
       this.$axios({
         method: "post",
@@ -312,7 +311,7 @@ export default {
         });
     },
     //获取第二点
-    getSecondPointInfo(i) {
+    getSecondPointInfo (i) {
       let params = new URLSearchParams();
       params.append("firstPoint", this.options[i].label);
       this.$axios({

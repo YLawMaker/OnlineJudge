@@ -4,13 +4,22 @@
       <el-button
         size="small"
         type="primary"
+        icon="el-icon-back"
+        round
+        plain
         @click.native.prevent="
           goBack(pageFromInfoManage, searchKeyFromInfoManage)
         "
       >
         返回
       </el-button>
-      <el-button size="small" type="primary" @click="addDialogvisiable()"
+      <el-button
+        size="small"
+        type="primary"
+        icon="el-icon-document-add"
+        round
+        plain
+        @click="addDialogvisiable()"
         >添加用户</el-button
       >
     </div>
@@ -25,6 +34,9 @@
               type="danger"
               @click.native.prevent="deleteConfirm(scope.row)"
               size="small"
+              icon="el-icon-delete-solid"
+              round
+              plain
               >删除</el-button
             >
           </template>
@@ -176,6 +188,8 @@ export default {
               this.edittableDataVisible_add = false;
               this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage);
               this.addGroupUserData = new Object()
+            } else {
+              this.$message.error('输入的用户账号有误，请检查后更正错误部分');
             }
           })
         } else {
@@ -230,11 +244,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .topBar_GroupUser {
-  text-align: right;
+  text-align: left;
   margin-top: 10px;
   margin-right: 25px;
+  margin-left: 10pt;
 }
 .block {
   position: absolute;

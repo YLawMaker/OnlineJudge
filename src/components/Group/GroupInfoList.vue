@@ -14,6 +14,9 @@
           size="small"
           type="primary"
           class="addButton_GroupInfoManage"
+          icon="el-icon-document-add"
+          round
+          plain
           @click="addDialogvisiable()"
           >添加分组</el-button
         >
@@ -57,13 +60,26 @@
               type="primary"
               @click.native.prevent="GroupInfoDialog(scope.row)"
               size="small"
+              icon="el-icon-info"
+              round
+              plain
               >详情</el-button
             >
-            <el-button type="primary" size="small">修改</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-edit-outline"
+              round
+              plain
+              >修改</el-button
+            >
             <el-button
               type="danger"
               @click.native.prevent="deleteConfirm(scope.row)"
               size="small"
+              icon="el-icon-delete-solid"
+              round
+              plain
               >删除</el-button
             >
           </template>

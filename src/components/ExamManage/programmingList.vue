@@ -4,6 +4,9 @@
       <el-button
         size="small"
         type="primary"
+        icon="el-icon-document-add"
+        round
+        plain
         @click.native.prevent="addDialogvisiable()"
         >添加</el-button
       >
@@ -60,7 +63,10 @@
           <el-button
             type="danger"
             @click.native.prevent="deleteConfirm(scope.row)"
-            size="small"
+            size="mini"
+            icon="el-icon-delete-solid"
+            round
+            plain
             >删除</el-button
           >
         </template>

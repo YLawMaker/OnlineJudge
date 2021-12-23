@@ -73,6 +73,9 @@
       <el-button
         type="primary"
         size="mini"
+        icon="el-icon-search"
+        round
+        plain
         @click="searchChoiceQuestionInfo()"
         style="margin-left: 2%"
         >查询</el-button

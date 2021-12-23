@@ -8,7 +8,7 @@
         >
       </el-col>
       <el-col :span="21">
-        <el-form :inline="true"  >
+        <el-form :inline="true">
           <!-- 选择章节按钮 -->
           <el-form-item label="章节">
             <el-select
@@ -85,6 +85,8 @@
               type="primary"
               @click="searchChoiceQuestionInfo()"
               icon="el-icon-search"
+              round
+              plain
               >查询</el-button
             >
           </el-form-item>
@@ -102,19 +104,12 @@
         :row-style="{ height: '20px' }"
         :cell-style="{ padding: '0px' }"
       >
-      
-        <el-table-column
-          width="100px"
-          label="在考试中"
-          align="center"
-        >
+        <el-table-column width="100px" label="在考试中" align="center">
           <template slot-scope="scope">
-          <div v-if="scope.row.isExam==true">
-              √
-          </div>
-        </template>
+            <div v-if="scope.row.isExam == true">√</div>
+          </template>
         </el-table-column>
-      
+
         <el-table-column
           prop="choiceQuestionId"
           width="100px"
@@ -762,7 +757,7 @@ export default {
         choiceQuestionCorrectOption: "",
         choiceQuestionDifficulty: "",
         isPrivate: "",
-        isExam:"",
+        isExam: "",
         user: {
           userId: "",
           userName: "",
@@ -1024,18 +1019,17 @@ export default {
         params.append("userId", this.searchTeacherUserId);
       }
       if (
-        (this.searchChapterChoice == "" && this.searchChapterChoice != "0") ||this.searchChapterChoice == " ") {
+        (this.searchChapterChoice == "" && this.searchChapterChoice != "0") || this.searchChapterChoice == " ") {
         params.append("chapter", "");
       } else {
-        params.append("chapter",this.searchChapterOptions[this.searchChapterChoice].label);
+        params.append("chapter", this.searchChapterOptions[this.searchChapterChoice].label);
       }
-      if ((this.searchFirstKnowledgeChoice == "" &&this.searchFirstKnowledgeChoice != "0") ||this.searchFirstKnowledgeChoice == " ") 
-        {
-           params.append("firstKnowledge", "");
-         } else {
-            params.append("firstKnowledge",this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice].label);
-         }
-      if (this.searchSecondKnowledgeChoice == "" ||this.searchSecondKnowledgeChoice == " ") {
+      if ((this.searchFirstKnowledgeChoice == "" && this.searchFirstKnowledgeChoice != "0") || this.searchFirstKnowledgeChoice == " ") {
+        params.append("firstKnowledge", "");
+      } else {
+        params.append("firstKnowledge", this.searchFirstKnowledgePointOptions[this.searchFirstKnowledgeChoice].label);
+      }
+      if (this.searchSecondKnowledgeChoice == "" || this.searchSecondKnowledgeChoice == " ") {
         params.append("questionLabelId", 0);
       } else {
         params.append("questionLabelId", this.searchSecondKnowledgeChoice);
@@ -1395,8 +1389,8 @@ export default {
     },
     //控制修改弹出框 获取对应信息并赋值
     handleEdit (row) {
-      
-      
+
+
       //清空数据
       this.chapterChoice = "";
       this.choice[0].input = "";
@@ -1781,7 +1775,7 @@ export default {
         });
     },
   }
-    
+
 };
 </script>
 

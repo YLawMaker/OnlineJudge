@@ -4,12 +4,18 @@
       <el-button
         size="small"
         type="primary"
+        icon="el-icon-back"
+        round
+        plain
         @click.native.prevent="goBack(managePage)"
         >返回</el-button
       >
       <el-button
         size="small"
         type="primary"
+        icon="el-icon-document-add"
+        round
+        plain
         @click.native.prevent="addDialogvisiable()"
         >添加</el-button
       >
@@ -57,6 +63,9 @@
             type="danger"
             @click.native.prevent="deleteConfirm(scope.row)"
             size="small"
+            icon="el-icon-delete-solid"
+            round
+            plain
             >删除</el-button
           >
         </template>
@@ -68,7 +77,8 @@
         :current-page.sync="currentPage"
         :page-size="pagesize"
         layout="total,prev, pager, next"
-        :total="this.testProgrammingList.length"
+        :total="this.programmingList.length"
+        v-if="this.programmingList.length != 0"
       >
       </el-pagination>
     </div>

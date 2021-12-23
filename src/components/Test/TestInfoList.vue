@@ -14,6 +14,9 @@
           class="addButton_Test"
           size="small"
           type="primary"
+          icon="el-icon-document-add"
+          round
+          plain
           @click.native.prevent="addDialogvisiable()"
           >新建测试</el-button
         >
@@ -50,11 +53,19 @@
             <template slot-scope="scope">
               <el-button
                 type="primary"
+                size="small"
+                icon="el-icon-edit-outline"
+                round
+                plain
                 @click.native.prevent="modifyTestDialog(scope.row)"
                 >修改</el-button
               >
               <el-button
                 type="danger"
+                size="small"
+                icon="el-icon-delete-solid"
+                round
+                plain
                 @click.native.prevent="deleteConfirm(scope.row)"
                 >删除</el-button
               >
@@ -168,7 +179,7 @@
               >
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="考试分组" prop="groupId">
+            <el-form-item label="测试分组" prop="groupId">
               <el-select
                 v-model="test_modify.groupId"
                 filterable

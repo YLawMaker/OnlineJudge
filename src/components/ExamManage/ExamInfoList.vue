@@ -14,6 +14,9 @@
           class="addButton_Exam"
           type="primary"
           size="small"
+          icon="el-icon-document-add"
+          round
+          plain
           @click.native.prevent="addDialogvisiable()"
           >添加考试</el-button
         >
@@ -49,11 +52,19 @@
         <template slot-scope="scope">
           <el-button
             type="primary"
+            icon="el-icon-edit-outline"
+            size="mini"
+            round
+            plain
             @click.native.prevent="modifyExamDialog(scope.row)"
             >修改</el-button
           >
           <el-button
             type="danger"
+            icon="el-icon-delete-solid"
+            size="mini"
+            round
+            plain
             @click.native.prevent="deleteConfirm(scope.row)"
             >删除</el-button
           >

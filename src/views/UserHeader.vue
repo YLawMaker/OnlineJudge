@@ -33,33 +33,31 @@
           <template slot="title"
             ><i class="iconfont icon-exam"></i>Online Teaching</template
           >
-          <el-menu-item 
-            v-if="userId==''"
-            index="/userLogin"
+          <el-menu-item v-if="userId == ''" index="/userLogin"
             >Exam List</el-menu-item
           >
-          <el-menu-item 
+          <el-menu-item
             v-else
             index="/examList"
-            :route="{path:'/examList',query:{userId:this.userId}}"
+            :route="{ path: '/examList', query: { userId: this.userId } }"
             >Exam List</el-menu-item
           >
-          <el-menu-item 
-          v-if="userId==''"
-           index="/userLogin"
-          :route="{path:'/examList',query:{userId:this.userId}}"
+          <el-menu-item
+            v-if="userId == ''"
+            index="/userLogin"
+            :route="{ path: '/examList', query: { userId: this.userId } }"
             >Personal ExamHistory</el-menu-item
           >
           <el-menu-item v-else index="/personalExamHistory"
             >Personal ExamHistory</el-menu-item
           >
-          <el-menu-item 
-          v-if="userId==''"
-           index="/userLogin"
-          :route="{path:'/examList',query:{userId:this.userId}}"
+          <el-menu-item
+            v-if="userId == ''"
+            index="/userLogin"
+            :route="{ path: '/examList', query: { userId: this.userId } }"
             >Test List</el-menu-item
           >
-          <el-menu-item index="/testList">Test List</el-menu-item>
+          <el-menu-item v-else index="/testList">Test List</el-menu-item>
         </el-submenu>
         <el-submenu index="4" v-if="this.userIdentity == 'teacher'">
           <template slot="title"
@@ -69,14 +67,19 @@
         </el-submenu>
       </el-menu>
       <div class="loginbutton">
-        <el-button plain @click="userLogin()" v-if="userName == ''"
+        <el-button round plain @click="userLogin()" v-if="userName == ''"
           >登录
         </el-button>
         <div class="userName-right">
           <i v-if="userName != ''" class="el-icon-user-solid"></i>
           <span @click="gotoUserInfo()"> {{ userName }} </span>
         </div>
-        <el-button type="danger" v-if="userName != ''" @click="exitLogin()"
+        <el-button
+          type="danger"
+          size="normal"
+          round
+          v-if="userName != ''"
+          @click="exitLogin()"
           >退出登录</el-button
         >
       </div>

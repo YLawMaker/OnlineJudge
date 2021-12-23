@@ -21,8 +21,10 @@
         ></el-input>
       </el-form-item>
       <el-form-item class="btn">
-        <el-button type="primary" @click="login('loginForm')">登录 </el-button>
-        <el-button @click="register">注册 </el-button>
+        <el-button type="primary" round plain @click="login('loginForm')"
+          >登录
+        </el-button>
+        <el-button round plain @click="register">注册 </el-button>
       </el-form-item>
     </el-form>
   </div>

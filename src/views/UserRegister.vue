@@ -37,7 +37,7 @@
         <el-input v-model="userInfo.userEmail" style="width: 262px"> </el-input>
       </el-form-item>
       <el-form-item
-        ><el-button @click="getVerificationCode()">获取验证码</el-button>
+        ><el-button round @click="getVerificationCode()">获取验证码</el-button>
       </el-form-item>
 
       <el-form-item label="验证码" prop="userInputVerificationCode">
@@ -50,7 +50,7 @@
       </el-form-item>
 
       <el-form-item
-        ><el-button @click="register('userRegister')">注册</el-button>
+        ><el-button round @click="register('userRegister')">注册</el-button>
       </el-form-item>
     </el-form>
   </div>

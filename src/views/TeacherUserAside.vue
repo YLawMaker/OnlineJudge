@@ -24,6 +24,13 @@
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">
+              <i class="iconfont icon-kaoshizuoda"></i>
+              <span>测试</span>
+            </template>
+            <el-menu-item index="/testInfoList">测试管理</el-menu-item>
+          </el-submenu>
+          <el-submenu index="3">
+            <template slot="title">
               <i class="iconfont icon-wodetiku-yunjiepoutikuxuanti"></i>
               <span>题库</span>
             </template>
@@ -32,7 +39,7 @@
               >填空题题库</el-menu-item
             >
           </el-submenu>
-          <el-submenu index="3">
+          <el-submenu index="4">
             <template slot="title"
               ><i class="iconfont icon-navicon-rqfz"></i
               ><span>分组</span></template
