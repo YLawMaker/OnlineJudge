@@ -215,7 +215,7 @@ export default {
         url: '/examQuestion/queryExamProgrammingResultScoreByExamId',
         data: params
       }).then(function (resp) {
-        console.log(resp.data);
+        // console.log(resp.data);
         that.examExerciseScore = resp.data
         that.examExerciseScore.forEach(function (item) {
           if (item.avgExamProgrammingScore == null) {
@@ -266,7 +266,7 @@ export default {
               width: 1
             }
           },
-          data: ['优秀', '良好', '中等', '及格', '不及格',]
+          data: ['不及格', '及格', '中等', '良好', '优秀']
         },
         yAxis: {
           type: 'value',
@@ -420,7 +420,7 @@ export default {
         url: '/examHistory/queryExamHistoryInfo',
         data: params
       }).then(function (resp) {
-        // console.log(resp.data);
+        console.log(resp.data);
       })
     }
   }

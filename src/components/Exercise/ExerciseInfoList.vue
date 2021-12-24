@@ -118,6 +118,7 @@
               plain
               @click.native.prevent="modifyExercise(scope.row)"
               size="mini"
+              :disabled="scope.row.isExam"
               >修改</el-button
             >
             <el-button
@@ -127,6 +128,7 @@
               plain
               @click.native.prevent="deleteConfirm(scope.row)"
               size="mini"
+              :disabled="scope.row.isExam"
               >删除</el-button
             >
           </template>
