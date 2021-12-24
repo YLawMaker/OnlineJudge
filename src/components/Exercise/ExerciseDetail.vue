@@ -1,37 +1,43 @@
 <template>
   <div id="app">
     <div class="examTitle">{{ exercise.exerciseTitle }}</div>
+    <br />
     <div class="container">
       <form>
         <div class="main">
           <!-- 题干 -->
           <div class="question">
             <div class="title">Problem Description</div>
-            <div class="nei" style="white-space: pre-wrap">
-              {{ exercise.exerciseDescription }}
-            </div>
-            <pre id="editor" style="height: 10px"></pre>
+            <el-card>
+              <div class="nei" style="white-space: pre-line">
+                {{ exercise.exerciseDescription }}
+              </div>
+            </el-card>
             <div class="title">Input</div>
-            <div class="nei" style="white-space: pre-wrap">
-              {{ exercise.exerciseInput }}
-            </div>
-            <pre id="editor" style="height: 10px"></pre>
+            <el-card>
+              <div class="nei" style="white-space: pre-line">
+                {{ exercise.exerciseInput }}
+              </div>
+            </el-card>
             <div class="title">Output</div>
-            <div class="nei" style="white-space: pre-wrap">
-              {{ exercise.exerciseOutPut }}
-            </div>
-            <pre id="editor" style="height: 10px"></pre>
+            <el-card>
+              <div class="nei" style="white-space: pre-line">
+                {{ exercise.exerciseOutPut }}
+              </div>
+            </el-card>
             <div class="title">Sample Input</div>
-            <div class="nei" style="white-space: pre-wrap">
-              {{ exercise.exerciseSampleInput }}
-            </div>
-            <pre id="editor" style="height: 10px"></pre>
+            <el-card>
+              <div class="nei" style="white-space: pre-line">
+                {{ exercise.exerciseSampleInput }}
+              </div>
+            </el-card>
             <div class="title">Sample Output</div>
-            <div class="nei" style="white-space: pre-wrap">
-              {{ exercise.exerciseSampleOutput }}
-            </div>
+            <el-card>
+              <div class="nei" style="white-space: pre-line">
+                {{ exercise.exerciseSampleOutput }}
+              </div>
+            </el-card>
           </div>
-
           <div class="foot">
             <router-link
               style="text-decoration: none; color: black"
@@ -106,14 +112,13 @@ export default {
           this.$message.error('习题详情读取失败');
         })
     },
-
   }
 }
 </script>
 
-<style>
+<style scoped>
 .foot {
-  margin-top: 10%;
+  margin-top: 3%;
 }
 .main {
   width: 60%;
@@ -124,13 +129,11 @@ export default {
 }
 
 .title {
-  font-size: 200%;
-  color: #7ca9ed;
+  font-size: 130%;
+  color: rgb(60, 127, 158);
 }
 .nei {
-  padding: 0 10px;
   width: 100%;
-  background-color: lightblue;
 }
 .num {
   font-size: 150%;
@@ -138,7 +141,7 @@ export default {
 .examTitle {
   text-align: center;
   font-size: 200%;
-  color: #7ca9ed;
+  color: black;
 }
 .code {
   width: 100%;
@@ -152,5 +155,8 @@ export default {
   outline: none;
   padding-left: 1.125rem;
   height: 16.5rem;
+}
+.el-card {
+  background: #d3d3d3;
 }
 </style>

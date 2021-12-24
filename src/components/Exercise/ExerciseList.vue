@@ -34,24 +34,17 @@
         <el-table-column prop="exerciseId" label="习题编号"> </el-table-column>
         <el-table-column label="习题标题">
           <template slot-scope="scope">
-            <el-tooltip
-              class="item"
-              effect="dark"
-              content="查看习题"
-              placement="right"
+            <router-link
+              style="text-decoration: none; color: black"
+              :to="{
+                path: 'exerciseDetail',
+                query: {
+                  exerciseId: scope.row.exerciseId,
+                },
+              }"
             >
-              <router-link
-                style="text-decoration: none; color: black"
-                :to="{
-                  path: 'exerciseDetail',
-                  query: {
-                    exerciseId: scope.row.exerciseId,
-                  },
-                }"
-              >
-                {{ scope.row.exerciseTitle }}
-              </router-link>
-            </el-tooltip>
+              {{ scope.row.exerciseTitle }}
+            </router-link>
           </template>
         </el-table-column>
         <el-table-column label="正确率" align="center">

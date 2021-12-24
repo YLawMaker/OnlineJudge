@@ -24,7 +24,12 @@
         </div>
       </div>
 
-      <el-table :data="data" style="width: 100%" stripe>
+      <el-table
+        :data="data"
+        row-key="questionLabelId"
+        style="width: 100%"
+        stripe
+      >
         <el-table-column prop="questionLabelId" label="ID" width="80">
         </el-table-column>
         <el-table-column prop="chapter" label="章节" width="250">
@@ -273,6 +278,13 @@ export default {
         that.questionLabel = resp.data;
         that.searchData = resp.data;
         // console.log(resp.data);
+        // console.log(that.searchData);
+        for (var i = 0; i < that.searchData.length; i++) {
+          if (that.searchData[i].questionLabelId == 1111) {
+            that.searchData.splice(i, 1)
+          }
+        }
+        // console.log(that.searchData);
       }).catch((res) => {
         console.log(res);
       })

@@ -1044,7 +1044,7 @@ export default {
       })
         .then((res) => {
           this.currentPage = 1;
-          console.log(res.data);
+          // console.log(res.data);
           this.choiceQuestionList = res.data;
         })
         .catch((err) => {

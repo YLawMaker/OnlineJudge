@@ -326,6 +326,16 @@ export default {
   box-sizing: border-box;
   padding: 0px;
 }
+.el-tooltip__popper {
+  max-width: 50%;
+  background: black !important;
+  color: white !important;
+  opacity: 100 !important; /*背景色透明度*/
+  white-space: pre-line !important;
+}
+.el-table .cell {
+  white-space: pre-line;
+}
 .maintitle {
   text-align: center;
 }
