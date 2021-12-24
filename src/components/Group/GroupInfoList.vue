@@ -55,8 +55,11 @@
             prop="user.userName"
             label="创建者"
           ></el-table-column>
-          <el-table-column prop="status" label="状态" width="100px">
-            考试中
+          <el-table-column prop="isExam" label="状态" width="100px">
+            <template slot-scope="scope">
+              <div v-if="scope.row.isExam == true">考试中</div>
+              <div v-if="scope.row.isExam == false">空闲</div>
+            </template>
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -67,6 +70,7 @@
                 icon="el-icon-info"
                 round
                 plain
+                :disabled="scope.row.isExam"
                 >详情</el-button
               >
               <el-button
@@ -75,6 +79,7 @@
                 icon="el-icon-edit-outline"
                 round
                 plain
+                :disabled="scope.row.isExam"
                 >修改</el-button
               >
               <el-button
@@ -84,6 +89,7 @@
                 icon="el-icon-delete-solid"
                 round
                 plain
+                :disabled="scope.row.isExam"
                 >删除</el-button
               >
             </template>

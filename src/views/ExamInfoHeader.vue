@@ -9,7 +9,7 @@
           @select="handleSelect"
         >
           <el-menu-item>
-            <li @click="goBack()">返回</li>
+            <div @click="goBack()">返回</div>
           </el-menu-item>
 
           <el-menu-item index="/ExamInfo"><span>试卷一览</span></el-menu-item>

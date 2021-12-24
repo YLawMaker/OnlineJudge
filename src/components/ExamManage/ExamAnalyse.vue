@@ -215,6 +215,7 @@ export default {
         url: '/examQuestion/queryExamProgrammingResultScoreByExamId',
         data: params
       }).then(function (resp) {
+        console.log(resp.data);
         that.examExerciseScore = resp.data
         that.examExerciseScore.forEach(function (item) {
           if (item.avgExamProgrammingScore == null) {
@@ -419,7 +420,7 @@ export default {
         url: '/examHistory/queryExamHistoryInfo',
         data: params
       }).then(function (resp) {
-        console.log(resp.data);
+        // console.log(resp.data);
       })
     }
   }

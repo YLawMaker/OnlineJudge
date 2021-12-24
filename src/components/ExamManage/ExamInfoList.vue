@@ -57,6 +57,7 @@
               size="mini"
               round
               plain
+              :disabled="scope.row.examStatus == 'Running' ? true : false"
               @click.native.prevent="modifyExamDialog(scope.row)"
               >修改</el-button
             >
@@ -66,6 +67,7 @@
               size="mini"
               round
               plain
+              :disabled="scope.row.examStatus == 'Running' ? true : false"
               @click.native.prevent="deleteConfirm(scope.row)"
               >删除</el-button
             >

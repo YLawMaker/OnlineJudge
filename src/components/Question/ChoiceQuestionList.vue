@@ -206,6 +206,7 @@
               icon="el-icon-edit-outline"
               round
               plain
+              :disabled="scope.row.isExam"
               >修改</el-button
             >
             <el-button
@@ -215,6 +216,7 @@
               icon="el-icon-delete-solid"
               round
               plain
+              :disabled="scope.row.isExam"
               >删除</el-button
             >
           </template>
