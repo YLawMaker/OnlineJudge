@@ -336,7 +336,7 @@ export default {
         url: '/test/queryTestInfoByTestStatus',
       })
         .then((res) => {
-          // console.log(res.data);
+          console.log(res.data);
           that.searchData = res.data;
           that.testList = res.data;
           that.currentPage = parseInt(pageNum);
@@ -537,9 +537,9 @@ export default {
   margin-top: 10px;
 }
 .block {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

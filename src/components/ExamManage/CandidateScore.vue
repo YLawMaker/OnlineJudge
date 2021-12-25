@@ -167,12 +167,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .block {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  text-align: center;
 }
 .userScoreTopBar {
   text-align: center;
@@ -180,5 +177,8 @@ export default {
 .userScoreHistory {
   color: #337ab7;
   cursor: pointer; /*鼠标悬停变小手*/
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

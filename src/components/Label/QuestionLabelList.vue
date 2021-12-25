@@ -399,7 +399,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .el-main {
   display: block;
   flex: 1;
@@ -420,5 +420,8 @@ export default {
   bottom: 0;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

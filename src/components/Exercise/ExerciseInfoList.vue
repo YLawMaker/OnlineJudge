@@ -92,7 +92,7 @@
         <el-table-column
           prop="exerciseSampleOutput"
           label="样例输出"
-          width="160"
+          width="140"
         >
           <template slot-scope="scope">
             <div style="max-height: 50px; overflow-y: auto overflow-y:hidden">
@@ -859,7 +859,7 @@ export default {
   }
 }
 </script>
-<style >
+<style scoped>
 .el-tooltip__popper {
   max-width: 50%;
   background: black !important;
@@ -893,10 +893,7 @@ a {
   resize: none;
 }
 .block {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  text-align: center;
 }
 .addButton_Exercise {
   float: right;
@@ -904,5 +901,8 @@ a {
 }
 .topBar_Exercise {
   margin-top: 10px;
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

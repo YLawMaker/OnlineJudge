@@ -1621,7 +1621,7 @@ export default {
 };
 </script>
 
-<style lang="less" scope>
+<style lang="less" scoped>
 /* 详情弹出框的input 禁用样式 */
 // .e2 .el-textarea.is-disabled .el-textarea__inner {
 //   background-color: white;
@@ -1704,5 +1704,8 @@ export default {
       height: 30px;
     }
   }
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

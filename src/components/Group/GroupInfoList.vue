@@ -316,7 +316,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-table .cell {
   white-space: pre-line;
 }
@@ -336,9 +336,9 @@ a {
   color: #606266;
 }
 .block {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

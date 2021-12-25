@@ -360,4 +360,7 @@ export default {
   z-index: 999;
   border-radius: 30px;
 }
+.el-card {
+  border: 1px solid #7c7979;
+}
 </style>

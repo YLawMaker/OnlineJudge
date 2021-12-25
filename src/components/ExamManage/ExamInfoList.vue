@@ -530,7 +530,7 @@ export default {
         data: params
       })
         .then((res) => {
-          // console.log(res.data);
+          console.log(res.data);
           that.examList = res.data;
           that.searchData = res.data;
           for (var key in res.data) {
@@ -669,7 +669,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .topBar_Teacher {
   margin-top: 10px;
 }
@@ -682,10 +682,7 @@ export default {
   /* margin-bottom: 25px; */
 }
 .block {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  text-align: center;
 }
 a {
   /* text-decoration: none; */
@@ -696,5 +693,8 @@ a {
 }
 .el-dialog {
   overflow: auto;
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

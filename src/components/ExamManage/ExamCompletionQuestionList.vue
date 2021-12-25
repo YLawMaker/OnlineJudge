@@ -1068,7 +1068,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 /* 详情弹出框的input 禁用样式 */
 .e2 .el-textarea.is-disabled .el-textarea__inner {
   background-color: white;
@@ -1090,5 +1090,8 @@ export default {
 .pagination {
   display: flex;
   justify-content: center;
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

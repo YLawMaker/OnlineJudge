@@ -437,4 +437,7 @@ export default {
   text-align: center;
   background-color: #f5f7fa;
 }
+.el-card {
+  border: 1px solid #7c7979;
+}
 </style>

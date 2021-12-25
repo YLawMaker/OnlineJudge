@@ -307,7 +307,7 @@ export default {
   }
 }
   </script>
-  <style>
+  <style scoped>
 .el-main {
   display: block;
   flex: 1;
@@ -322,5 +322,8 @@ export default {
 }
 .topBar_Teacher {
   margin-top: 10px;
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

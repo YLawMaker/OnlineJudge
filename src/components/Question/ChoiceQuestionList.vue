@@ -1781,7 +1781,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .w2 {
   .el-radio__input {
     border: red 1px;
@@ -1873,5 +1873,8 @@ export default {
       height: 30px;
     }
   }
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

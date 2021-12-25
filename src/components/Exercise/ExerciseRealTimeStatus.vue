@@ -463,4 +463,7 @@ export default {
     color: black;
   }
 }
+.el-card {
+  border: 1px solid #7c7979;
+}
 </style>

@@ -190,4 +190,7 @@ export default {
 //   display: inline-block;
 //   margin-left: 5%;
 // }
+.el-card {
+  border: 1px solid #7c7979;
+}
 </style>

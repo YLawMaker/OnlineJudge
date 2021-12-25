@@ -17,7 +17,6 @@
         <el-menu-item index="../components/QuestionLabelList"
           >问题标签管理</el-menu-item
         >
-        <el-menu-item index="../components/GroupList">分组管理</el-menu-item>
       </el-menu>
     </el-header>
     <el-main>
