@@ -57,7 +57,12 @@
               size="mini"
               round
               plain
-              :disabled="scope.row.examStatus == 'Running' ? true : false"
+              :disabled="
+                scope.row.examStatus == 'Running' ||
+                scope.row.examStatus == 'Ended'
+                  ? true
+                  : false
+              "
               @click.native.prevent="modifyExamDialog(scope.row)"
               >修改</el-button
             >
@@ -530,7 +535,7 @@ export default {
         data: params
       })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           that.examList = res.data;
           that.searchData = res.data;
           for (var key in res.data) {
@@ -677,10 +682,7 @@ export default {
   float: right;
   margin-right: 25px;
 }
-.addDialogButton {
-  float: right;
-  /* margin-bottom: 25px; */
-}
+
 .block {
   text-align: center;
 }

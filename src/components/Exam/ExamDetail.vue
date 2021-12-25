@@ -38,7 +38,7 @@
               <el-button type="primary" @click="gotoChoice">选择题</el-button>
             </td>
             <td>{{ this.sumOfChoice }}</td>
-            <td v-if="this.examHistory.examChoiceQuestionTotals == 1111">否</td>
+            <td v-if="this.examHistory.examChoiceQuestionTotals == 0">否</td>
             <td v-else>是</td>
           </tr>
           <tr>
@@ -48,7 +48,7 @@
               >
             </td>
             <td>{{ this.sumOfCompletion }}</td>
-            <td v-if="this.examHistory.examCompletionQuestionTotals == 1111">
+            <td v-if="this.examHistory.examCompletionQuestionTotals == 0">
               否
             </td>
             <td v-else>是</td>

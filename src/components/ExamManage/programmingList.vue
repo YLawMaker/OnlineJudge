@@ -455,8 +455,7 @@ a {
   transform: translate(-50%, -50%);
 }
 .addProgrammingDialog_button {
-  margin: 25px 25px 25px 25px;
-  float: right;
+  margin: 25px 25px 25px 700px;
 }
 .el-dialog {
   overflow: auto;

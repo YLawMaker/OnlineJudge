@@ -15,8 +15,6 @@
         </el-table-column>
         <el-table-column prop="testEndTime" label="测试结束时间">
         </el-table-column>
-        <el-table-column prop="testLanguage" label="测试语言">
-        </el-table-column>
         <el-table-column prop="testStatus" label="测试状态">
           <template slot-scope="scope">
             <div v-if="scope.row.testStatus === 'Pending'" style="color: blue">

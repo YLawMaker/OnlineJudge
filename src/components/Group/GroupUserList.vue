@@ -186,9 +186,10 @@ export default {
             console.log(res.data);
             if (res.data == '0') {
               // console.log(res.data);
-              this.$message.error('请输入用户账号');
+              // this.$message.error('请输入用户账号');
               this.edittableDataVisible_add = false;
               this.getGroupUserInfo(this.$route.query.groupIdFromInfoManage, this.$route.query.page, this.$route.query.searchKeyFromInfoManage);
+              this.addGroupUserData = new Object()
             } else if (res.data == true) {
               this.$message.success('用户添加成功');
               this.edittableDataVisible_add = false;

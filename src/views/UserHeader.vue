@@ -42,30 +42,28 @@
             :route="{ path: '/examList', query: { userId: this.userId } }"
             >Exam List</el-menu-item
           >
-          <el-menu-item
-            v-if="userId == ''"
-            index="/userLogin"
-           
+          <el-menu-item v-if="userId == ''" index="/userLogin"
             >Personal ExamHistory</el-menu-item
           >
-          <el-menu-item 
-              v-else 
-              index="/personalExamHistory"
-              :route="{ path: '/examList', query: { userId: this.userId } }"
-          >Personal ExamHistory</el-menu-item
-          >
           <el-menu-item
-            v-if="userId == ''"
-            index="/userLogin"
+            v-else
+            index="/personalExamHistory"
+            :route="{
+              path: '/personalExamHistory',
+              query: { userId: this.userId },
+            }"
+            >Personal ExamHistory</el-menu-item
+          >
+          <el-menu-item v-if="userId == ''" index="/userLogin"
             >Test List</el-menu-item
           >
 
-          <el-menu-item 
-          v-else 
-          index="/testList"
-          :route="{ path: '/testList', query: { userId: this.userId } }"
-          >Test List</el-menu-item>
-
+          <el-menu-item
+            v-else
+            index="/testList"
+            :route="{ path: '/testList', query: { userId: this.userId } }"
+            >Test List</el-menu-item
+          >
         </el-submenu>
         <el-submenu index="4" v-if="this.userIdentity == 'teacher'">
           <template slot="title"
