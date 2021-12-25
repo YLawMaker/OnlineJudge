@@ -1505,7 +1505,7 @@ export default {
     },
     //控制修改弹出框显示
     handleEdit (row) {
-      alert(row.completionQuestionId);
+      // alert(row.completionQuestionId);
       //先清空数据
       this.eCompletionQuestionInfo.questionLabels = [];
       //详情弹出框显示 赋值  不能直接赋值row row类似一个指针直接指向row了
