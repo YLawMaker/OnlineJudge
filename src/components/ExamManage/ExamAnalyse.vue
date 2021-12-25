@@ -420,7 +420,7 @@ export default {
         url: '/examHistory/queryExamHistoryInfo',
         data: params
       }).then(function (resp) {
-        console.log(resp.data);
+        // console.log(resp.data);
       })
     }
   }
