@@ -6,7 +6,7 @@
     <p style="text-align: center">
       {{ user.userProfile }}
     </p>
-    <p style="text-align: center">
+    <p style="text-align: center" v-if="this.user.userId === this.myId.userId">
       <el-button @click="dialogUserInfo = true">修改信息</el-button>
       <el-dialog
         title="修改信息"
@@ -35,7 +35,10 @@
       </el-dialog>
     </p>
 
-    <div style="text-align: center">
+    <div
+      style="text-align: center"
+      v-if="this.user.userId === this.myId.userId"
+    >
       <el-button @click="dialogUserPwd = true">修改密码</el-button>
       <p v-show="dialogUserPwd" style="position: center">
         <el-dialog
@@ -43,7 +46,7 @@
           :visible.sync="dialogUserPwd"
           :close-on-click-modal="false"
         >
-          <el-form ref="UserPwd" :model="user" :rules="rules">
+          <el-form ref="UserPwd" :model="this.user" :rules="rules">
             <el-form-item label="原密码" prop="userPassword">
               <el-input type="password" v-model="user.userPassword"></el-input>
             </el-form-item>
@@ -104,7 +107,9 @@ export default {
       editUserPwd: false,
       dialogUserInfo: false,
       dialogUserPwd: false,
-
+      myId: {
+        userId: '',
+      },
       rules: {
         newuserName: [
           { required: true, message: "请输入姓名", trigger: "blur" },
@@ -158,10 +163,27 @@ export default {
     this.user.userId = this.$route.query.userId;
     //获取用户信息
     this.getUserInfo();
-
+    this.getMyInfo();
     this.getUserExerciseInfo();
   },
   methods: {
+    getMyInfo () {
+      let params = new URLSearchParams();
+      this.$axios({
+        method: "post",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        url: "/user/queryUserInfo",
+        data: params,
+      })
+        .then((res) => {
+          this.myId = res.data;
+        })
+        .catch((err) => {
+          this.$message.error("查询个人id失败");
+        });
+    },
     //跳转至习题详情界面
     gotoExerciseDetail (item) {
       this.$router.push({
@@ -272,6 +294,7 @@ export default {
         .then((res) => {
           this.user = res.data;
           this.user.userPassword = "";
+          this.user.newuserName = this.user.userName;
         })
         .catch((err) => {
           this.$message.error("查询用户信息失败");

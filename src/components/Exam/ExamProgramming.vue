@@ -375,7 +375,9 @@ export default {
                         console.log(this.userId);
                         console.log(res.data);
                         //this.$message.success("查询编程题结果成功");
-                        result = res.data;
+                        let a = res.data;
+                        a = a.split(",");
+                        result = a[0];
                         for (var i = 0; i < this.exerciseInfo.length; i++) {
                           if (
                             this.exerciseInfo[i].examQuestionId ==
@@ -396,6 +398,15 @@ export default {
                 })
                 .catch((err) => {
                   this.$message.error("提交失败");
+                  for (var i = 0; i < this.exerciseInfo.length; i++) {
+                    if (this.exerciseInfo[i].examQuestionId == examQuestionId) {
+                      var exerciseInfo = new Object();
+                      exerciseInfo = this.exerciseInfo[i];
+                      exerciseInfo.subStat = "提交失败";
+                      Vue.set(this.exerciseInfo, i, exerciseInfo);
+                      break;
+                    }
+                  }
                 });
             }
           } else {

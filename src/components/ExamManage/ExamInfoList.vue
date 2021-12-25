@@ -318,10 +318,10 @@ export default {
         groupId: '',
         examChoiceQuestionScore: 0,
         examCompletionQuestionScore: 0,
-        examProgrammingScore: 0
+        examProgrammingScore: 0,
       },
       groupList: [],
-      language: [{ value: 'C', label: 'C' }, { value: 'C++', label: 'C++' }, { value: 'Java', label: 'Java' }],
+      language: [{ value: 'C', label: 'C' }],
       addExamData: {},
       addRules: {
         examChoiceQuestionScore: [
@@ -444,7 +444,10 @@ export default {
       } else {
         status = "Ended"
       }
-
+      if (startTime > endTime) {
+        this.$message.error('考试时间不合法，请修改');
+        return
+      }
       params.append('examId', this.exam_modify.examId);
       params.append('examStartTime', this.exam_modify.examStartTime);
       params.append('examEndTime', this.exam_modify.examEndTime);
@@ -582,7 +585,10 @@ export default {
           } else {
             status = "Ended"
           }
-
+          if (startTime > endTime) {
+            this.$message.error('考试时间不合法，请修改');
+            return
+          }
           params.append('examName', this.exam_add.examName);
           params.append('examStartTime', this.exam_add.examStartTime);
           params.append('examEndTime', this.exam_add.examEndTime);

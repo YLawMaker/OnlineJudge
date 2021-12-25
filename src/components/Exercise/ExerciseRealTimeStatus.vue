@@ -1,104 +1,124 @@
 <template>
-  <el-card>
-    <el-row type="flex" justify="start">
-      <el-col :span="20">
-        <el-form inline>
-          <el-form-item label="习题id">
-            <el-input
-              v-model="select_exerciseId"
-              placeholder="习题id"
-              class="handle-input"
-              clearable
-              @keyup.native="proving"
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item label="用户姓名">
-            <el-input
-              v-model="select_userName"
-              placeholder="用户姓名"
-              class="handle-input"
-              clearable
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item label="语言">
-            <el-select
-              v-model="select_language"
-              placeholder="请选择"
-              class="handle-select"
-            >
-              <el-option
-                v-for="item in languageOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="结果">
-            <el-select
-              v-model="select_status"
-              placeholder="请选择"
-              class="handle-select"
-            >
-              <el-option
-                v-for="item in statusOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              icon="el-icon-search"
-              round
-              plain
-              @click="searchExerciseRealTimeInfo()"
-              >查询</el-button
-            >
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
-
-    <el-table
-      :data="data"
-      class="tableclass"
-      stripe
-      :header-cell-style="{ 'text-align': 'center' }"
-      :row-style="{ height: '20px' }"
-      :cell-style="{ 'text-align': 'center' }"
+  <div>
+    <span class="span-label" style="margin-left: 5%">习题id</span>
+    <el-input
+      style="margin-left: 1%"
+      v-model="select_exerciseId"
+      size="mini"
+      placeholder="习题id"
+      class="handle-input"
+      clearable=""
+      @keyup.native="proving"
     >
+    </el-input>
+    <span class="span-label">用户姓名</span>
+    <el-input
+      style="margin-left: 1%"
+      v-model="select_userName"
+      size="mini"
+      placeholder="用户姓名"
+      class="handle-input"
+      clearable=""
+    >
+    </el-input>
+    <span class="span-label">语言</span>
+    <el-select
+      v-model="select_language"
+      placeholder="请选择"
+      size="mini"
+      class="handle-select"
+      style="margin-left: 1%"
+    >
+      <el-option
+        v-for="item in languageOptions"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      >
+      </el-option>
+    </el-select>
+    <span class="span-label">结果</span>
+    <el-select
+      v-model="select_status"
+      placeholder="请选择"
+      size="mini"
+      class="handle-select"
+      style="margin-left: 1%"
+    >
+      <el-option
+        v-for="item in statusOptions"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      >
+      </el-option>
+    </el-select>
+
+    <el-button
+      type="primary"
+      size="mini"
+      @click="searchExerciseRealTimeInfo()"
+      style="margin-left: 2%"
+      >查询</el-button
+    >
+
+    <el-table :data="data" style="width: 90%" class="tableclass" stripe>
       <el-table-column prop="exerciseHistoryId" label="习题记录编号">
       </el-table-column>
       <el-table-column prop="exerciseSubmitTime" label="提交时间">
       </el-table-column>
       <el-table-column prop="exerciseResult" label="提交结果">
+        <template slot-scope="scope">
+          <div v-if="resultCut(scope.row.exerciseResult) === 'compile error'">
+            <!--编译错误-->
+            <el-button
+              type="text"
+              @click="compileErrorInfo(scope.row.exerciseResult)"
+              >{{ resultCut(scope.row.exerciseResult) }}
+            </el-button>
+          </div>
+
+          <div
+            v-else-if="resultCut(scope.row.exerciseResult) === 'wrong answer'"
+          >
+            <!--答案错误-->
+            <el-button
+              type="text"
+              @click="waInfo(scope.row.exerciseResult)"
+              style="color: red"
+              >{{ resultCut(scope.row.exerciseResult) }}
+            </el-button>
+          </div>
+
+          <div
+            v-else-if="
+              resultCut(scope.row.exerciseResult) === 'time-limit exceeded'
+            "
+          >
+            <!-- 运行超时 -->
+            <el-button
+              type="text"
+              @click="runtimeErrorInfo(scope.row.exerciseResult)"
+              >{{ resultCut(scope.row.exerciseResult) }}
+            </el-button>
+          </div>
+
+          <div v-else>{{ resultCut(scope.row.exerciseResult) }}</div>
+        </template>
       </el-table-column>
       <el-table-column label="习题编号">
         <template slot-scope="scope">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            content="查看习题"
-            placement="right"
+          <router-link
+            style="text-decoration: none; color: black"
+            :to="{
+              path: 'exerciseDetail',
+              query: {
+                exerciseId: scope.row.exercise.exerciseId,
+              },
+            }"
           >
-            <router-link
-              :to="{
-                path: 'exerciseDetail',
-                query: {
-                  exerciseId: scope.row.exercise.exerciseId,
-                },
-              }"
-            >
-              {{ scope.row.exercise.exerciseId }}
-            </router-link>
-          </el-tooltip>
+            {{ scope.row.exercise.exerciseId }}
+          </router-link>
         </template>
       </el-table-column>
 
@@ -124,23 +144,17 @@
       </el-table-column>
       <el-table-column label="提交作者">
         <template slot-scope="scope">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            content="查看作者"
-            placement="right"
+          <router-link
+            style="text-decoration: none; color: black"
+            :to="{
+              path: 'userInfo',
+              query: {
+                userId: scope.row.user.userId,
+              },
+            }"
           >
-            <router-link
-              :to="{
-                path: 'userInfo',
-                query: {
-                  userId: scope.row.user.userId,
-                },
-              }"
-            >
-              {{ scope.row.user.userName }}
-            </router-link>
-          </el-tooltip>
+            {{ scope.row.user.userName }}
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
@@ -156,7 +170,7 @@
       >
       </el-pagination>
     </div>
-  </el-card>
+  </div>
 </template>
 
 <script>
@@ -203,7 +217,7 @@ export default {
           label: "accept",
         },
         {
-          value: "wrong answer",
+          value: "wrong answer%",
           label: "wrong answer",
         },
         {
@@ -260,6 +274,47 @@ export default {
   },
 
   methods: {
+    //显示答案错误信息
+    waInfo (info) {
+      let errorInfo = info.split(",")
+      var wrongAnswer = errorInfo[2]
+      this.$alert(wrongAnswer, '答案错误', {
+        confirmButtonText: '确定',
+        callback: action => {
+          this.$message({
+            type: 'info',
+            message: `请检查代码逻辑`
+          });
+        }
+      });
+    },
+    //显示编译错误信息
+    compileErrorInfo (info) {
+      let errorInfo = info.split("compile error,");
+      var compileER = errorInfo[1];
+      alert(compileER);
+    },
+    //显示运行超时信息
+    runtimeErrorInfo (info) {
+      let errorInfo = info.split(",")
+      var runtimeError = errorInfo[2] + "  |耗时：" + errorInfo[3] + "ms|"
+      this.$alert(runtimeError, "运行超时 ", {
+        confirmButtonText: '确定',
+        callback: action => {
+          this.$message({
+            type: 'info',
+            message: `请检查代码逻辑`
+          });
+        }
+      });
+    },
+
+    //分割字符串
+    resultCut (result) {
+      let resultWord = result.split(",");
+      return resultWord[0];
+    },
+
     //查看用户是否登录 若登录成功则获取userId
     getUserInfo () {
       let params = new URLSearchParams();
@@ -424,20 +479,17 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-// .tableclass {
-//   margin-top: 20px;
-// }
-.pagination {
-  .el-pagination {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-  }
+<style>
+.tableclass {
+  margin-left: 5%;
 }
-// .span-label {
-//   margin-left: 2%;
-// }
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+.span-label {
+  margin-left: 2%;
+}
 .handle-input {
   width: 200px;
   display: inline-block;
@@ -445,25 +497,5 @@ export default {
 .handle-select {
   width: 200px;
   display: inline-block;
-}
-.el-row {
-  .el-col {
-    span {
-      margin-right: 20px;
-    }
-    .el-input,
-    .el-select {
-      min-width: 200px;
-    }
-  }
-}
-.el-table {
-  a.el-tooltip.item {
-    text-decoration: none;
-    color: black;
-  }
-}
-.el-card {
-  border: 1px solid #7c7979;
 }
 </style>

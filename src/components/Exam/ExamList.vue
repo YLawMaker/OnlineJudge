@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div >
+    <div>
       <el-timeline>
         <el-timeline-item
           v-for="exam in pageExamInfo"
@@ -122,7 +122,7 @@ export default {
               var join = 1;
               join = res.data;
               if (!join) {
-                this.$router.push({ path: '/examDetail', query: { userId: this.userId, examId: examId } });
+                this.$router.push({ path: '/examDetail', query: { userId: this.userId, examId: examId, examStartTime: examStartTime, examEndTime: examEndTime } });
               } else {
                 this.$message.error("您已经参加过考试")
               }
