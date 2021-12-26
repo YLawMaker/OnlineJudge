@@ -1621,7 +1621,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 /* 详情弹出框的input 禁用样式 */
 // .e2 .el-textarea.is-disabled .el-textarea__inner {
 //   background-color: white;

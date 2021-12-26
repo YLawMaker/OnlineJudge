@@ -955,7 +955,7 @@ export default {
       choiceQuestionShowVisible: false,
       //修改选择题弹出框
       editChoiceQuestionVisible: false,
-      pageSize: 4,
+      pageSize: 9,
       currentPage: 1,
     };
   },
@@ -1781,7 +1781,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .w2 {
   .el-radio__input {
     border: red 1px;
