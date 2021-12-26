@@ -91,7 +91,7 @@ export default {
   },
   computed: {
     data () {
-      return this.selectUserInfo.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pageSize);
+      return this.selectUserInfo.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
     },
   },
   watch: {

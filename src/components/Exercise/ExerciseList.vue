@@ -31,8 +31,8 @@
         :cell-style="{ 'text-align': 'center' }"
         stripe
       >
-        <el-table-column prop="exerciseId" label="习题编号"> </el-table-column>
-        <el-table-column label="习题标题">
+        <el-table-column prop="exerciseId" label="习题编号" width="100px"> </el-table-column>
+        <el-table-column label="习题标题" align="center">
           <template slot-scope="scope">
             <router-link
               style="text-decoration: none; color: black"
@@ -47,7 +47,7 @@
             </router-link>
           </template>
         </el-table-column>
-        <el-table-column label="正确率" align="center">
+        <el-table-column label="正确率" align="center" width="200px">
           <template slot-scope="scope">
             {{
               getAcceptRate(

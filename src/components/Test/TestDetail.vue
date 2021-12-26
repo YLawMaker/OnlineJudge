@@ -1,10 +1,11 @@
 <template>
+<el-card>
   <div>
       <div style="text-align:center">
           {{testInfo.testName}}
       </div>
-      <div>
-        <el-table :data="exerciseList" style="width: 80%;margin-left:10%" stripe>
+      <div >
+        <el-table :data="exerciseList" style="width: 90%;margin-left:5%" stripe>
             <el-table-column label=" " width="30%"> 
                 <template slot-scope="scope">
                     <div v-if="scope.row.exerciseDescription==='success'">
@@ -12,7 +13,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="问题编号">
+            <el-table-column label="问题编号"  width="100px">
                 <template slot-scope="scope">
                     <div @click="getoTestExerciseDetail(scope.row.exerciseId)" style="color:blue;cursor:pointer">
                         {{"第"+(scope.$index+1)+"题"}}
@@ -20,8 +21,8 @@
                     
                 </template>
             </el-table-column>
-            <el-table-column prop="exerciseTitle" label="问题标题"></el-table-column>
-            <el-table-column label="正确率" align="center">
+            <el-table-column prop="exerciseTitle" label="问题标题" align="center"></el-table-column>
+            <el-table-column label="正确率" align="center" width="200px">
                 <template slot-scope="scope">
                 {{
                     getAcceptRate(
@@ -35,14 +36,15 @@
       </div>
 
       <div class="foot">
-          <span @click="goToTestStandings()" style="color:blue;cursor:pointer">
+          <span @click="goToTestStandings()" style="color:black;cursor:pointer">
               standings
           </span>
-          <span @click="goToTestStatus()" style="color:blue;cursor:pointer;margin-left:2%">
+          <span @click="goToTestStatus()" style="color:black;cursor:pointer;margin-left:2%">
               status
           </span>
       </div>
   </div>
+</el-card>
 </template>
 
 <script>
@@ -142,9 +144,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .foot{
-    margin-top: 10%;
-    margin-left: 10%;
+    margin-top: 20px;
+    margin-left: 100px;
+}
+.el-card {
+  border: 1px solid #7c7979;
 }
 </style>

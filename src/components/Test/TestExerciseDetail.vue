@@ -117,4 +117,7 @@ export default {
 .foot1 {
   margin-top: 3%;
 }
+.el-card {
+  border: 1px solid #7c7979;
+}
 </style>

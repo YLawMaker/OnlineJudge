@@ -1,4 +1,5 @@
 <template>
+<el-card>
   <div>
     <span class="span-label" style="margin-left: 5%">习题id</span>
     <el-input
@@ -171,6 +172,7 @@
       </el-pagination>
     </div>
   </div>
+ </el-card>
 </template>
 
 <script>

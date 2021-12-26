@@ -62,8 +62,8 @@
             v-else
             index="/testList"
             :route="{ path: '/testList', query: { userId: this.userId } }"
-            >Test List</el-menu-item
-          >
+            >Test List
+          </el-menu-item>
         </el-submenu>
         <el-submenu index="4" v-if="this.userIdentity == 'teacher'">
           <template slot="title"

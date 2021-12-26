@@ -6,8 +6,8 @@
     <p style="text-align: center">
       {{ user.userProfile }}
     </p>
-    <p style="text-align: center" v-if="this.user.userId === this.myId.userId">
-      <el-button @click="dialogUserInfo = true">修改信息</el-button>
+    <div style="text-align:center">
+      <el-button @click="dialogUserInfo = true"  v-if="this.user.userId === this.myId.userId" style="margin-right:50px">修改信息</el-button>
       <el-dialog
         title="修改信息"
         :visible.sync="dialogUserInfo"
@@ -33,13 +33,7 @@
           </el-form-item>
         </el-form>
       </el-dialog>
-    </p>
-
-    <div
-      style="text-align: center"
-      v-if="this.user.userId === this.myId.userId"
-    >
-      <el-button @click="dialogUserPwd = true">修改密码</el-button>
+      <el-button @click="dialogUserPwd = true" v-if="this.user.userId === this.myId.userId">修改密码</el-button>
       <p v-show="dialogUserPwd" style="position: center">
         <el-dialog
           title="修改密码"
@@ -69,7 +63,9 @@
           </div>
         </el-dialog>
       </p>
+    
     </div>
+    
 
     <h2 style="text-align: center">未解决问题</h2>
 

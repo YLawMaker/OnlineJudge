@@ -67,7 +67,7 @@ export default {
         },
       },
       testList: [],
-      pageSize: 4,
+      pageSize: 8,
       currentPage: 1,
       user: {
         userId: '',

@@ -1,8 +1,7 @@
 <template>
-    <div>
-      
-    
-    <span class="span-label">问题名称</span>
+  <el-card>
+    <div >
+    <span class="span-label" style="margin-left:100px">问题名称</span>
     <el-select
       v-model="select_testProgrammingQuestionId"
       placeholder="请选择题目"
@@ -114,6 +113,7 @@
       </el-pagination>
     </div>
     </div>
+    </el-card>
 </template>
 
 <script>
@@ -331,7 +331,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .tableclass {
   margin-left: 5%;
 }

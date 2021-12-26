@@ -348,7 +348,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .block {
   position: absolute;
   bottom: 0;

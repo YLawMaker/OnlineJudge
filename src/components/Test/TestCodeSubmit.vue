@@ -129,7 +129,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .submit{
     text-align: center;
     margin-left: 32.5%;

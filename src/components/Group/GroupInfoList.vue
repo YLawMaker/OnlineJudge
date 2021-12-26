@@ -82,7 +82,7 @@
                 :disabled="scope.row.isExam"
                 >修改</el-button
               >
-              <el-button
+              <!-- <el-button
                 type="danger"
                 @click.native.prevent="deleteConfirm(scope.row)"
                 size="small"
@@ -91,7 +91,7 @@
                 plain
                 :disabled="scope.row.isExam"
                 >删除</el-button
-              >
+              > -->
             </template>
           </el-table-column>
         </el-table>

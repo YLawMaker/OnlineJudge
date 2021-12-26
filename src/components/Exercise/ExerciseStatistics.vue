@@ -72,8 +72,16 @@ export default {
             itemStyle.color = 'red';
             obj.itemStyle = itemStyle;
             break;
-          case "loding":
+          case "time-limit exceeded":
             itemStyle.color = 'blue';
+            obj.itemStyle = itemStyle;
+            break;
+          case "compile error":
+            itemStyle.color = 'yellow';
+            obj.itemStyle = itemStyle;
+            break;
+          case "system error!":
+            itemStyle.color = 'green';
             obj.itemStyle = itemStyle;
             break;
         };
