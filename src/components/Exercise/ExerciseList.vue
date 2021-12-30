@@ -31,6 +31,19 @@
         :cell-style="{ 'text-align': 'center' }"
         stripe
       >
+       <el-table-column   width="20px">
+         <template slot-scope="scope">
+           <div v-if="scope.row.exerciseSubmitStatus=='accept'" style="color:green">
+              √
+           </div>
+           <div v-else-if="scope.row.exerciseSubmitStatus=='error'" style="color:red">
+              ×
+           </div>
+           <div v-else>
+              
+           </div>
+         </template>
+        </el-table-column>
         <el-table-column prop="exerciseId" label="习题编号" width="100px"> </el-table-column>
         <el-table-column label="习题标题" align="center">
           <template slot-scope="scope">
@@ -231,29 +244,10 @@ export default {
     },
     //获得习题比率
     getAcceptRate (exerciseCorrectTimes, exerciseSubmitTimes) {
-      if (
-        !(
-          exerciseCorrectTimes / exerciseSubmitTimes ==
-          exerciseCorrectTimes / exerciseSubmitTimes
-        )
-      ) {
-        var acceptRate =
-          0 +
-          "%" +
-          "(" +
-          exerciseCorrectTimes +
-          "/" +
-          exerciseSubmitTimes +
-          ")";
+      if (!(exerciseCorrectTimes / exerciseSubmitTimes ==exerciseCorrectTimes / exerciseSubmitTimes)) {
+        var acceptRate =0 +"%" +"(" +exerciseCorrectTimes +"/" + exerciseSubmitTimes +")";
       } else {
-        var acceptRate =
-          ((exerciseCorrectTimes / exerciseSubmitTimes) * 100).toFixed(2) +
-          "%" +
-          "(" +
-          exerciseCorrectTimes +
-          "/" +
-          exerciseSubmitTimes +
-          ")";
+        var acceptRate =((exerciseCorrectTimes / exerciseSubmitTimes) * 100).toFixed(2) +"%" + "(" +exerciseCorrectTimes +"/" +exerciseSubmitTimes +")";
       }
       return acceptRate;
     },
@@ -265,68 +259,68 @@ export default {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        url: "/exercise/queryExerciseInfo",
+        url: "/exercise/queryExerciseInfoAndPersonSubmitStatus",
         data: params,
       })
         .then((res) => {
           this.selectExercise = res.data;
           this.exercise = res.data;
-
+          // console.log(res.data);
         })
         .catch((err) => {
           this.$message.error("习题列表加载失败");
         });
     },
     //获取第一点
-    getFirstPointInfo () {
-      let params = new URLSearchParams();
-      this.$axios({
-        method: "post",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        url: "/label/queryLabelFirstPointInfo",
-        data: params,
-      })
-        .then((res) => {
-          for (var i = 0; i < res.data.length; i++) {
-            var firstPoint = new Object();
-            firstPoint.label = res.data[i];
-            firstPoint.children = [];
-            this.options.push(firstPoint);
-          }
-          for (var i = 0; i < this.options.length; i++) {
-            this.getSecondPointInfo(i);
-          }
-        })
-        .catch((err) => {
-          this.$message.error("失败1");
-        });
-    },
+    // getFirstPointInfo () {
+    //   let params = new URLSearchParams();
+    //   this.$axios({
+    //     method: "post",
+    //     headers: {
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //     },
+    //     url: "/label/queryLabelFirstPointInfo",
+    //     data: params,
+    //   })
+    //     .then((res) => {
+    //       for (var i = 0; i < res.data.length; i++) {
+    //         var firstPoint = new Object();
+    //         firstPoint.label = res.data[i];
+    //         firstPoint.children = [];
+    //         this.options.push(firstPoint);
+    //       }
+    //       for (var i = 0; i < this.options.length; i++) {
+    //         this.getSecondPointInfo(i);
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       this.$message.error("失败1");
+    //     });
+    // },
     //获取第二点
-    getSecondPointInfo (i) {
-      let params = new URLSearchParams();
-      params.append("firstPoint", this.options[i].label);
-      this.$axios({
-        method: "post",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        url: "/label/queryLabelSecondPointInfo",
-        data: params,
-      })
-        .then((res) => {
-          for (var o = 0; o < res.data.length; o++) {
-            var secondPoint = new Object();
-            secondPoint.label = res.data[o].secondPoint;
-            secondPoint.value = res.data[o].labelId;
-            this.options[i].children.push(secondPoint);
-          }
-        })
-        .catch((err) => {
-          this.$message.error("失败2");
-        });
-    },
+    // getSecondPointInfo (i) {
+    //   let params = new URLSearchParams();
+    //   params.append("firstPoint", this.options[i].label);
+    //   this.$axios({
+    //     method: "post",
+    //     headers: {
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //     },
+    //     url: "/label/queryLabelSecondPointInfo",
+    //     data: params,
+    //   })
+    //     .then((res) => {
+    //       for (var o = 0; o < res.data.length; o++) {
+    //         var secondPoint = new Object();
+    //         secondPoint.label = res.data[o].secondPoint;
+    //         secondPoint.value = res.data[o].labelId;
+    //         this.options[i].children.push(secondPoint);
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       this.$message.error("失败2");
+    //     });
+    // },
   },
 };
 </script>

@@ -481,7 +481,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .tableclass {
   margin-left: 5%;
 }
