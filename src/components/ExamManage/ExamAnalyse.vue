@@ -2,6 +2,7 @@
   <el-card>
     <div>
       <div id="chart" style="display: none"></div>
+      <div id="chart1" style="display: none"></div>
 
       <div class="topBar_analyse">
         <el-button
@@ -91,6 +92,8 @@
 </template>
 
 <script>
+import { log } from 'console';
+import ecStat from 'echarts-stat';
 const echarts = require('echarts');
 
 export default {
@@ -132,6 +135,15 @@ export default {
       },
       examUserJoin: {},
       history: [],
+      anaylse: [],
+      a1: [],
+      a2: [],
+      a3: [],
+      a4: [],
+      userScoreHistory: [],
+      linearResult: [],
+      linearImg: [],
+      imgResult: [],
     }
   },
   mounted: function () {
@@ -141,6 +153,7 @@ export default {
     this.getExamExerciseScore()
     this.getExamUserJoinInfo()
     this.getHistory()
+    this.getUserProgramminngScore()
   },
   methods: {
     anaylseScoreAndSection () {
@@ -157,6 +170,7 @@ export default {
         url: '/examHistory/queryExamRankById',
         data: params
       }).then(function (resp) {
+        // console.log(resp.data);
         that.candidateScore = resp.data;
 
         for (var i = 0; i < resp.data.length; i++) {
@@ -201,6 +215,7 @@ export default {
         that.tableData_2.percent4 = that.tableData_2.level4 / that.tableData_2.totalNumber * 100
         that.tableData_2.percent5 = that.tableData_2.level5 / that.tableData_2.totalNumber * 100
         that.drawGradeLevelPhoto()
+
       })
     },
     getExamExerciseScore () {
@@ -302,6 +317,84 @@ export default {
       })
       // console.log(that.img1);
     },
+    drawLinearRegressionPhoto (result, i) {
+      echarts.registerTransform(ecStat.transform.regression);
+      var that = this
+      var myChart = echarts.init(document.getElementById('chart1'), null, {
+        width: 500,
+        height: 500
+      });
+      var linear;
+      linear = {
+        dataset: [
+          {
+            source: result
+          },
+          {
+            transform: {
+              type: 'ecStat:regression',
+              // 'linear' by default.
+              // config: { method: 'linear', formulaOn: 'end'}
+              // print: true
+            }
+          }
+        ],
+        title: {
+          text: '题目' + i,
+          // subtext: 'By ecStat.regression',
+          sublink: 'https://github.com/ecomfe/echarts-stat',
+          left: 'center'
+        },
+        legend: {
+          bottom: 5
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross'
+          }
+        },
+        xAxis: {
+          splitLine: {
+            lineStyle: {
+              type: 'dashed'
+            }
+          }
+        },
+        yAxis: {
+          splitLine: {
+            lineStyle: {
+              type: 'dashed'
+            }
+          }
+        },
+        series: [
+          {
+            // name: 'scatter',
+            type: 'scatter'
+          },
+          {
+            // name: 'line',
+            type: 'line',
+            datasetIndex: 1,
+            symbolSize: 0.1,
+            symbol: 'circle',
+            label: { show: true, fontSize: 16 },
+            labelLayout: { dx: -20 },
+            encode: { label: 2, tooltip: 1 }
+          }
+        ]
+      };
+      myChart.setOption(linear);
+      myChart.resize()
+      var t
+      t = myChart.getDataURL({
+        pixelRatio: 2,      // 导出的图片分辨率比例，默认为 1。
+        backgroundColor: '#fff'   // 导出的图片背景色，默认使用 option 里的 backgroundColor
+      })
+      that.linearImg.push(t)
+
+    },
     //点击导出
     importWord () {
       // 这里要引入处理图片的插件，下载docxtemplater后，引入的就在其中了
@@ -344,7 +437,7 @@ export default {
         }
         opts.getSize = function (img, tagValue, tagName) {
           //自定义指定图像大小，此处可动态调试各别图片的大小
-          if (tagName === "img2") return [400, 250];
+          if (tagName === "imgN") return [400, 250];
           return [400, 400];
         }
         let imageModule = new ImageModule(opts)
@@ -358,8 +451,19 @@ export default {
         // 设置模板变量的值
         doc.setData({
           img1: that.img1,
-          test: that.test,
-          table_2: that.tableData_2
+          linearImg1: that.linearImg[0],
+          linearImg2: that.linearImg[1],
+          linearImg3: that.linearImg[2],
+          linearImg4: that.linearImg[3],
+          linearImg5: that.linearImg[4],
+          linearImg6: that.linearImg[5],
+          linearImg7: that.linearImg[6],
+          linearImg8: that.linearImg[7],
+          table_2: that.tableData_2,
+          r1: that.a1.toString(),
+          r2: that.a2.toString(),
+          r3: that.a3.toString(),
+          r4: that.a4.toString()
         })
         try {
           // 用模板变量的值替换所有模板变量
@@ -420,7 +524,70 @@ export default {
         url: '/examHistory/queryExamHistoryInfo',
         data: params
       }).then(function (resp) {
+        that.anaylse = resp.data
+        // console.log(that.anaylse);
+        for (var i = 0; i < 4; i++) {
+          that.anaylse[i].points.forEach((item, index) => {
+            if (i == 0) {
+              that.a1.push(item.user.userName)
+            } else if (i == 1) {
+              that.a2.push(item.user.userName)
+            } else if (i == 2) {
+              that.a3.push(item.user.userName)
+            } else {
+              that.a4.push(item.user.userName)
+            }
+          })
+        }
+        // console.log(that.a1.toString());
+        // console.log(that.anaylse[1].points[0].user.userName);
         // console.log(resp.data);
+      })
+    },
+    getUserProgramminngScore () {
+      const that = this
+      let params = new URLSearchParams();
+      params.append('examId', this.examId);
+      // console.log(this.examId);
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/examHistory/queryExamUserProgrammingQuestionScoreInfoDrawInfo',
+        data: params
+      }).then(function (resp) {
+        let arr = resp.data
+        // console.log(resp.data);
+        let temp = []
+        let l = arr[0].examProgrammingTotalAndScores.length
+        let arrNew = []
+        for (var i = 0; i < arr.length; i++) {
+          for (var j = 0; j < arr[i].examProgrammingTotalAndScores.length; j++) {
+            temp.push(arr[i].examProgrammingTotalAndScores[j].total)
+            temp.push(arr[i].examProgrammingTotalAndScores[j].score)
+            arrNew.push(temp)
+            temp = []
+          }
+        }
+        var result = []
+        // console.log(l);
+        for (var i = 0; i < arrNew.length; i += l) {
+          result.push(arrNew.slice(i, i + l))
+        }
+        that.linearResult = result
+
+        // JSON.stringify
+        // console.log(JSON.stringify(that.linearResult[0]));
+        for (var i = 0; i < that.linearResult.length; i++) {
+          that.drawLinearRegressionPhoto(result[i], i + 1)
+          that.imgResult[i] = new Object()
+          that.imgResult[i].img = that.linearImg[i]
+        }
+        // that.imgResult = JSON.stringify(that.imgResult)
+        // that.imgResult = { 'image': that.imgResult }
+        // console.log(that.linearImg[1],);
+        // console.log(that.imgResult);
       })
     }
   }
