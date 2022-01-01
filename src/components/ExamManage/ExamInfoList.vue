@@ -599,7 +599,12 @@ export default {
           params.append('examChoiceQuestionScore', this.exam_add.examChoiceQuestionScore);
           params.append('examCompletionQuestionScore', this.exam_add.examCompletionQuestionScore);
           params.append('examProgrammingScore', this.exam_add.examProgrammingScore);
-
+          for (var i = 0; i < that.examList.length; i++) {
+            if (this.exam_add.examName === that.examList[i].examName) {
+              this.$message.error('考试名重复');
+              return
+            }
+          }
           this.$axios({
             method: 'post',
             headers: {

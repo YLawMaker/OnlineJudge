@@ -211,19 +211,29 @@ export default {
         },
         url: '/group/queryGroupInfo',
       }).then(function (resp) {
-        // console.log(resp.data);
         that.groupList = resp.data;
+        // console.log(that.groupList);
         that.searchData = resp.data;
         that.currentPage = pageNum;
         that.select_word = key
       })
     },
     add (addGroup) {
+      const that = this
       this.$refs[addGroup].validate((valid) => {
         if (valid) {
           let params = new URLSearchParams();
           params.append('groupName', this.addGroupData.groupName);
           // params.append('userId', this.teacherUserId);
+          // console.log(this.addGroupData.groupName);
+          // console.log(that.groupList[0].groupName);
+          for (var i = 0; i < that.groupList.length; i++) {
+            if (this.addGroupData.groupName === that.groupList[i].groupName) {
+              this.$message.error('分组名重复');
+              return
+            }
+          }
+
           this.$axios({
             method: 'post',
             headers: {
