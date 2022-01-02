@@ -324,6 +324,21 @@ export default {
       language: [{ value: 'C', label: 'C' }],
       addExamData: {},
       addRules: {
+        examName: [
+          { required: true, message: '请输入考试名称', trigger: 'blur' },
+        ],
+        examStartTime: [
+          { required: true, message: '请选择考试开始时间', trigger: 'blur' },
+        ],
+        examEndTime: [
+          { required: true, message: '请选择考试结束时间', trigger: 'blur' },
+        ],
+        examLanguage: [
+          { required: true, message: '请选择考试语言类型', trigger: 'blur' },
+        ],
+        groupId: [
+          { required: true, message: '请选择分组', trigger: 'blur' },
+        ],
         examChoiceQuestionScore: [
           { required: true, message: '请输入选择题成绩', trigger: 'blur' },
           { min: 1, max: 50, message: '长度为1~50', trigger: 'blur' },

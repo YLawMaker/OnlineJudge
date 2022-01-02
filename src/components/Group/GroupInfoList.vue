@@ -75,6 +75,7 @@
               >
               <el-button
                 type="primary"
+                @click.native.prevent="modifyDialog(scope.row)"
                 size="small"
                 icon="el-icon-edit-outline"
                 round
@@ -82,7 +83,7 @@
                 :disabled="scope.row.isExam"
                 >修改</el-button
               >
-              <!-- <el-button
+              <el-button
                 type="danger"
                 @click.native.prevent="deleteConfirm(scope.row)"
                 size="small"
@@ -91,7 +92,7 @@
                 plain
                 :disabled="scope.row.isExam"
                 >删除</el-button
-              > -->
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -129,6 +130,28 @@
             </el-form-item>
           </el-form>
         </el-dialog>
+        <el-dialog
+          title="修改分组"
+          :visible.sync="edittableDataVisible_modify"
+          :before-close="handleClose"
+          :close-on-click-modal="false"
+        >
+          <el-form
+            ref="modifyGroup"
+            :model="modifyGroupData"
+            class="modifyGroupForm"
+          >
+            <el-form-item label="名称" prop="groupName">
+              <el-input v-model="modifyGroupData.groupName"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="modifyGroupInfo()"
+                >提交</el-button
+              >
+              <el-button @click="handleClose">取消</el-button>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
       </div>
     </div>
   </el-card>
@@ -145,7 +168,12 @@ export default {
       pagesize: 9,
       teacherUserId: '',
       edittableDataVisible_add: false,
+      edittableDataVisible_modify: false,
       addGroupData: {
+        groupName: ''
+      },
+      modifyGroupData: {
+        groupId: 0,
         groupName: ''
       },
       addRules: {
@@ -191,7 +219,13 @@ export default {
     },
     handleClose (done) {
       this.edittableDataVisible_add = false
+      this.edittableDataVisible_modify = false
       this.addGroupData = new Object();
+    },
+    modifyDialog (row) {
+      this.edittableDataVisible_modify = true
+      this.modifyGroupData.groupId = row.groupId
+      this.modifyGroupData.groupName = row.groupName
     },
     addDialogvisiable () {
       this.edittableDataVisible_add = true
@@ -257,6 +291,37 @@ export default {
         } else {
           this.$message.error('添加失败，请检查输入的内容后后重试');
         }
+      })
+    },
+    modifyGroupInfo () {
+      let params = new URLSearchParams();
+      params.append('groupName', this.modifyGroupData.groupName);
+      params.append('groupId', this.modifyGroupData.groupId);
+
+      this.$axios({
+        method: 'post',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        url: '/group/modifyGroupInfo',
+        data: params
+      }).then((res) => {
+        if (res.data == true) {
+          this.$message.success('分组信息修改成功');
+          this.edittableDataVisible_modify = false;
+          this.getGroupInfo(this.currentPage, '');
+          // this.exam_modify = new Object();
+        } else if (res.data == false) {
+          this.$message.error('分组信息修改失败');
+          this.edittableDataVisible_modify = false;
+          this.getGroupInfo(this.currentPage, '');
+        } else {
+          this.$message.error('发生了错误');
+          this.edittableDataVisible_modify = false;
+          this.getGroupInfo(this.currentPage, '');
+        }
+      }).catch((res) => {
+        console.log(res);
       })
     },
     deleteConfirm (row) {

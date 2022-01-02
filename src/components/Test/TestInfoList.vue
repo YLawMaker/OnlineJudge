@@ -97,6 +97,7 @@
             <el-form
               ref="addTest"
               :model="test_add"
+              :rules="addRules"
               class="addTestForm"
               label-width="120px"
             >
@@ -234,6 +235,22 @@ export default {
         testStatus: '',
         teacherId: '',
         groupId: '',
+      },
+      addRules: {
+        testName: [
+          { required: true, message: '请输入测试名称', trigger: 'blur' },
+          { min: 1, message: '不能为空', trigger: 'blur' },
+        ],
+        testStartTime: [
+          { required: true, message: '请选择开始时间', trigger: 'blur' },
+        ],
+        testEndTime: [
+          { required: true, message: '请选择结束时间', trigger: 'blur' },
+        ],
+        groupId: [
+          { required: true, message: '请选择分组', trigger: 'blur' },
+        ],
+
       },
       // permissions: [{
       //   value: 'public',
